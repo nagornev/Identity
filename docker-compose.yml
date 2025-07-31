@@ -6,7 +6,7 @@ services:
     image: mcr.microsoft.com/mssql/server:latest
     restart: always
     volumes:
-        - ./ReadyGo.Data/Identity:/var/opt/mssql/data
+        - ./Data/Auth:/var/opt/mssql/data
     ports:
       - 5001:1433
     environment:
