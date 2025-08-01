@@ -1,7 +1,7 @@
 ﻿using Auth.Application.DTOs;
 using Auth.Domain.Aggregates;
 
-namespace Auth.Application.Abstractions.Providers
+namespace Auth.Application.Abstractions.Providers.Tokens
 {
     public interface IAccessTokenProvider
     {
@@ -12,6 +12,6 @@ namespace Auth.Application.Abstractions.Providers
         /// <param name="user"></param>
         /// <param name="session"></param>
         /// <returns></returns>
-        string Create(KeyPairDto accessKeyPair, User user, Session session);
+        string Create(KeyPair accessKeyPair, User user, Session session);
     }
 }

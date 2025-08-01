@@ -4,11 +4,11 @@ namespace Auth.Domain.Events
 {
     public class SessionUpdatedDomainEvent : DomainEvent
     {
-        public SessionUpdatedDomainEvent(Guid aggregateId, 
+        public SessionUpdatedDomainEvent(Guid aggregateId,
                                          Guid kid,
                                          Guid version,
                                          string device,
-                                         string ipAddress) 
+                                         string ipAddress)
             : base(aggregateId)
         {
             Kid = kid;

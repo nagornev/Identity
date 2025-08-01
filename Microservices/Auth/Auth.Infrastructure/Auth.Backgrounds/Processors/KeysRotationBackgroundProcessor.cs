@@ -36,31 +36,25 @@ namespace Auth.Backgrounds.Processors
         {
             while (!cancellation.IsCancellationRequested)
             {
-                TimeSpan delay = await _keysStorage.GetRemainingRotationTimeAsync(TimeSpan.FromSeconds(_keyOptions.RotationInterval), 
-                                                                                  TimeSpan.FromSeconds(_timeProvider.NowUnix()), 
+                TimeSpan delay = await _keysStorage.GetRemainingRotationTimeAsync(TimeSpan.FromSeconds(_keyOptions.RotationInterval),
+                                                                                  TimeSpan.FromSeconds(_timeProvider.NowUnix()),
                                                                                   cancellation);
                 await Task.Delay(delay, cancellation);
 
-                IReadOnlyCollection<KeyPairDto> expiredKeyPairs = await GetExpiredKeyPairs(cancellation);
-                foreach (KeyPairDto expiredKeyPair in expiredKeyPairs)
+                IReadOnlyCollection<KeyPair> expiredKeyPairs = await GetExpiredKeyPairs(cancellation);
+                foreach (KeyPair expiredKeyPair in expiredKeyPairs)
                     await _keysStorage.DeleteKeyPairAsync(expiredKeyPair.Kid, cancellation);
-               
-                KeyPairDto key = CreateNewKeyPair();
+
+                KeyPair key = _keysFactory.Create();
                 await _keysStorage.AddKeyPairAsync(key, cancellation);
             }
         }
 
-        public async Task<IReadOnlyCollection<KeyPairDto>> GetExpiredKeyPairs(CancellationToken cancellation)
+        public async Task<IReadOnlyCollection<KeyPair>> GetExpiredKeyPairs(CancellationToken cancellation)
         {
             return (await _keysStorage.GetKeyPairsAsync(cancellation))
                                       .Where(x => x.ExpiresAt < _timeProvider.NowUnix())
                                       .ToArray();
-        }
-
-        public KeyPairDto CreateNewKeyPair()
-        {
-            TimeSpan timeToLive = TimeSpan.FromSeconds(_lifetime);
-            return _keysFactory.Create(timeToLive);
         }
     }
 }

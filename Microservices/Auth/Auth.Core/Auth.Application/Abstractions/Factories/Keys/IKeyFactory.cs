@@ -4,6 +4,6 @@ namespace Auth.Application.Abstractions.Factories.Keys
 {
     public interface IKeyFactory
     {
-        KeyPairDto Create();
+        KeyPair Create();
     }
 }

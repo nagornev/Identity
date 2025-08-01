@@ -22,14 +22,14 @@ namespace Auth.Keys.Factories
             _timeProvider = timeProvider;
         }
 
-        public KeyPairDto Create()
+        public KeyPair Create()
         {
             Guid kid = Guid.NewGuid();
             RsaBuilder.CreateKeys(_options.Size, out byte[] privateKey, out byte[] publicKey);
             long createdAt = _timeProvider.NowUnix();
             long expiresAt = createdAt + _options.TimeToLive;
 
-            return new KeyPairDto(kid,
+            return new KeyPair(kid,
                                   SecurityAlgorithms.RsaSha256,
                                   privateKey,
                                   publicKey,

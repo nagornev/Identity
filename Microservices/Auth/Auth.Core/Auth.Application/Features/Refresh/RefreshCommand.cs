@@ -1,8 +1,6 @@
-﻿using Auth.Application.DTOs;
-
-namespace Auth.Application.Features.Refresh
+﻿namespace Auth.Application.Features.Refresh
 {
-    public class RefreshCommand : ResultTRequest<AuthDto>
+    public class RefreshCommand : ResultTRequest<DTOs.AuthTokens>
     {
         public RefreshCommand(string refreshToken,
                               string newPublicKey,

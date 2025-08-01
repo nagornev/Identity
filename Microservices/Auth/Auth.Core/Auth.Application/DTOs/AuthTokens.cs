@@ -1,8 +1,9 @@
 ﻿namespace Auth.Application.DTOs
 {
-    public class AuthDto
+    public class AuthTokens
     {
-        public AuthDto(string accessToken, string refreshToken)
+        public AuthTokens(string accessToken,
+                          string refreshToken)
         {
             AccessToken = accessToken;
             RefreshToken = refreshToken;

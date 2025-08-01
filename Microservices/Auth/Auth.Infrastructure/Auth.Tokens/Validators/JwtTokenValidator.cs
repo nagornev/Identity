@@ -30,19 +30,19 @@ namespace Auth.Tokens.Validators
 
         public async Task<bool> ValidateAsync(string token, CancellationToken cancellation = default)
         {
-            KeyPairDto keyPair = await GetKeyPair(token, cancellation);
+            KeyPair keyPair = await GetKeyPair(token, cancellation);
 
             return await ValidateAsync(token, keyPair);
         }
 
-        private async Task<KeyPairDto> GetKeyPair(string token, CancellationToken cancellation)
+        private async Task<KeyPair> GetKeyPair(string token, CancellationToken cancellation)
         {
             Guid kid = _jwtClaimsProvider.GetKid(token);
 
             return await _keyStorage.GetKeyPairAsync(kid, cancellation);
         }
 
-        private async Task<bool> ValidateAsync(string token, KeyPairDto keyPair)
+        private async Task<bool> ValidateAsync(string token, KeyPair keyPair)
         {
             return await _jwtSignatureValidator.ValidateAsync(token, new()
             {

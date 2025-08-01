@@ -18,9 +18,9 @@ namespace Auth.Keys.Providers
             return _providers.Any(x => x.CanHandle(algorithm));
         }
 
-        public SecurityKey Create(KeyPairDto key)
+        public SecurityKey Create(KeyPair key)
         {
-            return _providers.FirstOrDefault(x => x.CanHandle(key.Algorithm))!.Create(key) ?? 
+            return _providers.FirstOrDefault(x => x.CanHandle(key.Algorithm))!.Create(key) ??
                               throw new NotSupportedException("Unsupported algorithm type.");
         }
     }

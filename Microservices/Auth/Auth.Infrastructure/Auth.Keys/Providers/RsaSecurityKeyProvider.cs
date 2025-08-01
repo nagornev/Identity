@@ -10,13 +10,13 @@ namespace Auth.Keys.Providers
     {
         public bool CanHandle(string algorithm) => algorithm == SecurityAlgorithms.RsaSha256;
 
-        public SecurityKey Create(KeyPairDto key)
+        public SecurityKey Create(KeyPair key)
         {
             RSA rsa = RsaBuilder.FromKeys(key.PrivateKey, key.PublicKey);
 
-            return new RsaSecurityKey(rsa) 
-            { 
-                KeyId = key.Kid.ToString() 
+            return new RsaSecurityKey(rsa)
+            {
+                KeyId = key.Kid.ToString()
             };
         }
     }

@@ -1,15 +1,10 @@
 ﻿using DDD.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Auth.Domain.Events
 {
     public class EmailAddressChangeConfirmedDomainEvent : DomainEvent
     {
-        public EmailAddressChangeConfirmedDomainEvent(Guid aggregateId) 
+        public EmailAddressChangeConfirmedDomainEvent(Guid aggregateId)
             : base(aggregateId)
         {
         }

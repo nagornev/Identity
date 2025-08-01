@@ -17,12 +17,12 @@ namespace Otp.Domain.Aggregates
         public static Otp Create(Guid id, string secret, string emailAddress)
         {
             Otp otp = new Otp(id,
-                              Secret.Create(secret)??
+                              Secret.Create(secret) ??
                               throw new SecretNullDomainException(),
-                              
-                              Delivery.Create(id, 
-                                              EmailAddress.Create(emailAddress)??
-                                              throw new EmailAddressNullDomainException())??
+
+                              Delivery.Create(id,
+                                              EmailAddress.Create(emailAddress) ??
+                                              throw new EmailAddressNullDomainException()) ??
                               throw new DeliveryNullDomainException());
 
             return otp;

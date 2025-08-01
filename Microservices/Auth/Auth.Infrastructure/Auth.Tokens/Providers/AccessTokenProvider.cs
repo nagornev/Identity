@@ -1,12 +1,6 @@
-﻿using Auth.Application.Abstractions.Providers;
+﻿using Auth.Application.Abstractions.Providers.Tokens;
 using Auth.Application.DTOs;
 using Auth.Domain.Aggregates;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Auth.Tokens.Providers
 {
@@ -14,10 +8,10 @@ namespace Auth.Tokens.Providers
     {
         public AccessTokenProvider()
         {
-            
+
         }
 
-        public string Create(KeyPairDto accessKeyPair, User user, Session session)
+        public string Create(KeyPair accessKeyPair, User user, Session session)
         {
             throw new NotImplementedException();
         }

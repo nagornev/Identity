@@ -39,7 +39,7 @@ namespace Auth.Domain.Aggregates
         /// <exception cref="DeviceNullDomainException"></exception>
         /// <exception cref="IpAddressNullDomainException"></exception>
         public static Session Create(Guid userId,
-                                     Guid kid,       
+                                     Guid kid,
                                      string device,
                                      string ipAddress,
                                      long createdAt,
@@ -53,10 +53,10 @@ namespace Auth.Domain.Aggregates
                                           kid,
                                           version,
 
-                                          Device.Create(device) ?? 
+                                          Device.Create(device) ??
                                           throw new DeviceNullDomainException(),
 
-                                          IpAddress.Create(ipAddress) ?? 
+                                          IpAddress.Create(ipAddress) ??
                                           throw new IpAddressNullDomainException(),
 
                                           createdAt,
@@ -114,7 +114,7 @@ namespace Auth.Domain.Aggregates
             Device = Device.Create(device) ?? throw new DeviceNullDomainException();
             IpAddress = IpAddress.Create(ipAddress) ?? throw new IpAddressNullDomainException();
             UpdatedAt = updatedAt;
-        
+
             AddDomainEvent(new SessionUpdatedDomainEvent(Id, Kid, Version, Device.Value, IpAddress.Value));
         }
 

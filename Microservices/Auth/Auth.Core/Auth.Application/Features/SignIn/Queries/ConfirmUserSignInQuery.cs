@@ -1,8 +1,6 @@
-﻿using Auth.Application.DTOs;
-
-namespace Auth.Application.Features.SignIn.Queries
+﻿namespace Auth.Application.Features.SignIn.Queries
 {
-    public class ConfirmUserSignInQuery : ResultTRequest<AuthDto>
+    public class ConfirmUserSignInQuery : ResultTRequest<DTOs.AuthTokens>
     {
         public ConfirmUserSignInQuery(string otpToken,
                                       string otp,

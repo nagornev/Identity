@@ -1,11 +1,5 @@
 ﻿using Auth.Application.Abstractions.Services;
 using Auth.Application.Features.ChangeEmailAddress.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Auth.Application.Features.ChangeEmailAddress.Handlers
 {

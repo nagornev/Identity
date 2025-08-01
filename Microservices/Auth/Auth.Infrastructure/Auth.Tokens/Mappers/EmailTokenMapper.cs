@@ -14,11 +14,11 @@ namespace Auth.Tokens.Mappers
             _jwtParser = jwtParser;
         }
 
-        public Task<EmailTokenDto> MapAsync(string token, CancellationToken cancellation = default)
+        public Task<EmailToken> MapAsync(string token, CancellationToken cancellation = default)
         {
             JwtPayload payload = _jwtParser.GetPayload(token);
 
-            EmailTokenDto emailTokenDto = new EmailTokenDto(Guid.Parse(payload.Sub));
+            EmailToken emailTokenDto = new EmailToken(Guid.Parse(payload.Sub));
 
             return Task.FromResult(emailTokenDto);
         }

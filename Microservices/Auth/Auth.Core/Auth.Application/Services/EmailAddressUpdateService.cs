@@ -2,7 +2,7 @@
 using Auth.Application.Abstractions.Services;
 using Auth.Application.Abstractions.Validators.Tokens;
 using Auth.Application.DTOs;
-using Auth.Application.Exceptions.Applications.Tokens;
+using Auth.Application.Exceptions.Applications.Security;
 using Auth.Domain.Aggregates;
 using DDD.Repositories;
 
@@ -34,9 +34,9 @@ namespace Auth.Application.Services
             if (!await _emailTokenValidator.ValidateAsync(emailToken, cancellation))
                 throw new EmailTokenInvalidApplicationException(emailToken);
 
-            EmailTokenDto emailTokenDto = await _emailTokenMapper.MapAsync(emailToken, cancellation);
+            EmailToken token = await _emailTokenMapper.MapAsync(emailToken, cancellation);
 
-            User user = await _userQueryService.GetUserByIdAsync(emailTokenDto.UserId, cancellation);
+            User user = await _userQueryService.GetUserByIdAsync(token.UserId, cancellation);
             user.UpdateEmailAddress();
 
             await _unitOfWork.SaveAsync(cancellation);

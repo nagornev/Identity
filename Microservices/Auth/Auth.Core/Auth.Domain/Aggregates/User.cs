@@ -3,7 +3,6 @@ using Auth.Domain.Events;
 using Auth.Domain.Exceptions.Domains.Users;
 using Auth.Domain.ValueObjects;
 using DDD.Primitives;
-using System.Threading.Tasks;
 
 namespace Auth.Domain.Aggregates
 {

@@ -1,15 +1,10 @@
 ﻿using Auth.Application.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Auth.Application.Abstractions.Storages
 {
     public interface IKeyStorageWriter
     {
-        Task AddKeyPairAsync(KeyPairDto keyPair, CancellationToken cancellation = default);
+        Task AddKeyPairAsync(KeyPair keyPair, CancellationToken cancellation = default);
 
         Task DeleteKeyPairAsync(Guid kid, CancellationToken cancellation = default);
     }

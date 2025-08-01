@@ -2,7 +2,7 @@
 
 namespace Auth.Application.Abstractions.Mappers
 {
-    public interface IRefreshTokenMapper:ITokenMapper<RefreshTokenDto>
+    public interface IRefreshTokenMapper : ITokenMapper<RefreshToken>
     {
     }
 }

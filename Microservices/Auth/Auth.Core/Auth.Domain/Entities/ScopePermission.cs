@@ -44,7 +44,7 @@ namespace Auth.Domain.Entities
 
         public bool IsValidAt(long timestamp)
         {
-            if(Revoked || Deleted) 
+            if (Revoked || Deleted)
                 return false;
 
             if (ExpiresAt.HasValue)

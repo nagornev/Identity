@@ -1,7 +1,7 @@
 ﻿using Auth.Application.DTOs;
 using Auth.Domain.Aggregates;
 
-namespace Auth.Application.Abstractions.Providers
+namespace Auth.Application.Abstractions.Providers.Tokens
 {
     public interface IRefreshTokenProvider
     {
@@ -13,6 +13,6 @@ namespace Auth.Application.Abstractions.Providers
         /// <param name="session"></param>
         /// <param name="publicKey"></param>
         /// <returns></returns>
-        string Create(KeyPairDto refreshKeyPair, User user, Session session, string publicKey);
+        string Create(KeyPair refreshKeyPair, User user, Session session, string publicKey);
     }
 }

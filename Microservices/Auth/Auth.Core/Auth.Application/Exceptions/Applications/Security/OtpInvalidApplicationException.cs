@@ -1,4 +1,4 @@
-﻿namespace Auth.Application.Exceptions.Applications.Authentication
+﻿namespace Auth.Application.Exceptions.Applications.Security
 {
     public class OtpInvalidApplicationException : InvalidApplicationException
     {

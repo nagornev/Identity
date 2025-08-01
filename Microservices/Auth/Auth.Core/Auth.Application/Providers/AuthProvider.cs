@@ -1,10 +1,10 @@
-﻿using Auth.Application.Abstractions.Providers;
+﻿using Auth.Application.Abstractions.Providers.Tokens;
 using Auth.Application.DTOs;
 using Auth.Domain.Aggregates;
 
 namespace Auth.Application.Providers
 {
-    public class AuthProvider : IAuthProvider
+    public class AuthProvider : IAuthTokensProvider
     {
         private readonly IAccessTokenProvider _accessTokenProvider;
 
@@ -17,7 +17,7 @@ namespace Auth.Application.Providers
             _refreshTokenProvider = refreshTokenProvider;
         }
 
-        public AuthDto Create(KeyPairDto accessKeyPair, KeyPairDto refreshKeyPair, User user, Session session, string publicKey)
+        public DTOs.AuthTokens Create(KeyPair accessKeyPair, KeyPair refreshKeyPair, User user, Session session, string publicKey)
         {
             throw new NotImplementedException();
         }

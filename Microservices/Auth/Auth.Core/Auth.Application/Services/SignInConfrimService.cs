@@ -1,8 +1,7 @@
 ﻿using Auth.Application.Abstractions.Factories;
-using Auth.Application.Abstractions.Providers;
+using Auth.Application.Abstractions.Providers.Tokens;
 using Auth.Application.Abstractions.Services;
 using Auth.Application.Abstractions.Storages;
-using Auth.Application.Abstractions.Storages.Keys;
 using Auth.Application.Consts;
 using Auth.Application.DTOs;
 using Auth.Domain.Aggregates;
@@ -24,7 +23,7 @@ namespace Auth.Application.Services
 
         private readonly IUnitOfWork _unitOfWork;
 
-        private readonly IAuthProvider _authProvider;
+        private readonly IAuthTokensProvider _authProvider;
 
         public SignInConfrimService(IOtpAuthenticationService otpAuthenticationService,
                                     IAccessKeyStorage accessKeysStorage,
@@ -32,7 +31,7 @@ namespace Auth.Application.Services
                                     ISessionFactory sessionFactory,
                                     IRepositoryWriter<Session> sessionRepository,
                                     IUnitOfWork unitOfWork,
-                                    IAuthProvider authProvider)
+                                    IAuthTokensProvider authProvider)
         {
             _otpAuthenticationService = otpAuthenticationService;
             _accessKeysStorage = accessKeysStorage;
@@ -43,12 +42,12 @@ namespace Auth.Application.Services
             _authProvider = authProvider;
         }
 
-        public async Task<AuthDto> ConfirmAsync(string otpToken, string otp, string publicKey, string device, string ipAddress, CancellationToken cancellation = default)
+        public async Task<DTOs.AuthTokens> ConfirmAsync(string otpToken, string otp, string publicKey, string device, string ipAddress, CancellationToken cancellation = default)
         {
             User user = await _otpAuthenticationService.AuthenticateAsync(otpToken, otp, OtpTags.SignIn, cancellation);
 
-            KeyPairDto accessKeyPair = await _accessKeysStorage.GetPrimaryAsync(cancellation);
-            KeyPairDto refreshKeyPair = await _refreshKeysStorage.GetPrimaryAsync(cancellation);
+            KeyPair accessKeyPair = await _accessKeysStorage.GetPrimaryAsync(cancellation);
+            KeyPair refreshKeyPair = await _refreshKeysStorage.GetPrimaryAsync(cancellation);
 
             Session session = _sessionFactory.Create(user.Id, refreshKeyPair.Kid, device, ipAddress);
             await _sessionRepository.AddAsync(session, cancellation);

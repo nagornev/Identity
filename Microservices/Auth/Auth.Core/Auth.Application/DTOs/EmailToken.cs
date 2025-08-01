@@ -1,8 +1,8 @@
 ﻿namespace Auth.Application.DTOs
 {
-    public class EmailTokenDto
+    public class EmailToken
     {
-        public EmailTokenDto(Guid userId)
+        public EmailToken(Guid userId)
         {
             UserId = userId;
         }

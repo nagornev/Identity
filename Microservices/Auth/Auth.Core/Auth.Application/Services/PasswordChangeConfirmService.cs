@@ -1,5 +1,4 @@
-﻿using Auth.Application.Abstractions.Clients;
-using Auth.Application.Abstractions.Services;
+﻿using Auth.Application.Abstractions.Services;
 using Auth.Application.Consts;
 using Auth.Domain.Aggregates;
 using DDD.Repositories;

@@ -1,4 +1,4 @@
-﻿namespace Auth.Application.Exceptions.Applications.Tokens
+﻿namespace Auth.Application.Exceptions.Applications.Security
 {
     public class EmailTokenInvalidApplicationException : InvalidApplicationException
     {

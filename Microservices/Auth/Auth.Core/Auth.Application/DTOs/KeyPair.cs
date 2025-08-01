@@ -1,13 +1,13 @@
 ﻿namespace Auth.Application.DTOs
 {
-    public class KeyPairDto
+    public class KeyPair
     {
-        public KeyPairDto(Guid kid,
-                          string algorithm,
-                          byte[] privateKey,
-                          byte[] publicKey,
-                          long createdAt,
-                          long expiresAt)
+        public KeyPair(Guid kid,
+                       string algorithm,
+                       byte[] privateKey,
+                       byte[] publicKey,
+                       long createdAt,
+                       long expiresAt)
         {
             Kid = kid;
             Algorithm = algorithm;

@@ -38,7 +38,7 @@ namespace Auth.Application.Services
         {
             User user = await _userQueryService.GetUserByIdAsync(userId, cancellation);
 
-            if(_passwordValidator.Verify(oldPassword, user.Authentication.PasswordHash.Value))
+            if (_passwordValidator.Verify(oldPassword, user.Authentication.PasswordHash.Value))
                 throw new UserInvalidPasswordApplicationException(userId);
 
             user.ChangePassword(_passwordHashProvider.Hash(newPassword));

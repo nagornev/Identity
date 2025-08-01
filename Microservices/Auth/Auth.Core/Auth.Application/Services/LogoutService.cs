@@ -21,7 +21,7 @@ namespace Auth.Application.Services
         {
             IAsyncEnumerable<Session> sessions = _sessionQueryService.GetSessionAsyncStreamByUserId(userId);
 
-            await foreach(Session session in sessions.WithCancellation(cancellation))
+            await foreach (Session session in sessions.WithCancellation(cancellation))
             {
                 session.CloseSession();
             }
