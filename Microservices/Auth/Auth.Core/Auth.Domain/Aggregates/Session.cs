@@ -95,8 +95,11 @@ namespace Auth.Domain.Aggregates
             return ExpiresAt >= timestamp;
         }
 
-        public void ChangeKid(Guid kid)
+        public void ChangeKidIfNeed(Guid kid)
         {
+            if (Kid == kid)
+                return;
+
             Kid = kid;
 
             AddDomainEvent(new SessionKidChangedDomainEvent(Id, Kid));

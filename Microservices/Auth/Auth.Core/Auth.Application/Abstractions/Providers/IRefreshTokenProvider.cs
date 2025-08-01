@@ -8,10 +8,11 @@ namespace Auth.Application.Abstractions.Providers
         /// <summary>
         /// Creates refresh token for <paramref name="user"/>.
         /// </summary>
+        /// <param name="refreshKeyPair"></param>
         /// <param name="user"></param>
         /// <param name="session"></param>
         /// <param name="publicKey"></param>
         /// <returns></returns>
-        string Create(KeyDto refreshPrivateKey, User user, Session session, string publicKey);
+        string Create(KeyPairDto refreshKeyPair, User user, Session session, string publicKey);
     }
 }

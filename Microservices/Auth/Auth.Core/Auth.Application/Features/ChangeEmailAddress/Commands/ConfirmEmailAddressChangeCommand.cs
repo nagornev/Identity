@@ -3,7 +3,7 @@
     public class ConfirmEmailAddressChangeCommand : ResultRequest
     {
         public ConfirmEmailAddressChangeCommand(string optToken,
-                                          string opt)
+                                                string opt)
         {
             OptToken = optToken;
             Opt = opt;

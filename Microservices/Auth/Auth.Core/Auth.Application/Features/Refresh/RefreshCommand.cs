@@ -7,12 +7,16 @@ namespace Auth.Application.Features.Refresh
         public RefreshCommand(string refreshToken,
                               string newPublicKey,
                               long timestamp,
-                              string signature)
+                              string signature,
+                              string device,
+                              string ipAddress)
         {
             RefreshToken = refreshToken;
             NewPublicKey = newPublicKey;
             Timestamp = timestamp;
             Signature = signature;
+            Device = device;
+            IpAddress = ipAddress;
         }
 
         public string RefreshToken { get; }
@@ -22,5 +26,9 @@ namespace Auth.Application.Features.Refresh
         public long Timestamp { get; }
 
         public string Signature { get; }
+
+        public string Device { get; }
+
+        public string IpAddress { get; }
     }
 }

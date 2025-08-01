@@ -1,6 +1,6 @@
 ﻿using Auth.Application.Abstractions.Mappers;
 using Auth.Application.Abstractions.Services;
-using Auth.Application.Abstractions.Validators;
+using Auth.Application.Abstractions.Validators.Tokens;
 using Auth.Application.DTOs;
 using Auth.Application.Exceptions.Applications.Tokens;
 using Auth.Domain.Aggregates;

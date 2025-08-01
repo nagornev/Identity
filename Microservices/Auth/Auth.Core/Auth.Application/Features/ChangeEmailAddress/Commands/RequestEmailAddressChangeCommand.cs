@@ -3,7 +3,7 @@
     public class RequestEmailAddressChangeCommand : ResultTRequest<string>
     {
         public RequestEmailAddressChangeCommand(Guid userId,
-                                         string emailAddress)
+                                                string emailAddress)
         {
             UserId = userId;
             EmailAddress = emailAddress;

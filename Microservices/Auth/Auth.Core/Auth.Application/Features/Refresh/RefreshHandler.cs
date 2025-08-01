@@ -14,7 +14,13 @@ namespace Auth.Application.Features.Refresh
 
         public override async Task<AuthDto> HandleAsync(RefreshCommand request, CancellationToken cancellation)
         {
-            return await _refreshService.RefreshAsync(request.RefreshToken, request.NewPublicKey, request.Timestamp, request.Signature, cancellation = default);
+            return await _refreshService.RefreshAsync(request.RefreshToken,
+                                                      request.NewPublicKey,
+                                                      request.Timestamp,
+                                                      request.Signature,
+                                                      request.Device,
+                                                      request.IpAddress,
+                                                      cancellation);
         }
     }
 }

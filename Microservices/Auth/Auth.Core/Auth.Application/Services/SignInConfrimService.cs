@@ -14,9 +14,9 @@ namespace Auth.Application.Services
     {
         private readonly IOtpAuthenticationService _otpAuthenticationService;
 
-        private readonly IKeysStorageReader _accessKeysStorage;
+        private readonly IKeyStorageReader _accessKeysStorage;
 
-        private readonly IKeysStorageReader _refreshKeysStorage;
+        private readonly IKeyStorageReader _refreshKeysStorage;
 
         private readonly ISessionFactory _sessionFactory;
 
@@ -27,8 +27,8 @@ namespace Auth.Application.Services
         private readonly IAuthProvider _authProvider;
 
         public SignInConfrimService(IOtpAuthenticationService otpAuthenticationService,
-                                    IAccessKeysStorage accessKeysStorage,
-                                    IRefreshKeysStorage refreshKeysStorage,
+                                    IAccessKeyStorage accessKeysStorage,
+                                    IRefreshKeyStorage refreshKeysStorage,
                                     ISessionFactory sessionFactory,
                                     IRepositoryWriter<Session> sessionRepository,
                                     IUnitOfWork unitOfWork,
@@ -47,15 +47,15 @@ namespace Auth.Application.Services
         {
             User user = await _otpAuthenticationService.AuthenticateAsync(otpToken, otp, OtpTags.SignIn, cancellation);
 
-            KeyDto accessPrivateKey = await _accessKeysStorage.GetPrivateKeyAsync(cancellation);
-            KeyDto refreshPrivateKey = await _refreshKeysStorage.GetPrivateKeyAsync(cancellation);
+            KeyPairDto accessKeyPair = await _accessKeysStorage.GetPrimaryAsync(cancellation);
+            KeyPairDto refreshKeyPair = await _refreshKeysStorage.GetPrimaryAsync(cancellation);
 
-            Session session = _sessionFactory.Create(user.Id, refreshPrivateKey.Kid, device, ipAddress);
+            Session session = _sessionFactory.Create(user.Id, refreshKeyPair.Kid, device, ipAddress);
             await _sessionRepository.AddAsync(session, cancellation);
 
             await _unitOfWork.SaveAsync(cancellation);
 
-            return _authProvider.Create(accessPrivateKey, refreshPrivateKey, user, session, publicKey);
+            return _authProvider.Create(accessKeyPair, refreshKeyPair, user, session, publicKey);
         }
     }
 }

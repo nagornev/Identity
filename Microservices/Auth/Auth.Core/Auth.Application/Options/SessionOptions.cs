@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace Auth.Application.Options
 {
-    public record SessionOptions(long Lifetime)
+    public class SessionOptions
     {
+        public SessionOptions(int lifetime)
+        {
+            Lifetime = lifetime;
+        }
+
+        public int Lifetime { get; }
     }
 }

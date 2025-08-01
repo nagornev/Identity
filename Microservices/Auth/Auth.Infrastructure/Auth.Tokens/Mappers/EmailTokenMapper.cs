@@ -1,27 +1,24 @@
 ﻿using Auth.Application.Abstractions.Mappers;
 using Auth.Application.DTOs;
-using Auth.Tokens.Abstractions.Parsers;
+using Auth.Tokens.Abstractions.Providers;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Auth.Tokens.Mappers
 {
     public class EmailTokenMapper : IEmailTokenMapper
     {
-        private readonly IJwtParser _jwtParser;
+        private readonly IJwtClaimsProvider _jwtParser;
 
-        public EmailTokenMapper(IJwtParser jwtParser)
+        public EmailTokenMapper(IJwtClaimsProvider jwtParser)
         {
             _jwtParser = jwtParser;
         }
 
         public Task<EmailTokenDto> MapAsync(string token, CancellationToken cancellation = default)
         {
-            Guid kid = _jwtParser.GetKid(token);
             JwtPayload payload = _jwtParser.GetPayload(token);
 
-            EmailTokenDto emailTokenDto = new EmailTokenDto(kid,
-                                                            Guid.Parse(payload[JwtClaims.Subject].ToString()!),
-                                                            payload[JwtClaims.EmailAddress].ToString()!);
+            EmailTokenDto emailTokenDto = new EmailTokenDto(Guid.Parse(payload.Sub));
 
             return Task.FromResult(emailTokenDto);
         }

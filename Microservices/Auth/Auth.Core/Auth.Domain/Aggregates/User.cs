@@ -128,12 +128,30 @@ namespace Auth.Domain.Aggregates
         /// Confirms user`s email address.
         /// </summary>
         /// <exception cref="EmailAddressNullDomainException"></exception>
-        public void ConfirmEmailAddress()
+        public void ConfirmEmailAddressChange()
         {
             if (Profile.PendingEmailAddress is null)
                 throw new EmailAddressNullDomainException();
 
-            Profile.ConfirmEmailAddress();
+            Profile.ConfirmEmailAddressChange();
+
+            AddDomainEvent(new EmailAddressChangeConfirmedDomainEvent(Id));
+        }
+
+        /// <summary>
+        /// Updates user`s email address.
+        /// </summary>
+        /// <exception cref="EmailAddressNullDomainException"></exception>
+        /// <exception cref="EmailAddressChangeUnconfirmedDomainException"></exception>
+        public void UpdateEmailAddress()
+        {
+            if (Profile.PendingEmailAddress is null)
+                throw new EmailAddressNullDomainException();
+
+            if (!Profile.IsEmailAddressChangeConfirmed)
+                throw new EmailAddressChangeUnconfirmedDomainException();
+
+            Profile.UpdateEmailAddress();
 
             AddDomainEvent(new EmailAddressChangedDomainEvent(Id, Profile.EmailAddress.Value));
         }

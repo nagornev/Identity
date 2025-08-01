@@ -1,0 +1,66 @@
+﻿using Auth.Application.Abstractions.Factories.Keys;
+using Auth.Application.Abstractions.Providers;
+using Auth.Application.Abstractions.Storages;
+using Auth.Application.DTOs;
+using Auth.Application.Extensions;
+using Auth.Application.Options;
+using Microsoft.Extensions.Options;
+
+namespace Auth.Backgrounds.Processors
+{
+    public class KeysRotationBackgroundProcessor<TKeyOptionsType, TKeysStorageType, TKeysFactoryType>
+        where TKeyOptionsType : KeyOptions
+        where TKeysStorageType : IKeyStorage
+        where TKeysFactoryType : IKeyFactory
+    {
+        private readonly TKeysStorageType _keysStorage;
+
+        private readonly TKeysFactoryType _keysFactory;
+
+        private readonly TKeyOptionsType _keyOptions;
+
+        private readonly ITimeProvider _timeProvider;
+
+        public KeysRotationBackgroundProcessor(TKeysStorageType keysStorage,
+                                               TKeysFactoryType keysFactory,
+                                               IOptions<TKeyOptionsType> keyOptions,
+                                               ITimeProvider timeProvider)
+        {
+            _keysStorage = keysStorage;
+            _keysFactory = keysFactory;
+            _keyOptions = keyOptions.Value;
+            _timeProvider = timeProvider;
+        }
+
+        public async Task HandleAsync(CancellationToken cancellation)
+        {
+            while (!cancellation.IsCancellationRequested)
+            {
+                TimeSpan delay = await _keysStorage.GetRemainingRotationTimeAsync(TimeSpan.FromSeconds(_keyOptions.RotationInterval), 
+                                                                                  TimeSpan.FromSeconds(_timeProvider.NowUnix()), 
+                                                                                  cancellation);
+                await Task.Delay(delay, cancellation);
+
+                IReadOnlyCollection<KeyPairDto> expiredKeyPairs = await GetExpiredKeyPairs(cancellation);
+                foreach (KeyPairDto expiredKeyPair in expiredKeyPairs)
+                    await _keysStorage.DeleteKeyPairAsync(expiredKeyPair.Kid, cancellation);
+               
+                KeyPairDto key = CreateNewKeyPair();
+                await _keysStorage.AddKeyPairAsync(key, cancellation);
+            }
+        }
+
+        public async Task<IReadOnlyCollection<KeyPairDto>> GetExpiredKeyPairs(CancellationToken cancellation)
+        {
+            return (await _keysStorage.GetKeyPairsAsync(cancellation))
+                                      .Where(x => x.ExpiresAt < _timeProvider.NowUnix())
+                                      .ToArray();
+        }
+
+        public KeyPairDto CreateNewKeyPair()
+        {
+            TimeSpan timeToLive = TimeSpan.FromSeconds(_lifetime);
+            return _keysFactory.Create(timeToLive);
+        }
+    }
+}

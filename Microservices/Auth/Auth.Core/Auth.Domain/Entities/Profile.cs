@@ -24,6 +24,8 @@ namespace Auth.Domain.Entities
 
         public EmailAddress? PendingEmailAddress { get; private set; }
 
+        public bool IsEmailAddressChangeConfirmed { get; private set; }
+
         public EmailAddress EmailAddress { get; private set; }
 
         public PersonName PersonName { get; private set; }
@@ -31,12 +33,19 @@ namespace Auth.Domain.Entities
         internal void ChangeEmailAddress(EmailAddress emailAddress)
         {
             PendingEmailAddress = emailAddress;
+            IsEmailAddressChangeConfirmed = false;
         }
 
-        internal void ConfirmEmailAddress()
+        internal void ConfirmEmailAddressChange()
+        {
+            IsEmailAddressChangeConfirmed = true;
+        }
+
+        internal void UpdateEmailAddress()
         {
             EmailAddress = PendingEmailAddress!;
             PendingEmailAddress = null;
+            IsEmailAddressChangeConfirmed = false;
         }
 
         internal void ChangePersonName(PersonName personName)

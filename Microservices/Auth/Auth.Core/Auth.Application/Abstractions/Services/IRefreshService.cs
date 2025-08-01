@@ -9,6 +9,6 @@ namespace Auth.Application.Abstractions.Services
 {
     public interface IRefreshService
     {
-        Task<AuthDto> RefreshAsync(string refreshToken, string newPublicKey, long timestamp, string signature, CancellationToken cancellation = default);
+        Task<AuthDto> RefreshAsync(string refreshToken, string newPublicKey, long timestamp, string signature, string device, string ipAddress, CancellationToken cancellation = default);
     }
 }

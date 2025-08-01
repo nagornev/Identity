@@ -3,6 +3,7 @@
     public class KeyDto
     {
         public KeyDto(Guid kid,
+                      string algorithm,
                       byte[] key)
         {
             Kid = kid;
@@ -10,6 +11,8 @@
         }
 
         public Guid Kid { get; }
+
+        public string Algorithm { get; }
 
         public byte[] Key { get; }
     }

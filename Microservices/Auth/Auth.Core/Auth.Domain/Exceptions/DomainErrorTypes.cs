@@ -13,5 +13,7 @@
         public const int Already = 5;
 
         public const int OutOfRange = 6;
+
+        public const int Unconfirmed = 7;
     }
 }

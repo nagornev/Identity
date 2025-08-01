@@ -17,10 +17,9 @@ namespace Auth.Application.Providers
             _refreshTokenProvider = refreshTokenProvider;
         }
 
-        public AuthDto Create(KeyDto accessPrivateKey, KeyDto refreshPrivateKey, User user, Session session, string publicKey)
+        public AuthDto Create(KeyPairDto accessKeyPair, KeyPairDto refreshKeyPair, User user, Session session, string publicKey)
         {
-            return new AuthDto(_accessTokenProvider.Create(accessPrivateKey, user, session),
-                               _refreshTokenProvider.Create(refreshPrivateKey, user, session, publicKey));
+            throw new NotImplementedException();
         }
     }
 }

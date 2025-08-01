@@ -17,7 +17,7 @@ namespace Auth.Tokens.Providers
             
         }
 
-        public string Create(KeyDto accessPrivateKey, User user, Session session)
+        public string Create(KeyPairDto accessKeyPair, User user, Session session)
         {
             throw new NotImplementedException();
         }

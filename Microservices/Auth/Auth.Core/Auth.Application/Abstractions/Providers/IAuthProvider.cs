@@ -5,6 +5,6 @@ namespace Auth.Application.Abstractions.Providers
 {
     public interface IAuthProvider
     {
-        AuthDto Create(KeyDto accessPrivateKey, KeyDto refreshPrivateKey, User user, Session session, string publicKey);
+        AuthDto Create(KeyPairDto accessKeyPair, KeyPairDto refreshKeyPair, User user, Session session, string publicKey);
     }
 }

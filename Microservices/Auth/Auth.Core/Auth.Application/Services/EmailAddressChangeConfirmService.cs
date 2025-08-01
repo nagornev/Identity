@@ -21,7 +21,7 @@ namespace Auth.Application.Services
         public async Task ConfirmAsync(string otpToken, string otp, CancellationToken cancellation = default)
         {
             User user = await _otpAuthenticationService.AuthenticateAsync(otpToken, otp, OtpTags.ChangeEmailAddress, cancellation);
-            user.ConfirmEmailAddress();
+            user.ConfirmEmailAddressChange();
 
             await _unitOfWork.SaveAsync(cancellation);
         }
