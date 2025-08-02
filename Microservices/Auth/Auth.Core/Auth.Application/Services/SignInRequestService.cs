@@ -18,9 +18,9 @@ namespace Auth.Application.Services
         private readonly IOtpClient _otpClient;
 
         public SignInRequestService(IUserQueryService userQueryService,
-                                 IUserValidator userValidator,
-                                 IPasswordValidator passwordValidator,
-                                 IOtpClient otpClient)
+                                    IUserValidator userValidator,
+                                    IPasswordValidator passwordValidator,
+                                    IOtpClient otpClient)
         {
             _userQueryService = userQueryService;
             _userValidator = userValidator;

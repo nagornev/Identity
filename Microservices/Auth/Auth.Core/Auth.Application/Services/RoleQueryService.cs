@@ -14,6 +14,14 @@ namespace Auth.Application.Services
         {
             _roleRepository = roleRepository;
         }
+
+        public async Task<IReadOnlyCollection<Role>> GetRolesByIdsAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellation = default)
+        {
+            RoleByIdsSpecification specification = new RoleByIdsSpecification(ids);
+
+            return await _roleRepository.FindAsync(specification, cancellation);
+        }
+
         public async Task<Role> GetRoleByIdAsync(Guid id, CancellationToken cancellation = default)
         {
             RoleIdSpecification roleIdSpecification = new RoleIdSpecification(id);

@@ -11,7 +11,7 @@ namespace Auth.Backgrounds.Processors
     public class KeysRotationBackgroundProcessor<TKeyOptionsType, TKeysStorageType, TKeysFactoryType>
         where TKeyOptionsType : KeyOptions
         where TKeysStorageType : IKeyStorage
-        where TKeysFactoryType : IKeyFactory
+        where TKeysFactoryType : IKeyPairFactory
     {
         private readonly TKeysStorageType _keysStorage;
 

@@ -1,4 +1,5 @@
 ﻿using Auth.Domain.Events;
+using Auth.Domain.Exceptions.Domains.Scopes;
 using Auth.Domain.Exceptions.Domains.Sessions;
 using Auth.Domain.ValueObjects;
 using DDD.Primitives;
@@ -11,6 +12,7 @@ namespace Auth.Domain.Aggregates
                         Guid userId,
                         Guid kid,
                         Guid version,
+                        Audience audience,
                         Device device,
                         IpAddress ipAddress,
                         long createdAt,
@@ -20,6 +22,7 @@ namespace Auth.Domain.Aggregates
             UserId = userId;
             Kid = kid;
             Version = version;
+            Audience = audience;
             Device = device;
             IpAddress = ipAddress;
             CreatedAt = createdAt;
@@ -40,6 +43,7 @@ namespace Auth.Domain.Aggregates
         /// <exception cref="IpAddressNullDomainException"></exception>
         public static Session Create(Guid userId,
                                      Guid kid,
+                                     string audience,
                                      string device,
                                      string ipAddress,
                                      long createdAt,
@@ -52,6 +56,9 @@ namespace Auth.Domain.Aggregates
                                           userId,
                                           kid,
                                           version,
+
+                                          Audience.Create(audience) ??
+                                          throw new AudienceNullDomainException(),
 
                                           Device.Create(device) ??
                                           throw new DeviceNullDomainException(),
@@ -72,6 +79,8 @@ namespace Auth.Domain.Aggregates
         public Guid Kid { get; private set; }
 
         public Guid Version { get; private set; }
+
+        public Audience Audience { get; private set; }
 
         public Device Device { get; private set; }
 

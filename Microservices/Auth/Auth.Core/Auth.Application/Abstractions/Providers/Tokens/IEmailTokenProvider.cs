@@ -5,12 +5,11 @@ namespace Auth.Application.Abstractions.Providers.Tokens
     public interface IEmailTokenProvider
     {
         /// <summary>
-        /// Creates email token for <paramref name="userId"/>.
+        /// Creates email token.
         /// </summary>
-        /// <param name="emailKeyPair"></param>
-        /// <param name="userId"></param>
-        /// <param name="cancellation"></param>
+        /// <param name="parameters"></param>
+        /// <param name="keyPair"></param>
         /// <returns></returns>
-        Task<string> CreateAsync(KeyPair emailKeyPair, Guid userId, CancellationToken cancellation = default);
+        string Create(EmailTokenCreationParameters parameters, KeyPair keyPair);
     }
 }

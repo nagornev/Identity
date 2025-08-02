@@ -3,7 +3,7 @@ using Auth.Application.Features.SignIn.Queries;
 
 namespace Auth.Application.Features.SignIn.Handlers
 {
-    public class ConfirmUserSignInHandler : ResultTRequestHandler<ConfirmUserSignInQuery, DTOs.AuthTokens>
+    public class ConfirmUserSignInHandler : ResultTRequestHandler<ConfirmUserSignInQuery, DTOs.TokenPair>
     {
         private readonly ISignInConfirmService _signInConfrmService;
 
@@ -12,9 +12,9 @@ namespace Auth.Application.Features.SignIn.Handlers
             _signInConfrmService = signInConfrimService;
         }
 
-        public override async Task<DTOs.AuthTokens> HandleAsync(ConfirmUserSignInQuery request, CancellationToken cancellation)
+        public override async Task<DTOs.TokenPair> HandleAsync(ConfirmUserSignInQuery request, CancellationToken cancellation)
         {
-            return await _signInConfrmService.ConfirmAsync(request.OtpToken, request.Otp, request.PublicKey, request.Device, request.IpAddress, cancellation);
+            return await _signInConfrmService.ConfirmAsync(request.OtpToken, request.Otp, request.Audience, request.PublicKey, request.Device, request.IpAddress, cancellation);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Auth.Application.Abstractions.Factories.Keys
 {
-    public interface IAccessKeyFactory : IKeyFactory
+    public interface IRefreshKeyPairFactory : IKeyPairFactory
     {
     }
 }

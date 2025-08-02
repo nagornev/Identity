@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace Auth.Keys.Factories
 {
-    public class RefreshKeyFactory : RsaKeyFactory<RefreshKeyOptions>, IRefreshKeyFactory
+    public class RefreshKeyFactory : RsaKeyFactory<RefreshKeyOptions>, IRefreshKeyPairFactory
     {
         public RefreshKeyFactory(IOptions<RefreshKeyOptions> options,
                                  ITimeProvider timeProvider)

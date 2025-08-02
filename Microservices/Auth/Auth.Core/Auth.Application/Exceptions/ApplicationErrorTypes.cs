@@ -1,4 +1,6 @@
-﻿namespace Auth.Application.Exceptions
+﻿using Auth.Application.Exceptions.Infrastructures.Persistences;
+
+namespace Auth.Application.Exceptions
 {
     public static class ApplicationErrorTypes
     {
@@ -7,5 +9,7 @@
         public const int NotFound = 2;
 
         public const int Already = 3;
+
+        public const int Empty = 5;
     }
 }

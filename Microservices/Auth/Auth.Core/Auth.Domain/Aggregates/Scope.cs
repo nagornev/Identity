@@ -8,11 +8,13 @@ namespace Auth.Domain.Aggregates
     public partial class Scope : AggregateRoot
     {
         private Scope(Guid id,
+                      Audience audience,
                       Action action,
                       Resource resource,
                       string description)
         {
             Id = id;
+            Audience = audience;
             Action = action;
             Resource = resource;
             Description = description;
@@ -25,19 +27,23 @@ namespace Auth.Domain.Aggregates
         /// <param name="resource"></param>
         /// <param name="description"></param>
         /// <returns></returns>
-        public static Scope Create(string action,
+        public static Scope Create(string audience,
+                                   string action,
                                    string resource,
                                    string description)
         {
             Guid id = Guid.NewGuid();
 
             Scope scope = new Scope(id,
+                                    Audience.Create(audience),
                                     Action.Create(action),
                                     Resource.Create(resource),
                                     description);
 
             return scope;
         }
+
+        public Audience Audience { get; private set; }
 
         public Action Action { get; private set; }
 
@@ -48,6 +54,22 @@ namespace Auth.Domain.Aggregates
         public string GetHash()
         {
             return $"{Action.Value}:{Resource.Value}";
+        }
+
+        /// <summary>
+        /// Change the scope audience.
+        /// </summary>
+        /// <param name="audience"></param>
+        /// <exception cref="AudienceNullDomainException"></exception>
+        public void ChangeAudience(string audience)
+        {
+            Audience = Audience.Create(audience) ??
+                       throw new AudienceNullDomainException();
+        }
+
+        public bool IsValidAudience(string audience)
+        {
+            return Audience == Audience.Create(audience);
         }
 
         /// <summary>

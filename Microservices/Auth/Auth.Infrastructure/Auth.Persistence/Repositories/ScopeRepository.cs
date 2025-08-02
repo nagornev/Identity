@@ -54,5 +54,7 @@ namespace Auth.Persistence.Repositories
         {
             return await _context.Scopes.AnyAsync(specification.ToExpression(), cancellation);
         }
+
+
     }
 }

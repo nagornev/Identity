@@ -2,7 +2,7 @@
 
 namespace Auth.Application.Abstractions.Mappers
 {
-    public interface IEmailTokenMapper : ITokenMapper<EmailToken>
+    public interface IRefreshTokenPayloadMapper : ITokenPayloadMapper<RefreshTokenPayload>
     {
     }
 }

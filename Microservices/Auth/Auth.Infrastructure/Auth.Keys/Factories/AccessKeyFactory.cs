@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace Auth.Keys.Factories
 {
-    public class AccessKeyFactory : RsaKeyFactory<AccessKeyOptions>, IAccessKeyFactory
+    public class AccessKeyFactory : RsaKeyFactory<AccessKeyOptions>, IAccessKeyPairFactory
     {
         public AccessKeyFactory(IOptions<AccessKeyOptions> options,
                                 ITimeProvider timeProvider)

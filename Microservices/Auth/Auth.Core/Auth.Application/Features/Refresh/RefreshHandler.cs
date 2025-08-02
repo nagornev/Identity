@@ -2,7 +2,7 @@
 
 namespace Auth.Application.Features.Refresh
 {
-    public class RefreshHandler : ResultTRequestHandler<RefreshCommand, DTOs.AuthTokens>
+    public class RefreshHandler : ResultTRequestHandler<RefreshCommand, DTOs.TokenPair>
     {
         private readonly IRefreshService _refreshService;
 
@@ -11,7 +11,7 @@ namespace Auth.Application.Features.Refresh
             _refreshService = refreshService;
         }
 
-        public override async Task<DTOs.AuthTokens> HandleAsync(RefreshCommand request, CancellationToken cancellation)
+        public override async Task<DTOs.TokenPair> HandleAsync(RefreshCommand request, CancellationToken cancellation)
         {
             return await _refreshService.RefreshAsync(request.RefreshToken,
                                                       request.NewPublicKey,

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace Auth.Keys.Factories
 {
-    public class EmailKeyFactory : RsaKeyFactory<EmailKeyOptions>, IEmailKeyFactory
+    public class EmailKeyFactory : RsaKeyFactory<EmailKeyOptions>, IEmailKeyPairFactory
     {
         public EmailKeyFactory(IOptions<EmailKeyOptions> options,
                                ITimeProvider timeProvider)

@@ -6,13 +6,11 @@ namespace Auth.Application.Abstractions.Providers.Tokens
     public interface IRefreshTokenProvider
     {
         /// <summary>
-        /// Creates refresh token for <paramref name="user"/>.
+        /// Creates refresh token>.
         /// </summary>
-        /// <param name="refreshKeyPair"></param>
-        /// <param name="user"></param>
-        /// <param name="session"></param>
-        /// <param name="publicKey"></param>
+        /// <param name="parameters"></param>
+        /// <param name="keyPair"></param>
         /// <returns></returns>
-        string Create(KeyPair refreshKeyPair, User user, Session session, string publicKey);
+        string Create(RefreshTokenCreationParameters parameters, KeyPair keyPair);
     }
 }

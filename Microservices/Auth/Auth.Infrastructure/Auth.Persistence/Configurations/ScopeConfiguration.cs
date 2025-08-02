@@ -10,6 +10,13 @@ namespace Auth.Persistence.Configurations
         {
             builder.HasKey(s => s.Id);
 
+            builder.OwnsOne(s => s.Audience, sa =>
+            {
+                sa.Property(a => a.Value)
+                  .HasColumnName(nameof(Scope.Audience))
+                  .IsRequired();
+            });
+
             builder.OwnsOne(s => s.Action, sa =>
             {
                 sa.Property(a => a.Value)

@@ -2,6 +2,6 @@
 {
     public interface IRefreshService
     {
-        Task<DTOs.AuthTokens> RefreshAsync(string refreshToken, string newPublicKey, long timestamp, string signature, string device, string ipAddress, CancellationToken cancellation = default);
+        Task<DTOs.TokenPair> RefreshAsync(string refreshToken, string newPublicKey, long timestamp, string signature, string device, string ipAddress, CancellationToken cancellation = default);
     }
 }

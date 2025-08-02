@@ -1,6 +1,6 @@
 ﻿namespace Auth.Application.Features.Refresh
 {
-    public class RefreshCommand : ResultTRequest<DTOs.AuthTokens>
+    public class RefreshCommand : ResultTRequest<DTOs.TokenPair>
     {
         public RefreshCommand(string refreshToken,
                               string newPublicKey,

@@ -1,58 +1,50 @@
 ﻿using Auth.Application.Abstractions.Storages;
+using Auth.Application.Abstractions.Validators.Tokens;
 using Auth.Application.DTOs;
+using Auth.Application.Options;
 using Auth.Keys.Abstractions.Providers;
-using Auth.Tokens.Abstractions.Providers;
 using Auth.Tokens.Abstractions.Validators;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Auth.Tokens.Validators
 {
-    public abstract class JwtTokenValidator<TKeyStorageType>
-        where TKeyStorageType : IKeyStorageReader
+    public abstract class JwtTokenValidator<TTokenOptions>: ITokenValidator
+        where TTokenOptions : TokenOptions
     {
-        private readonly IJwtClaimsProvider _jwtClaimsProvider;
+        private readonly ISecurityKeyProvider _securityKeyProvider;
 
         private readonly IJwtSignatureValidator _jwtSignatureValidator;
 
-        private readonly TKeyStorageType _keyStorage;
+        private readonly TTokenOptions _tokenOptions;
 
-        private readonly ISecurityKeyProvider _securityKeyProvider;
-
-        public JwtTokenValidator(IJwtClaimsProvider jwtParser,
+        public JwtTokenValidator(ISecurityKeyProvider securityKeyProvider,
                                  IJwtSignatureValidator jwtValidator,
-                                 TKeyStorageType keyStorage,
-                                 ISecurityKeyProvider securityKeyProvider)
+                                 IOptions<TTokenOptions> tokenOptions)
         {
-            _jwtClaimsProvider = jwtParser;
-            _jwtSignatureValidator = jwtValidator;
-            _keyStorage = keyStorage;
             _securityKeyProvider = securityKeyProvider;
+            _jwtSignatureValidator = jwtValidator;
+            _tokenOptions = tokenOptions.Value;
         }
 
-        public async Task<bool> ValidateAsync(string token, CancellationToken cancellation = default)
+        public async Task<bool> ValidateAsync(string token, KeyPair keyPair, CancellationToken cancellation = default)
         {
-            KeyPair keyPair = await GetKeyPair(token, cancellation);
+            SecurityKey securityKey = _securityKeyProvider.Create(keyPair);
 
-            return await ValidateAsync(token, keyPair);
-        }
-
-        private async Task<KeyPair> GetKeyPair(string token, CancellationToken cancellation)
-        {
-            Guid kid = _jwtClaimsProvider.GetKid(token);
-
-            return await _keyStorage.GetKeyPairAsync(kid, cancellation);
-        }
-
-        private async Task<bool> ValidateAsync(string token, KeyPair keyPair)
-        {
             return await _jwtSignatureValidator.ValidateAsync(token, new()
             {
-                ValidateIssuer = false,
-                ValidateAudience = false,
                 ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
 
-                IssuerSigningKey = _securityKeyProvider.Create(keyPair),
-            });
+                ValidateIssuer = true,
+                ValidIssuer = _tokenOptions.Issuer,
+
+                ValidateAudience = true,
+                ValidAudience = _tokenOptions.Audience,
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = securityKey,
+
+            }, cancellation) ;
         }
     }
 }

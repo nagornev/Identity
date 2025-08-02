@@ -1,21 +1,21 @@
 ﻿namespace Auth.Application.DTOs
 {
-    public class RefreshToken
+    public class RefreshTokenPayload
     {
-        public RefreshToken(Guid id,
-                            Guid userId,
-                            Guid sessionId,
-                            Guid version,
-                            string publicKey)
+        public RefreshTokenPayload(Guid kid,
+                                   Guid userId,
+                                   Guid sessionId,
+                                   Guid version,
+                                   string publicKey)
         {
-            Id = id;
+            Kid = kid;
             UserId = userId;
             SessionId = sessionId;
             Version = version;
             PublicKey = publicKey;
         }
 
-        public Guid Id { get; }
+        public Guid Kid { get; }
 
         public Guid UserId { get; }
 

@@ -19,11 +19,13 @@ namespace Auth.Application.Factories
             _options = options.Value;
         }
 
-        public Session Create(Guid userId, Guid kid, string device, string ipAddress)
+        public Session Create(Guid userId, Guid kid, string audience, string device, string ipAddress)
         {
             long createdAt = _timeProvider.NowUnix();
 
             return Session.Create(userId,
+                                  kid,
+                                  audience,
                                   device,
                                   ipAddress,
                                   createdAt,

@@ -12,14 +12,14 @@ namespace Auth.Application.Services
     {
         private readonly IEmailTokenValidator _emailTokenValidator;
 
-        private readonly IEmailTokenMapper _emailTokenMapper;
+        private readonly IEmailTokenPayloadMapper _emailTokenMapper;
 
         private readonly IUserQueryService _userQueryService;
 
         private readonly IUnitOfWork _unitOfWork;
 
         public EmailAddressUpdateService(IEmailTokenValidator emailTokenValidator,
-                                         IEmailTokenMapper emailTokenMapper,
+                                         IEmailTokenPayloadMapper emailTokenMapper,
                                          IUserQueryService userQueryService,
                                          IUnitOfWork unitOfWork)
         {
@@ -34,7 +34,7 @@ namespace Auth.Application.Services
             if (!await _emailTokenValidator.ValidateAsync(emailToken, cancellation))
                 throw new EmailTokenInvalidApplicationException(emailToken);
 
-            EmailToken token = await _emailTokenMapper.MapAsync(emailToken, cancellation);
+            EmailTokenPayload token = await _emailTokenMapper.MapAsync(emailToken, cancellation);
 
             User user = await _userQueryService.GetUserByIdAsync(token.UserId, cancellation);
             user.UpdateEmailAddress();

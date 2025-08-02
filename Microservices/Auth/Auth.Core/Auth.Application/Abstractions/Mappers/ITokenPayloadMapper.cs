@@ -1,6 +1,6 @@
 ﻿namespace Auth.Application.Abstractions.Mappers
 {
-    public interface ITokenMapper<T>
+    public interface ITokenPayloadMapper<T>
     {
         Task<T> MapAsync(string token, CancellationToken cancellation = default);
     }

@@ -12,6 +12,7 @@ using Auth.Application.Options;
 using Auth.Domain.Aggregates;
 using DDD.Repositories;
 using Microsoft.Extensions.Options;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Auth.Application.Services
 {
@@ -23,15 +24,17 @@ namespace Auth.Application.Services
 
         private readonly IRefreshTokenValidator _refreshTokenValidator;
 
-        private readonly IRefreshTokenMapper _refreshTokenMapper;
+        private readonly IRefreshTokenPayloadMapper _refreshTokenMapper;
 
         private readonly ISessionQueryService _sessionQueryService;
 
         private readonly IUserQueryService _userQueryService;
-
+        private readonly IUserScopesService _userScopesService;
         private readonly ITimeProvider _timeProvider;
 
-        private readonly IAuthTokensProvider _authProvider;
+        private readonly IAccessTokenProvider _accessTokenProvider;
+
+        private readonly IRefreshTokenProvider _refreshTokenProvider;
 
         private readonly IKeyStorageReader _accessKeysStorage;
 
@@ -44,11 +47,13 @@ namespace Auth.Application.Services
         public RefreshService(IWindowValidator windowValidator,
                               IFingerprintValidator fingerprintValidator,
                               IRefreshTokenValidator refreshTokenValidator,
-                              IRefreshTokenMapper refreshTokenMapper,
+                              IRefreshTokenPayloadMapper refreshTokenMapper,
                               ISessionQueryService sessionQueryService,
                               IUserQueryService userQueryService,
+                              IUserScopesService userScopesService,
+                              IAccessTokenProvider accessTokenProvider,
+                              IRefreshTokenProvider refreshTokenProvider,
                               ITimeProvider timeProvider,
-                              IAuthTokensProvider authProvider,
                               IAccessKeyStorage accessKeysStorage,
                               IRefreshKeyStorage refreshKeysStorage,
                               IOptions<RefreshOptions> options,
@@ -60,15 +65,17 @@ namespace Auth.Application.Services
             _refreshTokenMapper = refreshTokenMapper;
             _sessionQueryService = sessionQueryService;
             _userQueryService = userQueryService;
+            _userScopesService = userScopesService;
             _timeProvider = timeProvider;
-            _authProvider = authProvider;
+            _accessTokenProvider = accessTokenProvider;
+            _refreshTokenProvider = refreshTokenProvider;
             _accessKeysStorage = accessKeysStorage;
             _refreshKeysStorage = refreshKeysStorage;
             _options = options.Value;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<AuthTokens> RefreshAsync(string refreshToken, string newPublicKey, long timestamp, string signature, string device, string ipAddress, CancellationToken cancellation = default)
+        public async Task<TokenPair> RefreshAsync(string refreshToken, string newPublicKey, long timestamp, string signature, string device, string ipAddress, CancellationToken cancellation = default)
         {
             if (_windowValidator.Validate(timestamp, _timeProvider.NowUnix(), _options.Window))
                 throw new WindowInvalidApplicationException();
@@ -76,26 +83,29 @@ namespace Auth.Application.Services
             if (!await _fingerprintValidator.ValidateAsync(refreshToken, newPublicKey, timestamp, signature, cancellation))
                 throw new FingerprintInvalidApplicationException();
 
-            if (!await _refreshTokenValidator.ValidateAsync(refreshToken, cancellation))
-                throw new RefreshTokenInvalidApplicationException();
-
-            RefreshToken token = await _refreshTokenMapper.MapAsync(refreshToken);
-            Session session = await _sessionQueryService.GetSessionByIdAsync(token.SessionId, cancellation);
-
-            if (token.Version != session.Version)
-                throw new VersionInvalidApplicationException();
-
-            User user = await _userQueryService.GetUserByIdAsync(token.UserId, cancellation);
-
             KeyPair accessKeyPair = await _accessKeysStorage.GetPrimaryAsync(cancellation);
             KeyPair refreshKeyPair = await _refreshKeysStorage.GetPrimaryAsync(cancellation);
+
+            if (!await _refreshTokenValidator.ValidateAsync(refreshToken, refreshKeyPair, cancellation))
+                throw new RefreshTokenInvalidApplicationException();
+
+            RefreshTokenPayload refreshTokenPayload = await _refreshTokenMapper.MapAsync(refreshToken);
+            Session session = await _sessionQueryService.GetSessionByIdAsync(refreshTokenPayload.SessionId, cancellation);
+
+            if (refreshTokenPayload.Version != session.Version)
+                throw new VersionInvalidApplicationException();
+
+            User user = await _userQueryService.GetUserByIdAsync(refreshTokenPayload.UserId, cancellation);
 
             session.ChangeKidIfNeed(refreshKeyPair.Kid);
             session.UpdateSession(device, ipAddress, _timeProvider.NowUnix());
 
+            IReadOnlyCollection<Scope> scopes = await _userScopesService.GetUserScopesAsync(user, session.Audience);
+
             await _unitOfWork.SaveAsync(cancellation);
 
-            return _authProvider.Create(accessKeyPair, refreshKeyPair, user, session, newPublicKey);
+            return new TokenPair(_accessTokenProvider.Create(new AccessTokenCreationParameters(user, session, scopes), accessKeyPair),
+                                 _refreshTokenProvider.Create(new RefreshTokenCreationParameters(user, session, newPublicKey), refreshKeyPair));
         }
     }
 }

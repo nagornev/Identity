@@ -1,7 +1,15 @@
-﻿namespace Auth.Application.Abstractions.Services
+﻿using Auth.Application.DTOs;
+
+namespace Auth.Application.Abstractions.Services
 {
     public interface ISignInConfirmService
     {
-        Task<DTOs.AuthTokens> ConfirmAsync(string otpToken, string otp, string publicKey, string device, string ipAddress, CancellationToken cancellation = default);
+        Task<TokenPair> ConfirmAsync(string otpToken,
+                                     string otp,
+                                     string audience,
+                                     string publicKey,
+                                     string device,
+                                     string ipAddress,
+                                     CancellationToken cancellation = default);
     }
 }

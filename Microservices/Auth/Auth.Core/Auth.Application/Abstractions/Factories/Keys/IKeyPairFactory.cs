@@ -2,7 +2,7 @@
 
 namespace Auth.Application.Abstractions.Factories.Keys
 {
-    public interface IKeyFactory
+    public interface IKeyPairFactory
     {
         KeyPair Create();
     }

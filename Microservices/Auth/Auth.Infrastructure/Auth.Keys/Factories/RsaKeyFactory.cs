@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Auth.Keys.Factories
 {
-    public abstract class RsaKeyFactory<TKeyOptionsType> : IKeyFactory
+    public abstract class RsaKeyFactory<TKeyOptionsType> : IKeyPairFactory
         where TKeyOptionsType : KeyOptions
     {
         private readonly TKeyOptionsType _options;

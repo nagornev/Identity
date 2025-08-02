@@ -6,12 +6,11 @@ namespace Auth.Application.Abstractions.Providers.Tokens
     public interface IAccessTokenProvider
     {
         /// <summary>
-        /// Creates access token for <paramref name="user"/>.
+        /// Creates access token.
         /// </summary>
-        /// <param name="accessKeyPair"></param>
-        /// <param name="user"></param>
-        /// <param name="session"></param>
+        /// <param name="parameters"></param>
+        /// <param name="keyPair"></param>
         /// <returns></returns>
-        string Create(KeyPair accessKeyPair, User user, Session session);
+        string Create(AccessTokenCreationParameters parameters, KeyPair keyPair);
     }
 }
