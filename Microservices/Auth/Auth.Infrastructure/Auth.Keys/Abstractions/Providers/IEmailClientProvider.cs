@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Auth.Keys.Options
+namespace Auth.Keys.Abstractions.Providers
 {
-    public abstract class KeyStorageOptions
+    public interface IEmailClientProvider : IVaultStorageClientProvider
     {
     }
 }

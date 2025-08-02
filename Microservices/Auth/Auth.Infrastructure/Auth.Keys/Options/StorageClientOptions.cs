@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Auth.Keys.Options
 {
-    public abstract class KeyStorageOptions
+    public abstract class StorageClientOptions
     {
     }
 }

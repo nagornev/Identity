@@ -1,53 +1,34 @@
 ﻿using Auth.Application.Abstractions.Storages;
 using Auth.Application.DTOs;
-using Auth.Application.Options;
+using Auth.Keys.Abstractions.Providers;
+using Auth.Keys.Options;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VaultSharp;
 
 namespace Auth.Keys.Storages
 {
-    public class KeyStorage<TKeyStorageOptionsType> : IKeyStorage
-        where TKeyStorageOptionsType : KeyStorageOptions
+    public abstract class KeyStorage<TKeyStorageOptions> : IKeyStorage
+        where TKeyStorageOptions : KeyStorageOptions
     {
-        private readonly IVaultClient _vaultClient;
+        protected TKeyStorageOptions KeyStorageOptions { get; }
 
-        private readonly TKeyStorageOptionsType _keyStorageOptions;
-
-        public KeyStorage(IVaultClient vaultClient,
-                          IOptions<TKeyStorageOptionsType> keyStorageOptions)
+        public KeyStorage(IOptions<TKeyStorageOptions> keyStorageOptions)
         {
-            _vaultClient = vaultClient;
-            _keyStorageOptions = keyStorageOptions.Value;
+            KeyStorageOptions = keyStorageOptions.Value;
         }
 
-        public Task AddKeyPairAsync(KeyPair keyPair, CancellationToken cancellation = default)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract Task SetPrimaryAsync(KeyPair keyPair, CancellationToken cancellation = default);
 
-        public Task DeleteKeyPairAsync(Guid kid, CancellationToken cancellation = default)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract Task DeleteKeyPairAsync(Guid kid, CancellationToken cancellation = default);
 
-        public Task<KeyPair> GetKeyPairAsync(Guid kid, CancellationToken cancellation = default)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract Task<KeyPair> GetKeyPairAsync(Guid kid, CancellationToken cancellation = default);
 
-        public Task<IReadOnlyCollection<KeyPair>> GetKeyPairsAsync(CancellationToken cancellation = default)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract Task<IReadOnlyCollection<KeyPair>> GetKeyPairsAsync(CancellationToken cancellation = default);
 
-        public Task<KeyPair> GetPrimaryAsync(CancellationToken cancellation = default)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract Task<KeyPair> GetPrimaryAsync(CancellationToken cancellation = default);
     }
 }

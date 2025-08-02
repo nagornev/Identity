@@ -46,7 +46,7 @@ namespace Auth.Backgrounds.Processors
                     await _keysStorage.DeleteKeyPairAsync(expiredKeyPair.Kid, cancellation);
 
                 KeyPair key = _keysFactory.Create();
-                await _keysStorage.AddKeyPairAsync(key, cancellation);
+                await _keysStorage.SetPrimaryAsync(key, cancellation);
             }
         }
 

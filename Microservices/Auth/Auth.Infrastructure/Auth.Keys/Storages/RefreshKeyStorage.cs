@@ -1,12 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Auth.Application.Abstractions.Storages;
+using Auth.Keys.Abstractions.Providers;
+using Auth.Keys.Options;
+using Microsoft.Extensions.Options;
+using VaultSharp;
 
 namespace Auth.Keys.Storages
 {
-    internal class RefreshKeyStorage
+    public class RefreshKeyStorage : VaultKeyStorage<IRefreshClientProvider, RefreshKeyStorageOptions>, IRefreshKeyStorage
     {
+        public RefreshKeyStorage(IRefreshClientProvider vaultStorageClientProvider,
+                                 IOptions<RefreshKeyStorageOptions> keyStorageOptions)
+            : base(vaultStorageClientProvider, keyStorageOptions)
+        {
+        }
     }
 }

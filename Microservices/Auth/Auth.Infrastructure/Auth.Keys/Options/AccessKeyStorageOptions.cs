@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace Auth.Keys.Options
 {
-    public class AccessKeyStorageOptions : KeyStorageOptions
+    public class AccessKeyStorageOptions : VaultKeyStorageOptions
     {
-        public AccessKeyStorageOptions(string token, string address, string basePath) : base(token, address, basePath)
+        public AccessKeyStorageOptions(string primaryKey,
+                                       string basePath) 
+            : base(primaryKey, basePath)
         {
         }
     }
