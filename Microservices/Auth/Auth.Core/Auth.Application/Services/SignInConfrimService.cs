@@ -54,18 +54,18 @@ namespace Auth.Application.Services
         {
             User user = await _otpAuthenticationService.AuthenticateAsync(otpToken, otp, OtpTags.SignIn, cancellation);
 
-            KeyPair accessKeyPair = await _accessKeysStorage.GetPrimaryAsync(cancellation);
-            KeyPair refreshKeyPair = await _refreshKeysStorage.GetPrimaryAsync(cancellation);
+            KeyPair accessPrimaryKey = await _accessKeysStorage.GetPrimaryAsync(cancellation);
+            KeyPair refreshPrimaryKey = await _refreshKeysStorage.GetPrimaryAsync(cancellation);
 
-            Session session = _sessionFactory.Create(user.Id, refreshKeyPair.Kid, audience, device, ipAddress);
+            Session session = _sessionFactory.Create(user.Id, refreshPrimaryKey.Kid, audience, device, ipAddress);
             await _sessionRepository.AddAsync(session, cancellation);
 
             IReadOnlyCollection<Scope> scopes = await _userScopesService.GetUserScopesAsync(user, session.Audience);
 
             await _unitOfWork.SaveAsync(cancellation);
 
-            return new TokenPair(_accessTokenProvider.Create(new AccessTokenCreationParameters(user, session, scopes), accessKeyPair),
-                                 _refreshTokenProvider.Create(new RefreshTokenCreationParameters(user, session, publicKey), refreshKeyPair));
+            return new TokenPair(_accessTokenProvider.Create(new AccessTokenCreationParameters(user, session, scopes), accessPrimaryKey),
+                                 _refreshTokenProvider.Create(new RefreshTokenCreationParameters(user, session, publicKey), refreshPrimaryKey));
         }
     }
 }

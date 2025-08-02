@@ -1,6 +1,8 @@
 ﻿using Auth.Application.Abstractions.Providers;
 using Auth.Application.Abstractions.Services;
+using Auth.Application.Options;
 using Auth.Domain.Aggregates;
+using Microsoft.Extensions.Options;
 
 namespace Auth.Application.Services
 {
@@ -10,11 +12,15 @@ namespace Auth.Application.Services
 
         private readonly ITimeProvider _timeProvider;
 
+        private readonly ApplicationOptions _applicationOptions;
+
         public UserInitializeService(IRoleQueryService roleQueryService,
-                                     ITimeProvider timeProvider)
+                                     ITimeProvider timeProvider,
+                                     IOptions<ApplicationOptions> applicationOptions)
         {
             _roleQueryService = roleQueryService;
             _timeProvider = timeProvider;
+            _applicationOptions = applicationOptions.Value;
         }
         public async Task Initialize(User user, CancellationToken cancellation)
         {
@@ -26,7 +32,7 @@ namespace Auth.Application.Services
 
         private async Task<Role> GetBasicRole(CancellationToken cancellation = default)
         {
-            return await _roleQueryService.GetRoleByNameAsync("Basic", cancellation);
+            return await _roleQueryService.GetRoleByNameAsync(_applicationOptions.BasicRoleName, cancellation);
         }
     }
 }

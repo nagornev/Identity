@@ -1,7 +1,9 @@
-﻿namespace Auth.Application.Abstractions.Validators
+﻿using Auth.Application.DTOs;
+
+namespace Auth.Application.Abstractions.Validators
 {
     public interface IFingerprintValidator
     {
-        Task<bool> ValidateAsync(string refreshToken, string newPublicKey, long timestamp, string signature, CancellationToken cancellation = default);
+        Task<bool> ValidateAsync(FingerprintValidationParameters parameters, string publicKey, CancellationToken cancellation = default);
     }
 }

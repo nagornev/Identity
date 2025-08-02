@@ -76,7 +76,7 @@ namespace Auth.Domain.Aggregates
         public bool IsActive { get; private set; }
 
         /// <summary>
-        /// Changes user`s password hash.
+        /// Changes user`s pending password hash.
         /// </summary>
         /// <param name="passwordHash"></param>
         /// <exception cref="PasswordHashNullDomainException"></exception>
@@ -93,7 +93,7 @@ namespace Auth.Domain.Aggregates
         }
 
         /// <summary>
-        /// Confirms user`s password hash.
+        /// Confirms user`s pending password hash and sets new password hash.
         /// </summary>
         /// <exception cref="PasswordHashNullDomainException"></exception>
         public void ConfirmPassword()
