@@ -9,22 +9,21 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Auth.Tokens.Validators
 {
-    public abstract class JwtTokenValidator<TTokenOptions>: ITokenValidator
-        where TTokenOptions : TokenOptions
+    public abstract class JwtTokenValidator: ITokenValidator
     {
         private readonly ISecurityKeyProvider _securityKeyProvider;
 
         private readonly IJwtSignatureValidator _jwtSignatureValidator;
 
-        private readonly TTokenOptions _tokenOptions;
+        private readonly ApplicationOptions _applicationOptions;
 
         public JwtTokenValidator(ISecurityKeyProvider securityKeyProvider,
                                  IJwtSignatureValidator jwtValidator,
-                                 IOptions<TTokenOptions> tokenOptions)
+                                 IOptions<ApplicationOptions> applicationOptions)
         {
             _securityKeyProvider = securityKeyProvider;
             _jwtSignatureValidator = jwtValidator;
-            _tokenOptions = tokenOptions.Value;
+            _applicationOptions = applicationOptions.Value;
         }
 
         public async Task<bool> ValidateAsync(string token, KeyPair keyPair, CancellationToken cancellation = default)
@@ -36,10 +35,10 @@ namespace Auth.Tokens.Validators
                 ValidateLifetime = true,
 
                 ValidateIssuer = true,
-                ValidIssuer = _tokenOptions.Issuer,
+                ValidIssuer = _applicationOptions.Issuer,
 
                 ValidateAudience = true,
-                ValidAudience = _tokenOptions.Audience,
+                ValidAudience = _applicationOptions.Issuer,
 
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = securityKey,

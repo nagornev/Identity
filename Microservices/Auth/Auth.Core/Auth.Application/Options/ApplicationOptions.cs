@@ -9,10 +9,13 @@ namespace Auth.Application.Options
 {
     public class ApplicationOptions
     {
-        public ApplicationOptions(string basicRoleName)
+        public ApplicationOptions(string issuer, string basicRoleName)
         {
+            Issuer = issuer;
             BasicRoleName = basicRoleName;
         }
+
+        public string Issuer { get; }
 
         public string BasicRoleName { get; }
     }

@@ -1,18 +1,19 @@
 ﻿using Auth.Application.Abstractions.Storages;
 using Auth.Application.Abstractions.Validators.Tokens;
+using Auth.Application.Options;
 using Auth.Keys.Abstractions.Providers;
 using Auth.Tokens.Abstractions.Providers;
 using Auth.Tokens.Abstractions.Validators;
+using Microsoft.Extensions.Options;
 
 namespace Auth.Tokens.Validators
 {
-    public class RefreshTokenValidator : JwtTokenValidator<IRefreshKeyStorage>, IRefreshTokenValidator
+    public class RefreshTokenValidator : JwtTokenValidator, IRefreshTokenValidator
     {
-        public RefreshTokenValidator(IJwtClaimsProvider jwtParser,
+        public RefreshTokenValidator(ISecurityKeyProvider securityKeyProvider,
                                      IJwtSignatureValidator jwtValidator,
-                                     IRefreshKeyStorage keyStorage,
-                                     ISecurityKeyProvider securityKeyProvider)
-            : base(jwtParser, jwtValidator, keyStorage, securityKeyProvider)
+                                     IOptions<ApplicationOptions> applicationOptions)
+            : base(securityKeyProvider, jwtValidator, applicationOptions)
         {
         }
     }

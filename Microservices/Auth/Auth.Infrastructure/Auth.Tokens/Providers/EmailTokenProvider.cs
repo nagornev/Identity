@@ -17,16 +17,20 @@ namespace Auth.Tokens.Providers
 
         private readonly ITimeProvider _timeProvider;
 
+        private readonly ApplicationOptions _applicationOptions;
+
         private readonly EmailTokenOptions _tokenOptions;
 
         private readonly JwtSecurityTokenHandler _handler;
 
         public EmailTokenProvider(ISecurityKeyProvider securityKeyProvider,
                                   ITimeProvider timeProvider,
+                                  IOptions<ApplicationOptions> applicationOptions,
                                   IOptions<EmailTokenOptions> tokenOptions)
         {
             _securityKeyProvider = securityKeyProvider;
             _timeProvider = timeProvider;
+            _applicationOptions = applicationOptions.Value;
             _tokenOptions = tokenOptions.Value;
 
             _handler = new JwtSecurityTokenHandler();
@@ -64,8 +68,8 @@ namespace Auth.Tokens.Providers
 
         private JwtSecurityToken CreateToken(Claim[] claims, SigningCredentials credentials)
         {
-            return new JwtSecurityToken(issuer: _tokenOptions.Issuer,
-                                        audience: _tokenOptions.Audience,
+            return new JwtSecurityToken(issuer: _applicationOptions.Issuer,
+                                        audience: _applicationOptions.Issuer,
                                         claims: claims,
                                         signingCredentials: credentials,
                                         expires: _timeProvider.NowDateTime()

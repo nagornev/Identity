@@ -20,7 +20,7 @@ namespace Auth.Tokens.Mappers
             JwtPayload payload = _jwtClaimsProvider.GetPayload(token);
 
             EmailTokenPayload emailToken = new EmailTokenPayload(kid,
-                                                   Guid.Parse(payload.Sub));
+                                                                 Guid.Parse(payload.Sub));
 
             return Task.FromResult(emailToken);
         }

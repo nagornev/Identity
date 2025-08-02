@@ -14,9 +14,9 @@ namespace Auth.Tokens.Providers
 
         public JwtPayload GetPayload(string token)
         {
-            JwtSecurityToken jwtSecurityToken = GetJwt(token);
+            JwtSecurityToken jwt = GetJwt(token);
 
-            return jwtSecurityToken.Payload;
+            return jwt.Payload;
         }
 
         private JwtSecurityToken GetJwt(string token)
