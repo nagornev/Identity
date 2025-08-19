@@ -14,7 +14,7 @@ namespace Auth.Application.Features.SignUp.Handlers
 
         public override async Task HandleAsync(ConfirmUserSignUpCommand request, CancellationToken cancellation)
         {
-            await _signUpConfirmService.ConfirmAsync(request.EmailToken, cancellation);
+            await _signUpConfirmService.ConfirmAsync(request.ChannelToken, cancellation);
         }
     }
 }

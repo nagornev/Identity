@@ -1,9 +1,8 @@
-﻿using Auth.Application.Abstractions.Mappers;
+﻿using Auth.Application.Abstractions.Providers;
 using Auth.Application.Abstractions.Services;
 using Auth.Application.Abstractions.Storages;
-using Auth.Application.Abstractions.Validators.Tokens;
+using Auth.Application.Consts;
 using Auth.Application.DTOs;
-using Auth.Application.Exceptions.Applications.Security;
 using Auth.Domain.Aggregates;
 using DDD.Repositories;
 
@@ -11,39 +10,38 @@ namespace Auth.Application.Services
 {
     public class SignUpConfirmService : ISignUpConfirmService
     {
-        private readonly IEmailTokenPayloadMapper _emailTokenMapper;
+        private readonly ITokenKidProvider _tokenKidProvider;
 
-        private readonly IEmailKeyStorage _emailKeyStorage;
+        private readonly IChannelKeyStorage _channelKeyStorage;
 
-        private readonly IEmailTokenValidator _emailTokenValidator;
+        private readonly IChannelTokenValidationService _channelTokenValidationService;
 
         private readonly IUserQueryService _userQueryService;
 
         private readonly IUnitOfWork _unitOfWork;
 
-                                   
-        public SignUpConfirmService(IEmailTokenPayloadMapper emailTokenMapper,
-                                    IEmailKeyStorage emailKeyStorage,
-                                    IEmailTokenValidator emailTokenValidator,
+
+        public SignUpConfirmService(ITokenKidProvider tokenKidProvider,
+                                    IChannelKeyStorage channelKeyStorage,
+                                    IChannelTokenValidationService channelTokenValidationService,
                                     IUserQueryService userQueryService,
                                     IUnitOfWork unitOfWork)
         {
-            _emailTokenValidator = emailTokenValidator;
-            _emailTokenMapper = emailTokenMapper;
-            _emailKeyStorage = emailKeyStorage;
+            _tokenKidProvider = tokenKidProvider;
+            _channelKeyStorage = channelKeyStorage;
+            _channelTokenValidationService = channelTokenValidationService;
             _userQueryService = userQueryService;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task ConfirmAsync(string emailToken, CancellationToken cancellation = default)
+        public async Task ConfirmAsync(string channelToken, CancellationToken cancellation = default)
         {
-            EmailTokenPayload emailTokenPayload = await _emailTokenMapper.MapAsync(emailToken, cancellation);
-            KeyPair emailValidationKey = await _emailKeyStorage.GetKeyPairAsync(emailTokenPayload.Kid, cancellation);
+            Guid channelTokenKid = _tokenKidProvider.Get(channelToken);
+            KeyPair channelValidationKey = await _channelKeyStorage.GetKeyPairAsync(channelTokenKid, cancellation);
 
-            if (!await _emailTokenValidator.ValidateAsync(emailToken, emailValidationKey, cancellation))
-                throw new EmailTokenInvalidApplicationException(emailToken);
+            ChannelTokenPayload channelTokenPayload = _channelTokenValidationService.Validate(channelToken, channelValidationKey, ChannelTags.Email);
 
-            User user = await _userQueryService.GetUserByIdAsync(emailTokenPayload.UserId, cancellation);
+            User user = await _userQueryService.GetUserByIdAsync(channelTokenPayload.UserId, cancellation);
             user.Activate();
 
             await _unitOfWork.SaveAsync(cancellation);

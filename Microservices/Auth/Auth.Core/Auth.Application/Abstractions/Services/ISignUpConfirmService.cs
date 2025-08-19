@@ -2,6 +2,6 @@
 {
     public interface ISignUpConfirmService
     {
-        Task ConfirmAsync(string emailToken, CancellationToken cancellation = default);
+        Task ConfirmAsync(string channelToken, CancellationToken cancellation = default);
     }
 }

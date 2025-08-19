@@ -1,6 +1,4 @@
-﻿using Auth.Application.Exceptions.Infrastructures.Persistences;
-
-namespace Auth.Application.Exceptions
+﻿namespace Auth.Application.Exceptions
 {
     public static class ApplicationErrorTypes
     {

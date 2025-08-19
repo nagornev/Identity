@@ -4,7 +4,7 @@ namespace Auth.Application.Abstractions.Services
 {
     public interface ISessionQueryService
     {
-        IAsyncEnumerable<Session> GetSessionAsyncStreamByUserId(Guid userId);
+        IAsyncEnumerable<Session> FindSessionsByUserIdAsyncStream(Guid userId);
 
         Task<Session> GetSessionByIdAsync(Guid sessionId, CancellationToken cancellation = default);
     }

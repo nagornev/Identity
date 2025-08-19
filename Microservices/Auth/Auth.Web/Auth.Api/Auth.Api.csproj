@@ -25,9 +25,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Auth.Core\Auth.Application\Auth.Application.csproj" />
-    <ProjectReference Include="..\..\Auth.Infrastructure\Auth.Outbox\Auth.Backgrounds.csproj" />
+    <ProjectReference Include="..\..\Auth.Infrastructure\Auth.Backgrounds\Auth.Backgrounds.csproj" />
     <ProjectReference Include="..\..\Auth.Infrastructure\Auth.Persistence\Auth.Persistence.csproj" />
-    <ProjectReference Include="..\..\Auth.Infrastructure\Auth.Tokens\Auth.Tokens.csproj" />
+    <ProjectReference Include="..\..\Auth.Infrastructure\Auth.Tokens\Auth.Security.csproj" />
   </ItemGroup>
 
 </Project>

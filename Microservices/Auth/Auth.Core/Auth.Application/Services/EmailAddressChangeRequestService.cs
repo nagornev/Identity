@@ -34,7 +34,7 @@ namespace Auth.Application.Services
 
             await _unitOfWork.SaveAsync(cancellation);
 
-            return await _otpClient.CreateAsync(user.Id, OtpTags.ChangeEmailAddress, cancellation);
+            return await _otpClient.CreateAsync(user.Id, OtpTags.ChangeEmailAddress, cancellation: cancellation);
         }
     }
 }

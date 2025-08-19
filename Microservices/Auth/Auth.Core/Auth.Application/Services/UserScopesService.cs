@@ -2,7 +2,6 @@
 using Auth.Application.Abstractions.Services;
 using Auth.Application.Exceptions.Applications.Scopes;
 using Auth.Domain.Aggregates;
-using Auth.Domain.Entities;
 using Auth.Domain.ValueObjects;
 using System.Data;
 
@@ -27,8 +26,8 @@ namespace Auth.Application.Services
 
         public async Task<IReadOnlyCollection<Scope>> GetUserScopesAsync(User user, Audience audience, CancellationToken cancellation = default)
         {
-            IReadOnlyCollection<Role> roles = await _roleQueryService.GetRolesByIdsAsync(user.Authorization.RolePermissions.Where(x=>x.IsValid())
-                                                                                                                           .Select(x=>x.RoleId)
+            IReadOnlyCollection<Role> roles = await _roleQueryService.GetRolesByIdsAsync(user.Authorization.RolePermissions.Where(x => x.IsValid())
+                                                                                                                           .Select(x => x.RoleId)
                                                                                                                            .ToArray(),
                                                                                          cancellation);
 
@@ -36,16 +35,16 @@ namespace Auth.Application.Services
                                                                                                   .Select(e => e.ScopeId))
                                                                                                   .Distinct()
                                                                                                   .Union(user.Authorization.ScopePermissions
-                                                                                                                           .Where(x=>x.IsValidAt(_timeProvider.NowUnix()))
-                                                                                                                           .Select(x=>x.Id))
-                                                                                                  .ToArray(), 
+                                                                                                                           .Where(x => x.IsValidAt(_timeProvider.NowUnix()))
+                                                                                                                           .Select(x => x.Id))
+                                                                                                  .ToArray(),
                                                                                              cancellation);
 
             IReadOnlyCollection<Scope> audienceUserScopes = scopes.Where(x => x.Audience == audience)
                                                                   .ToArray();
 
-            return audienceUserScopes.Count > 0?
-                   audienceUserScopes:
+            return audienceUserScopes.Count > 0 ?
+                   audienceUserScopes :
                    throw new ScopesNotFoundApplicationException(audience.Value);
         }
     }

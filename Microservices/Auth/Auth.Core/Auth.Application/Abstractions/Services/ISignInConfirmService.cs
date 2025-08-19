@@ -6,10 +6,9 @@ namespace Auth.Application.Abstractions.Services
     {
         Task<TokenPair> ConfirmAsync(string otpToken,
                                      string otp,
-                                     string audience,
-                                     string publicKey,
-                                     string device,
-                                     string ipAddress,
+                                     string newPublicKey,
+                                     long timestamp,
+                                     string signature,
                                      CancellationToken cancellation = default);
     }
 }

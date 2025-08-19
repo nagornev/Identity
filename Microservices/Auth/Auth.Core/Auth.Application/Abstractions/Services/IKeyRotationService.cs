@@ -1,9 +1,7 @@
-﻿using Auth.Application.Abstractions.Storages;
-
-namespace Auth.Application.Abstractions.Services
+﻿namespace Auth.Application.Abstractions.Services
 {
     public interface IKeyRotationService
     {
-        Task<int> RotateAsync(CancellationToken cancellation = default);
+        Task<TimeSpan> RotateAsync(CancellationToken cancellation = default);
     }
 }

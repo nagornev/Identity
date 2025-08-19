@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Api", "Microservices\A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Backgrounds", "Microservices\Auth\Auth.Infrastructure\Auth.Backgrounds\Auth.Backgrounds.csproj", "{0424E9D5-F52B-43E5-98DE-F0D0B45FE794}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Tokens", "Microservices\Auth\Auth.Infrastructure\Auth.Tokens\Auth.Tokens.csproj", "{4274F59E-D622-4FE9-8F5D-32C443F0EAB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Security", "Microservices\Auth\Auth.Infrastructure\Auth.Tokens\Auth.Security.csproj", "{4274F59E-D622-4FE9-8F5D-32C443F0EAB9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Otp", "Otp", "{0E713ED2-4B69-4401-B179-E66024843D10}"
 EndProject
@@ -37,7 +37,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otp.Domain", "Microservices
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otp.Application", "Microservices\Otp\Otp.Core\Otp.Application\Otp.Application.csproj", "{70C7BAFE-B76F-4B07-BABF-EC57C562D74E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Keys", "Microservices\Auth\Auth.Infrastructure\Auth.Keys\Auth.Keys.csproj", "{E61F042B-CD91-4F5D-8552-55476225050D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageContracts", "MessageContracts\MessageContracts.csproj", "{4C1808A8-88A1-4DB6-9B28-67348DAF6361}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth.Messaging", "Microservices\Auth\Auth.Infrastructure\Auth.MessageBus\Auth.Messaging.csproj", "{2068567C-C1DF-494F-BE67-BD4CDDD8C49D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,10 +87,14 @@ Global
 		{70C7BAFE-B76F-4B07-BABF-EC57C562D74E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70C7BAFE-B76F-4B07-BABF-EC57C562D74E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70C7BAFE-B76F-4B07-BABF-EC57C562D74E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E61F042B-CD91-4F5D-8552-55476225050D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E61F042B-CD91-4F5D-8552-55476225050D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E61F042B-CD91-4F5D-8552-55476225050D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E61F042B-CD91-4F5D-8552-55476225050D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C1808A8-88A1-4DB6-9B28-67348DAF6361}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C1808A8-88A1-4DB6-9B28-67348DAF6361}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C1808A8-88A1-4DB6-9B28-67348DAF6361}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C1808A8-88A1-4DB6-9B28-67348DAF6361}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2068567C-C1DF-494F-BE67-BD4CDDD8C49D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2068567C-C1DF-494F-BE67-BD4CDDD8C49D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2068567C-C1DF-494F-BE67-BD4CDDD8C49D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2068567C-C1DF-494F-BE67-BD4CDDD8C49D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -108,7 +114,7 @@ Global
 		{7693A23B-3CE3-4FCE-A5FC-89B95645ED07} = {0E713ED2-4B69-4401-B179-E66024843D10}
 		{57757BD3-CCCF-56E3-51A4-537C03BDA4D4} = {7693A23B-3CE3-4FCE-A5FC-89B95645ED07}
 		{70C7BAFE-B76F-4B07-BABF-EC57C562D74E} = {7693A23B-3CE3-4FCE-A5FC-89B95645ED07}
-		{E61F042B-CD91-4F5D-8552-55476225050D} = {F9CABC1F-0E46-469B-BD18-8488473A1071}
+		{2068567C-C1DF-494F-BE67-BD4CDDD8C49D} = {F9CABC1F-0E46-469B-BD18-8488473A1071}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9A2248D4-C310-4B42-9DD7-B8039C38C2B9}

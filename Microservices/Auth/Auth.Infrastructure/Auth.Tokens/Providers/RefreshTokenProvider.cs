@@ -3,17 +3,14 @@ using Auth.Application.Abstractions.Providers.Tokens;
 using Auth.Application.DTOs;
 using Auth.Application.Options;
 using Auth.Domain.Aggregates;
-using Auth.Keys.Abstractions.Providers;
-using Auth.Tokens.Consts;
+using Auth.Security.Abstractions.Providers;
+using Auth.Security.Consts;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 
-namespace Auth.Tokens.Providers
+namespace Auth.Security.Providers
 {
     public class RefreshTokenProvider : IRefreshTokenProvider
     {
@@ -44,21 +41,20 @@ namespace Auth.Tokens.Providers
         {
             SecurityKey securityKey = _securityKeyProvider.Create(keyPair);
 
-            Claim[] claims = CreateClaims(parameters.User, parameters.Session, parameters.PublicKey);
+            Claim[] claims = CreateClaims(parameters.User, parameters.Session);
             SigningCredentials credentials = CreateCredentials(securityKey, keyPair.Algorithm);
             JwtSecurityToken token = CreateToken(claims, credentials);
 
             return _handler.WriteToken(token);
         }
 
-        private Claim[] CreateClaims(User user, Session session, string publicKey)
+        private Claim[] CreateClaims(User user, Session session)
         {
             return
             [
                 GetSubjectClaim(user),
                 GetSessionClaim(session),
                 GetJtiClaim(session),
-                GetPublicKeyClaim(publicKey)
             ];
         }
 
@@ -77,11 +73,6 @@ namespace Auth.Tokens.Providers
             return new Claim(JwtRegisteredClaimNames.Jti, session.Version.ToString());
         }
 
-        private Claim GetPublicKeyClaim(string publicKey)
-        {
-            return new Claim(ClaimNames.PublicKey, publicKey);
-        }
-
         private SigningCredentials CreateCredentials(SecurityKey securityKey, string algorithm)
         {
             return new SigningCredentials(securityKey, algorithm);
@@ -97,6 +88,6 @@ namespace Auth.Tokens.Providers
                                                               .AddSeconds(_tokenOptions.Lifetime));
         }
 
-        
+
     }
 }

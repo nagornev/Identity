@@ -14,7 +14,7 @@ namespace Auth.Application.Features.SignIn.Handlers
 
         public override async Task<string> HandleAsync(RequestUserSignInQuery request, CancellationToken cancellation)
         {
-            return await _signInRequestService.RequestAsync(request.EmailAddress, request.Password, cancellation);
+            return await _signInRequestService.RequestAsync(request.EmailAddress, request.Password, request.Audience, request.PublicKey, request.RequestContext, cancellation);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Auth.Application.Services
 
         public async Task LogoutAllAsync(Guid userId, CancellationToken cancellation = default)
         {
-            IAsyncEnumerable<Session> sessions = _sessionQueryService.GetSessionAsyncStreamByUserId(userId);
+            IAsyncEnumerable<Session> sessions = _sessionQueryService.FindSessionsByUserIdAsyncStream(userId);
 
             await foreach (Session session in sessions.WithCancellation(cancellation))
             {

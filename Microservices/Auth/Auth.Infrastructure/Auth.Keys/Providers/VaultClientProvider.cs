@@ -7,10 +7,10 @@ using VaultSharp.V1.AuthMethods.Token;
 namespace Auth.Keys.Providers
 {
     public abstract class VaultClientProvider<TVaultStorageClientOptions> : StorageClientProvider, IVaultStorageClientProvider
-        where TVaultStorageClientOptions: VaultStorageClientOptions
+        where TVaultStorageClientOptions : VaultStorageClientOptions
     {
         protected readonly TVaultStorageClientOptions VaultStorageClientOptions;
-        
+
         public VaultClientProvider(IOptions<TVaultStorageClientOptions> vaultStorageClientOptions)
         {
             VaultStorageClientOptions = vaultStorageClientOptions.Value;

@@ -15,7 +15,7 @@ namespace Auth.Application.Services
             _sessionRepository = sessionRepository;
         }
 
-        public IAsyncEnumerable<Session> GetSessionAsyncStreamByUserId(Guid userId)
+        public IAsyncEnumerable<Session> FindSessionsByUserIdAsyncStream(Guid userId)
         {
             SessionUserIdSpecification specification = new SessionUserIdSpecification(userId);
 

@@ -2,7 +2,6 @@
 using Auth.Keys.Abstractions.Providers;
 using Auth.Keys.Options;
 using Microsoft.Extensions.Options;
-using VaultSharp;
 
 namespace Auth.Keys.Storages
 {

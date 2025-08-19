@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Auth.Keys.Options
+﻿namespace Auth.Keys.Options
 {
     public class AccessKeyStorageOptions : VaultKeyStorageOptions
     {
         public AccessKeyStorageOptions(string primaryKey,
-                                       string basePath) 
+                                       string basePath)
             : base(primaryKey, basePath)
         {
         }

@@ -1,21 +1,32 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
-namespace Auth.Tokens.Extensions
+namespace Auth.Security.Extensions
 {
     internal static class JwtSecurityTokenHandlerExtensions
     {
         public static bool Validate(this JwtSecurityTokenHandler handler,
                                     string token,
-                                    TokenValidationParameters parameters)
+                                    TokenValidationParameters parameters,
+                                    out IReadOnlyDictionary<string, string> payload)
         {
             try
             {
-                _ = handler.ValidateToken(token, parameters, out _);
+                ClaimsPrincipal principal = handler.ValidateToken(token, parameters, out _);
+
+                Dictionary<string, string> claims = new Dictionary<string, string>(principal.Claims.Count());
+                foreach (Claim claim in principal.Claims)
+                {
+                    claims.Add(claim.Type, claim.Value);
+                }
+                payload = claims;
+
                 return true;
             }
             catch
             {
+                payload = System.Collections.Immutable.ImmutableDictionary<string, string>.Empty;
                 return false;
             }
         }

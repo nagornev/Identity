@@ -1,6 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 
-namespace Auth.Tokens.Abstractions.Providers
+namespace Auth.Security.Abstractions.Providers
 {
     public interface IJwtClaimsProvider
     {

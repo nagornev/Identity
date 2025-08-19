@@ -1,15 +1,14 @@
-﻿using Auth.Application.Abstractions.Storages;
-using Auth.Application.Abstractions.Validators.Tokens;
+﻿using Auth.Application.Abstractions.Validators.Tokens;
 using Auth.Application.DTOs;
 using Auth.Application.Options;
-using Auth.Keys.Abstractions.Providers;
-using Auth.Tokens.Abstractions.Validators;
+using Auth.Security.Abstractions.Providers;
+using Auth.Security.Abstractions.Validators;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Auth.Tokens.Validators
+namespace Auth.Security.Validators
 {
-    public abstract class JwtTokenValidator: ITokenValidator
+    public abstract class JwtTokenValidator : ITokenValidator
     {
         private readonly ISecurityKeyProvider _securityKeyProvider;
 
@@ -26,11 +25,11 @@ namespace Auth.Tokens.Validators
             _applicationOptions = applicationOptions.Value;
         }
 
-        public async Task<bool> ValidateAsync(string token, KeyPair keyPair, CancellationToken cancellation = default)
+        public bool Validate(string token, KeyPair keyPair, out IReadOnlyDictionary<string, string> payload)
         {
             SecurityKey securityKey = _securityKeyProvider.Create(keyPair);
 
-            return await _jwtSignatureValidator.ValidateAsync(token, new()
+            return _jwtSignatureValidator.Validate(token, new()
             {
                 ValidateLifetime = true,
 
@@ -42,8 +41,8 @@ namespace Auth.Tokens.Validators
 
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = securityKey,
-
-            }, cancellation) ;
+            },
+            out payload);
         }
     }
 }

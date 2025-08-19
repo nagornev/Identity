@@ -1,7 +1,7 @@
-﻿using Auth.Tokens.Abstractions.Providers;
+﻿using Auth.Security.Abstractions.Providers;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace Auth.Tokens.Providers
+namespace Auth.Security.Providers
 {
     public class JwtClaimsProvider : IJwtClaimsProvider
     {

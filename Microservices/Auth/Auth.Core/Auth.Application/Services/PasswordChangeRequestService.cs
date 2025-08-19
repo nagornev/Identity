@@ -45,7 +45,7 @@ namespace Auth.Application.Services
 
             await _unitOfWork.SaveAsync(cancellation);
 
-            return await _otpClient.CreateAsync(user.Id, OtpTags.ChangePassword, cancellation);
+            return await _otpClient.CreateAsync(user.Id, OtpTags.ChangePassword, cancellation: cancellation);
         }
     }
 }

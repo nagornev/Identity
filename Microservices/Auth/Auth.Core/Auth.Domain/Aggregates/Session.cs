@@ -12,21 +12,25 @@ namespace Auth.Domain.Aggregates
                         Guid userId,
                         Guid kid,
                         Guid version,
+                        string publicKey,
                         Audience audience,
                         Device device,
                         IpAddress ipAddress,
                         long createdAt,
-                        long expiresAt)
+                        long expiresAt,
+                        bool isActive)
         {
             Id = id;
             UserId = userId;
             Kid = kid;
             Version = version;
+            PublicKey = publicKey;
             Audience = audience;
             Device = device;
             IpAddress = ipAddress;
             CreatedAt = createdAt;
             ExpiresAt = expiresAt;
+            IsActive = isActive;
         }
 
         /// <summary>
@@ -43,6 +47,7 @@ namespace Auth.Domain.Aggregates
         /// <exception cref="IpAddressNullDomainException"></exception>
         public static Session Create(Guid userId,
                                      Guid kid,
+                                     string publicKey,
                                      string audience,
                                      string device,
                                      string ipAddress,
@@ -56,6 +61,7 @@ namespace Auth.Domain.Aggregates
                                           userId,
                                           kid,
                                           version,
+                                          publicKey,
 
                                           Audience.Create(audience) ??
                                           throw new AudienceNullDomainException(),
@@ -67,9 +73,10 @@ namespace Auth.Domain.Aggregates
                                           throw new IpAddressNullDomainException(),
 
                                           createdAt,
-                                          expiresAt);
+                                          expiresAt,
+                                          false);
 
-            session.AddDomainEvent(new SessionCreatedDomainEvent(id, kid));
+            session.AddDomainEvent(new SessionCreatedDomainEvent(session.Id, session.Kid, session.Version, session.PublicKey));
 
             return session;
         }
@@ -79,6 +86,8 @@ namespace Auth.Domain.Aggregates
         public Guid Kid { get; private set; }
 
         public Guid Version { get; private set; }
+
+        public string PublicKey { get; private set; }
 
         public Audience Audience { get; private set; }
 
@@ -96,9 +105,13 @@ namespace Auth.Domain.Aggregates
 
         public bool Deleted { get; private set; }
 
+        public bool Revoked { get; private set; }
+
+        public bool IsActive { get; private set; }
+
         public bool IsValidAt(long timestamp)
         {
-            if (Closed || Deleted)
+            if (!IsActive || Closed || Revoked || Deleted)
                 return false;
 
             return ExpiresAt >= timestamp;
@@ -114,14 +127,13 @@ namespace Auth.Domain.Aggregates
             AddDomainEvent(new SessionKidChangedDomainEvent(Id, Kid));
         }
 
-        public void UpdateSession(string device, string ipAddress, long updatedAt)
+        public void UpdateSession(string publicKey, long updatedAt)
         {
             if (UpdatedAt >= updatedAt)
                 throw new UpdatedAtOutOfRangeDomainException(UpdatedAt);
 
             Version = Guid.NewGuid();
-            Device = Device.Create(device) ?? throw new DeviceNullDomainException();
-            IpAddress = IpAddress.Create(ipAddress) ?? throw new IpAddressNullDomainException();
+            PublicKey = publicKey;
             UpdatedAt = updatedAt;
 
             AddDomainEvent(new SessionUpdatedDomainEvent(Id, Kid, Version, Device.Value, IpAddress.Value));
@@ -134,11 +146,23 @@ namespace Auth.Domain.Aggregates
             AddDomainEvent(new SessionClosedDomainEvent(Id));
         }
 
+        public void RevokeSession()
+        {
+            Revoked = true;
+
+            AddDomainEvent(new SessionRevokedDomainEvent(Id));
+        }
+
         public void MarkAsDeleted()
         {
             Deleted = true;
 
             AddDomainEvent(new SessionDeletedDomainEvent(Id));
+        }
+
+        public void Activate()
+        {
+            IsActive = true;
         }
     }
 

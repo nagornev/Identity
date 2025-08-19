@@ -46,6 +46,11 @@ namespace Auth.Keys.Storages
 
         public override async Task<KeyPair> GetKeyPairAsync(Guid kid, CancellationToken cancellation = default)
         {
+            KeyPair primaryKey = await GetPrimaryAsync(cancellation);
+
+            if (primaryKey.Kid == kid)
+                return primaryKey;
+
             var secret = await _vaultClient.V1.Secrets.KeyValue.V2.ReadSecretAsync($"{_keyStorageOptions.BasePath}/{kid}");
             return DictionaryToKeyPair(secret.Data.Data);
         }

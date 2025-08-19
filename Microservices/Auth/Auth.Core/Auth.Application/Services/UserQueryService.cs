@@ -33,9 +33,18 @@ namespace Auth.Application.Services
 
         public async Task<bool> IsUserAlreadyExistsAsync(string email, CancellationToken cancellation = default)
         {
-            UserEmailSpecification specification = new UserEmailSpecification(email);
+            UserEmailSpecification emailSpecification = new UserEmailSpecification(email);
+            UserActiveSpecification activeSpecification = new UserActiveSpecification(true);
 
-            return await _userRepository.ExistsAsync(specification, cancellation);
+            return await _userRepository.ExistsAsync(emailSpecification.And(activeSpecification), cancellation);
+        }
+
+        public IAsyncEnumerable<User> FindUnactivatedUsersAsyncStream(long timestamp)
+        {
+            UserActiveSpecification userActiveSpecification = new UserActiveSpecification(false);
+            UserCreatedBeforeSpecification userCreatedBeforeSpecification = new UserCreatedBeforeSpecification(timestamp);
+
+            return _userRepository.AsyncStream(userActiveSpecification.And(userCreatedBeforeSpecification));
         }
     }
 }

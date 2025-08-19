@@ -29,7 +29,6 @@ namespace Auth.Domain.Aggregates
         /// <param name="emailAddress"></param>
         /// <param name="passwordHash"></param>
         /// <param name="personName"></param>
-        /// <param name="tokenVersion"></param>
         /// <param name="createdAt"></param>
         /// <returns></returns>
         public static User Create(string emailAddress,
@@ -134,7 +133,7 @@ namespace Auth.Domain.Aggregates
 
             Profile.ConfirmEmailAddressChange();
 
-            AddDomainEvent(new EmailAddressChangeConfirmedDomainEvent(Id));
+            AddDomainEvent(new EmailAddressChangeConfirmedDomainEvent(Id, Profile.PendingEmailAddress!.Value));
         }
 
         /// <summary>
@@ -254,7 +253,7 @@ namespace Auth.Domain.Aggregates
 
             ScopePermission scopePermission = Authorization.ScopePermissions.FirstOrDefault(x => x.ScopeId == scopePermissionId)!;
 
-            Authorization.RevokeScopePermission(scopePermissionId);
+            Authorization.MarkAsDeletedScopePermission(scopePermissionId);
 
             AddDomainEvent(new ScopePermissionDeletedDomainEvent(Id, scopePermission.ScopeId));
         }
@@ -268,6 +267,8 @@ namespace Auth.Domain.Aggregates
                 throw new UserAlreadyActiveDomainException(Id);
 
             IsActive = true;
+
+            AddDomainEvent(new UserActivatedDomainEvent(Id, Profile.EmailAddress.Value));
         }
 
         /// <summary>
@@ -279,6 +280,8 @@ namespace Auth.Domain.Aggregates
                 throw new UserAlreadyDeactiveDomainException(Id);
 
             IsActive = false;
+
+            AddDomainEvent(new UserDeactivatedDomainEvent(Id));
         }
     }
 

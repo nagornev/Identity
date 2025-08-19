@@ -1,13 +1,8 @@
-﻿using Auth.Application.Abstractions.Mappers;
-using Auth.Application.Abstractions.Providers;
+﻿using Auth.Application.Abstractions.Providers;
 using Auth.Application.Abstractions.Providers.Tokens;
 using Auth.Application.Abstractions.Services;
 using Auth.Application.Abstractions.Storages;
-using Auth.Application.Abstractions.Validators;
-using Auth.Application.Abstractions.Validators.Tokens;
 using Auth.Application.DTOs;
-using Auth.Application.Exceptions.Applications.Security;
-using Auth.Application.Exceptions.Applications.Sessions;
 using Auth.Application.Options;
 using Auth.Domain.Aggregates;
 using DDD.Repositories;
@@ -17,13 +12,7 @@ namespace Auth.Application.Services
 {
     public class RefreshService : IRefreshService
     {
-        private readonly IWindowValidator _windowValidator;
-
-        private readonly IFingerprintValidator _fingerprintValidator;
-
-        private readonly IRefreshTokenValidator _refreshTokenValidator;
-
-        private readonly IRefreshTokenPayloadMapper _refreshTokenMapper;
+        private readonly IRefreshValidationService _refreshValidationService;
 
         private readonly ISessionQueryService _sessionQueryService;
 
@@ -31,27 +20,27 @@ namespace Auth.Application.Services
 
         private readonly IUserScopesService _userScopesService;
 
+        private readonly ITokenKidProvider _tokenKidProvider;
+
         private readonly IAccessTokenProvider _accessTokenProvider;
 
         private readonly IRefreshTokenProvider _refreshTokenProvider;
 
         private readonly ITimeProvider _timeProvider;
 
-        private readonly IKeyStorageReader _accessKeysStorage;
+        private readonly IAccessKeyStorage _accessKeysStorage;
 
-        private readonly IKeyStorageReader _refreshKeysStorage;
+        private readonly IRefreshKeyStorage _refreshKeysStorage;
 
         private readonly RefreshOptions _options;
 
         private readonly IUnitOfWork _unitOfWork;
 
-        public RefreshService(IWindowValidator windowValidator,
-                              IFingerprintValidator fingerprintValidator,
-                              IRefreshTokenValidator refreshTokenValidator,
-                              IRefreshTokenPayloadMapper refreshTokenMapper,
+        public RefreshService(IRefreshValidationService refreshValidationService,
                               ISessionQueryService sessionQueryService,
                               IUserQueryService userQueryService,
                               IUserScopesService userScopesService,
+                              ITokenKidProvider tokenKidProvider,
                               IAccessTokenProvider accessTokenProvider,
                               IRefreshTokenProvider refreshTokenProvider,
                               ITimeProvider timeProvider,
@@ -60,52 +49,44 @@ namespace Auth.Application.Services
                               IOptions<RefreshOptions> options,
                               IUnitOfWork unitOfWork)
         {
-            _windowValidator = windowValidator;
-            _fingerprintValidator = fingerprintValidator;
-            _refreshTokenValidator = refreshTokenValidator;
-            _refreshTokenMapper = refreshTokenMapper;
+            _refreshValidationService = refreshValidationService;
             _sessionQueryService = sessionQueryService;
             _userQueryService = userQueryService;
             _userScopesService = userScopesService;
-            _timeProvider = timeProvider;
+            _tokenKidProvider = tokenKidProvider;
             _accessTokenProvider = accessTokenProvider;
             _refreshTokenProvider = refreshTokenProvider;
+            _timeProvider = timeProvider;
             _accessKeysStorage = accessKeysStorage;
             _refreshKeysStorage = refreshKeysStorage;
-            _options = options.Value;
             _unitOfWork = unitOfWork;
+            _options = options.Value;
         }
 
-        public async Task<TokenPair> RefreshAsync(string refreshToken, string newPublicKey, long timestamp, string signature, string device, string ipAddress, CancellationToken cancellation = default)
+        public async Task<TokenPair> RefreshAsync(string refreshToken,
+                                                  string newPublicKey,
+                                                  long timestamp,
+                                                  string signature,
+                                                  string device,
+                                                  string ipAddress,
+                                                  CancellationToken cancellation = default)
         {
-            if (_windowValidator.Validate(timestamp, _timeProvider.NowUnix(), _options.Window))
-                throw new WindowInvalidApplicationException();
+            _refreshValidationService.ValidateWindow(timestamp, _options.Window);
 
-            RefreshTokenPayload refreshTokenPayload = await _refreshTokenMapper.MapAsync(refreshToken);
-
-            if (!await _fingerprintValidator.ValidateAsync(new FingerprintValidationParameters(refreshToken,
-                                                                                               newPublicKey,
-                                                                                               timestamp,
-                                                                                               signature),
-                                                            refreshTokenPayload.PublicKey,
-                                                            cancellation))
-                throw new FingerprintInvalidApplicationException();
-
-            KeyPair refreshValidationKey = await _refreshKeysStorage.GetKeyPairAsync(refreshTokenPayload.Kid, cancellation);
-
-            if (!await _refreshTokenValidator.ValidateAsync(refreshToken, refreshValidationKey, cancellation))
-                throw new RefreshTokenInvalidApplicationException();
+            Guid refreshTokenKid = _tokenKidProvider.Get(refreshToken);
+            KeyPair refreshValidationKey = await _refreshKeysStorage.GetKeyPairAsync(refreshTokenKid, cancellation);
+            RefreshTokenPayload refreshTokenPayload = _refreshValidationService.ValidateToken(refreshToken, refreshValidationKey);
 
             Session session = await _sessionQueryService.GetSessionByIdAsync(refreshTokenPayload.SessionId, cancellation);
 
-            if (refreshTokenPayload.Version != session.Version)
-                throw new VersionInvalidApplicationException();
+            _refreshValidationService.ValidateSession(session, refreshTokenPayload);
+            _refreshValidationService.ValidateFingerprint(refreshToken, newPublicKey, timestamp, signature, session);
 
             KeyPair accessPrimaryKey = await _accessKeysStorage.GetPrimaryAsync(cancellation);
             KeyPair refreshPrimaryKey = await _refreshKeysStorage.GetPrimaryAsync(cancellation);
 
             session.ChangeKidIfNeed(refreshPrimaryKey.Kid);
-            session.UpdateSession(device, ipAddress, _timeProvider.NowUnix());
+            session.UpdateSession(newPublicKey, _timeProvider.NowUnix());
 
             User user = await _userQueryService.GetUserByIdAsync(refreshTokenPayload.UserId, cancellation);
             IReadOnlyCollection<Scope> scopes = await _userScopesService.GetUserScopesAsync(user, session.Audience);
@@ -113,7 +94,7 @@ namespace Auth.Application.Services
             await _unitOfWork.SaveAsync(cancellation);
 
             return new TokenPair(_accessTokenProvider.Create(new AccessTokenCreationParameters(user, session, scopes), accessPrimaryKey),
-                                 _refreshTokenProvider.Create(new RefreshTokenCreationParameters(user, session, newPublicKey), refreshPrimaryKey));
+                                 _refreshTokenProvider.Create(new RefreshTokenCreationParameters(user, session), refreshPrimaryKey));
         }
     }
 }

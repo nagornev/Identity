@@ -1,4 +1,5 @@
-﻿using Auth.Application.Abstractions.Providers;
+﻿using Auth.Application.Abstractions.Events;
+using Auth.Application.Abstractions.Providers;
 using Auth.Application.Abstractions.Services;
 using Auth.Persistence.Abstractions.Repositories;
 using Auth.Persistence.Entities;
@@ -17,17 +18,21 @@ namespace Auth.Persistence.Services
 
         private readonly IOutboxRepository _outboxRepository;
 
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IDomainEventDispatcher _domainEventDispatcher;
 
         private readonly ITimeProvider _timeProvider;
 
+        private readonly IUnitOfWork _unitOfWork;
+
         public OutboxService(IOutboxRepository outboxRepository,
-                             IUnitOfWork unitOfWork,
-                             ITimeProvider timeProvider)
+                             IDomainEventDispatcher domainEventDispatcher,
+                             ITimeProvider timeProvider,
+                             IUnitOfWork unitOfWork)
         {
             _outboxRepository = outboxRepository;
-            _unitOfWork = unitOfWork;
+            _domainEventDispatcher = domainEventDispatcher;
             _timeProvider = timeProvider;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task HandleMessageAsync(CancellationToken cancellation = default)
@@ -43,13 +48,14 @@ namespace Auth.Persistence.Services
 
             try
             {
-                //await publisher.Publish(domainEvent);
+                await _domainEventDispatcher.DispatchAsync(domainEvent);
+
                 outboxMessage.MarkAsProccesed();
                 await _unitOfWork.SaveAsync();
             }
             catch
             {
-
+                //TODO: log error
             }
         }
     }

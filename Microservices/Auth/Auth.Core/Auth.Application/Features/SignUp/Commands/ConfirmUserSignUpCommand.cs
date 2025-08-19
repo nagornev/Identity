@@ -2,11 +2,11 @@
 {
     public class ConfirmUserSignUpCommand : ResultRequest
     {
-        public ConfirmUserSignUpCommand(string emailToken)
+        public ConfirmUserSignUpCommand(string channelToken)
         {
-            EmailToken = emailToken;
+            ChannelToken = channelToken;
         }
 
-        public string EmailToken { get; }
+        public string ChannelToken { get; }
     }
 }

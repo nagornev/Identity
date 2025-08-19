@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Auth.Domain.Exceptions.Domains.Scopes
+﻿namespace Auth.Domain.Exceptions.Domains.Scopes
 {
     public class AudienceNullDomainException : NullDomainException
     {

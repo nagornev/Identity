@@ -9,5 +9,7 @@ namespace Auth.Application.Abstractions.Services
         Task<User> GetUserByEmailAsync(string email, CancellationToken cancellation = default);
 
         Task<bool> IsUserAlreadyExistsAsync(string email, CancellationToken cancellation = default);
+
+        IAsyncEnumerable<User> FindUnactivatedUsersAsyncStream(long timestamp);
     }
 }

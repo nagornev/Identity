@@ -1,5 +1,4 @@
 ﻿using Auth.Application.DTOs;
-using Auth.Domain.Aggregates;
 
 namespace Auth.Application.Abstractions.Providers.Tokens
 {

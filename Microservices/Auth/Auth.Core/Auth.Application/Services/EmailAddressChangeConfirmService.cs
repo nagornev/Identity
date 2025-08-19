@@ -1,5 +1,6 @@
 ﻿using Auth.Application.Abstractions.Services;
 using Auth.Application.Consts;
+using Auth.Application.DTOs;
 using Auth.Domain.Aggregates;
 using DDD.Repositories;
 
@@ -7,20 +8,26 @@ namespace Auth.Application.Services
 {
     public class EmailAddressChangeConfirmService : IEmailAddressChangeConfirmService
     {
-        private readonly IOtpAuthenticationService _otpAuthenticationService;
+        private readonly IOtpValidationService _otpValidationService;
+
+        private readonly IUserQueryService _userQueryService;
 
         private readonly IUnitOfWork _unitOfWork;
 
-        public EmailAddressChangeConfirmService(IOtpAuthenticationService otpAuthenticationService,
+        public EmailAddressChangeConfirmService(IOtpValidationService otpValidationService,
+                                                IUserQueryService userQueryService,
                                                 IUnitOfWork unitOfWork)
         {
-            _otpAuthenticationService = otpAuthenticationService;
+            _otpValidationService = otpValidationService;
+            _userQueryService = userQueryService;
             _unitOfWork = unitOfWork;
         }
 
         public async Task ConfirmAsync(string otpToken, string otp, CancellationToken cancellation = default)
         {
-            User user = await _otpAuthenticationService.AuthenticateAsync(otpToken, otp, OtpTags.ChangeEmailAddress, cancellation);
+            OtpContent otpContent = await _otpValidationService.ValidateAsync(otpToken, otp, OtpTags.ChangeEmailAddress, cancellation);
+
+            User user = await _userQueryService.GetUserByIdAsync(otpContent.Subject, cancellation);
             user.ConfirmEmailAddressChange();
 
             await _unitOfWork.SaveAsync(cancellation);

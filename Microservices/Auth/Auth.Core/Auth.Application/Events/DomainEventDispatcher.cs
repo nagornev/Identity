@@ -1,6 +1,5 @@
 ﻿using Auth.Application.Abstractions.Events;
 using DDD.Events;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Auth.Application.Events
 {
@@ -15,19 +14,10 @@ namespace Auth.Application.Events
 
         public async Task DispatchAsync(IDomainEvent domainEvent, CancellationToken cancellation = default)
         {
-            var handlerType = typeof(IDomainEventHandler<>).MakeGenericType(domainEvent.GetType());
+            var type = typeof(IDomainEventHandler<>).MakeGenericType(domainEvent.GetType());
+            var handler = (IDomainEventHandler<IDomainEvent>)_serviceProvider.GetService(type)!;
 
-            var handlers = (IEnumerable<object>)_serviceProvider.GetServices(handlerType);
-
-            foreach (var handler in handlers)
-            {
-                var handleMethod = handlerType.GetMethod(nameof(IDomainEventHandler<IDomainEvent>.HandleAsync));
-                if (handleMethod != null)
-                {
-                    var task = (Task)handleMethod.Invoke(handler, [domainEvent, cancellation])!;
-                    await task;
-                }
-            }
+            await handler.HandleAsync(domainEvent);
         }
     }
 }

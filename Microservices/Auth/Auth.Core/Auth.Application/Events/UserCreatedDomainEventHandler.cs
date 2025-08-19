@@ -1,15 +1,24 @@
 ﻿using Auth.Application.Abstractions.Events;
+using Auth.Application.Abstractions.Services;
 using Auth.Domain.Events;
+using MessageContracts;
 
 namespace Auth.Application.Events
 {
     public class UserCreatedDomainEventHandler : IDomainEventHandler<UserCreatedDomainEvent>
     {
-        public Task HandleAsync(UserCreatedDomainEvent domainEvent)
-        {
-            //Публикация события в брокер сообщений.
+        private readonly IPublishMessageService _publishMessageService;
 
-            return Task.CompletedTask;
+        public UserCreatedDomainEventHandler(IPublishMessageService publishMessageService)
+        {
+            _publishMessageService = publishMessageService;
+        }
+
+        public async Task HandleAsync(UserCreatedDomainEvent domainEvent)
+        {
+            UserCreatedMessageContract messageContract = new UserCreatedMessageContract(domainEvent.AggregateId);
+
+            await _publishMessageService.PublishAsync(messageContract);
         }
     }
 }

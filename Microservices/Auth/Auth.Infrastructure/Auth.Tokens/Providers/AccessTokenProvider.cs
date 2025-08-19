@@ -1,19 +1,17 @@
 ﻿using Auth.Application.Abstractions.Providers;
 using Auth.Application.Abstractions.Providers.Tokens;
-using Auth.Application.Abstractions.Services;
 using Auth.Application.DTOs;
 using Auth.Application.Options;
 using Auth.Domain.Aggregates;
-using Auth.Keys.Abstractions.Providers;
-using Auth.Tokens.Consts;
+using Auth.Security.Abstractions.Providers;
+using Auth.Security.Consts;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Text.RegularExpressions;
 
-namespace Auth.Tokens.Providers
+namespace Auth.Security.Providers
 {
     public class AccessTokenProvider : IAccessTokenProvider
     {
@@ -82,7 +80,7 @@ namespace Auth.Tokens.Providers
         {
             StringBuilder builder = new StringBuilder();
 
-            foreach(Scope scope in scopes)
+            foreach (Scope scope in scopes)
             {
                 builder.Append($"{scope.GetHash()} ");
             }
@@ -105,6 +103,6 @@ namespace Auth.Tokens.Providers
                                                               .AddSeconds(_tokenOptions.Lifetime));
         }
 
-       
+
     }
 }

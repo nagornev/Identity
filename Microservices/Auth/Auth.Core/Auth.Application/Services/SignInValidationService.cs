@@ -1,0 +1,56 @@
+﻿using Auth.Application.Abstractions.Providers;
+using Auth.Application.Abstractions.Services;
+using Auth.Application.Consts;
+using Auth.Application.DTOs;
+using Auth.Domain.Aggregates;
+
+namespace Auth.Application.Services
+{
+    public class SignInValidationService : ISignInValidationService
+    {
+        private readonly IOtpValidationService _otpValidationService;
+
+        private readonly IWindowValidationService _windowValidationService;
+
+        private readonly ISessionValidationService _sessionValidationService;
+
+        private readonly IFingerprintValidationService _fingerprintValidationService;
+
+        private readonly IFingerprintMessageProvider _fingerprintMessageProvider;
+
+        public SignInValidationService(IOtpValidationService otpValidationService,
+                                       IWindowValidationService windowValidationService,
+                                       ISessionValidationService sessionValidationService,
+                                       IFingerprintValidationService fingerprintValidationService,
+                                       IFingerprintMessageProvider fingerprintMessageProvider)
+        {
+            _otpValidationService = otpValidationService;
+            _windowValidationService = windowValidationService;
+            _sessionValidationService = sessionValidationService;
+            _fingerprintValidationService = fingerprintValidationService;
+            _fingerprintMessageProvider = fingerprintMessageProvider;
+        }
+
+        public void ValidateWindow(long timestamp, int window)
+        {
+            _windowValidationService.Validate(timestamp, window);
+        }
+
+        public void ValidateSession(Session session)
+        {
+            _sessionValidationService.ValidateWithoutActive(session);
+        }
+
+        public void ValidateFingerprint(string otpToken, string otp, long timestamp, string signature, Session session)
+        {
+            _fingerprintValidationService.Validate(new FingerprintValidationParameters(_fingerprintMessageProvider.GetMessage(otpToken, otp, timestamp),
+                                                                                       signature),
+                                                   session.PublicKey);
+        }
+
+        public async Task<OtpContent> ValidateOtpAsync(string otpToken, string otp, CancellationToken cancellation = default)
+        {
+            return await _otpValidationService.ValidateAsync(otpToken, otp, OtpTags.SignIn, cancellation);
+        }
+    }
+}

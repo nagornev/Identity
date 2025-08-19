@@ -1,21 +1,25 @@
-﻿namespace Auth.Application.Abstractions.Clients
+﻿using Auth.Application.DTOs;
+
+namespace Auth.Application.Abstractions.Clients
 {
     public interface IOtpClient
     {
         /// <summary>
-        /// Creates OTP record in the server and returns OTP token.
+        /// Creates OTP record for registrated user in the server and returns OTP token.
         /// </summary>
-        /// <param name="userId"></param>
+        /// <param name="subject"></param>
         /// <param name="tag"></param>
+        /// <param name="payload"></param>
+        /// <param name="cancellation"></param>
         /// <returns></returns>
-        Task<string> CreateAsync(Guid userId, string tag, CancellationToken cancellation = default);
+        Task<string> CreateAsync(Guid subject, string tag, string payload = "", CancellationToken cancellation = default);
 
         /// <summary>
-        /// Validates OTP from user and returns user ID if validate result is true.
+        /// Validates OTP from user.
         /// </summary>
         /// <param name="otpToken"></param>
         /// <param name="tag"></param>
         /// <returns></returns>
-        Task<Guid> ValidateAsync(string otpToken, string otp, string tag, CancellationToken cancellation = default);
+        Task<OtpValidation> ValidateAsync(string otpToken, string otp, string tag, CancellationToken cancellation = default);
     }
 }

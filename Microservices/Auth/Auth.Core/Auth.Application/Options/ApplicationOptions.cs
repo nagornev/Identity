@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Auth.Application.Options
+﻿namespace Auth.Application.Options
 {
     public class ApplicationOptions
     {
-        public ApplicationOptions(string issuer, string basicRoleName)
+        public ApplicationOptions(string issuer, string basicRoleName, int unactivatedUsersLifetime)
         {
             Issuer = issuer;
             BasicRoleName = basicRoleName;
+            UnactivatedUsersLifetime = unactivatedUsersLifetime;
         }
 
         public string Issuer { get; }
 
         public string BasicRoleName { get; }
+
+        public int UnactivatedUsersLifetime { get; }
     }
 }

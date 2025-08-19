@@ -6,29 +6,25 @@ namespace Auth.Application.Features.SignIn.Queries
     {
         public ConfirmUserSignInQuery(string otpToken,
                                       string otp,
-                                      string audience, 
-                                      string publicKey,
-                                      string device,
-                                      string ipAddress)
+                                      string newPublicKey,
+                                      long timestamp,
+                                      string signature)
         {
             OtpToken = otpToken;
             Otp = otp;
-            Audience = audience;
-            PublicKey = publicKey;
-            Device = device;
-            IpAddress = ipAddress;
+            NewPublicKey = newPublicKey;
+            Timestamp = timestamp;
+            Signature = signature;
         }
 
         public string OtpToken { get; }
 
         public string Otp { get; }
 
-        public string Audience { get; }
+        public string NewPublicKey { get; }
 
-        public string PublicKey { get; }
+        public long Timestamp { get; }
 
-        public string Device { get; }
-
-        public string IpAddress { get; }
+        public string Signature { get; }
     }
 }

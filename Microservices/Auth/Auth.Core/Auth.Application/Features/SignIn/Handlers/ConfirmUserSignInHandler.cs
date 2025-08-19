@@ -14,7 +14,7 @@ namespace Auth.Application.Features.SignIn.Handlers
 
         public override async Task<DTOs.TokenPair> HandleAsync(ConfirmUserSignInQuery request, CancellationToken cancellation)
         {
-            return await _signInConfrmService.ConfirmAsync(request.OtpToken, request.Otp, request.Audience, request.PublicKey, request.Device, request.IpAddress, cancellation);
+            return await _signInConfrmService.ConfirmAsync(request.OtpToken, request.Otp, request.NewPublicKey, request.Timestamp, request.Signature, cancellation);
         }
     }
 }

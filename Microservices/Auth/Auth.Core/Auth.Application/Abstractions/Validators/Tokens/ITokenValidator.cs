@@ -4,6 +4,6 @@ namespace Auth.Application.Abstractions.Validators.Tokens
 {
     public interface ITokenValidator
     {
-        Task<bool> ValidateAsync(string token, KeyPair keyPair, CancellationToken cancellation = default);
+        bool Validate(string token, KeyPair keyPair, out IReadOnlyDictionary<string, string> claims);
     }
 }
