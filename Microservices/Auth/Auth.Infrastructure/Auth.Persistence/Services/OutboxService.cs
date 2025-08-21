@@ -1,5 +1,4 @@
-﻿using Auth.Application.Abstractions.Events;
-using Auth.Application.Abstractions.Providers;
+﻿using Auth.Application.Abstractions.Providers;
 using Auth.Application.Abstractions.Services;
 using Auth.Persistence.Abstractions.Repositories;
 using Auth.Persistence.Entities;
@@ -18,19 +17,19 @@ namespace Auth.Persistence.Services
 
         private readonly IOutboxRepository _outboxRepository;
 
-        private readonly IDomainEventDispatcher _domainEventDispatcher;
+        private readonly IPublishEventService _publishEventService;
 
         private readonly ITimeProvider _timeProvider;
 
         private readonly IUnitOfWork _unitOfWork;
 
         public OutboxService(IOutboxRepository outboxRepository,
-                             IDomainEventDispatcher domainEventDispatcher,
+                             IPublishEventService publishEventService,
                              ITimeProvider timeProvider,
                              IUnitOfWork unitOfWork)
         {
             _outboxRepository = outboxRepository;
-            _domainEventDispatcher = domainEventDispatcher;
+            _publishEventService = publishEventService;
             _timeProvider = timeProvider;
             _unitOfWork = unitOfWork;
         }
@@ -48,7 +47,7 @@ namespace Auth.Persistence.Services
 
             try
             {
-                await _domainEventDispatcher.DispatchAsync(domainEvent);
+                await _publishEventService.PublishAsync(domainEvent, cancellation);
 
                 outboxMessage.MarkAsProccesed();
                 await _unitOfWork.SaveAsync();

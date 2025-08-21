@@ -68,16 +68,14 @@ namespace Auth.Domain.Entities
             scopePermission?.Revoke();
         }
 
-        internal void MarkAsDeletedRolePermission(Guid rolePermissionId)
+        internal void DeleteRolePermission(RolePermission rolePermission)
         {
-            RolePermission? rolePermission = _rolePermissions.FirstOrDefault(x => x.Id == rolePermissionId);
-            rolePermission?.MarkAsDeleted();
+            _rolePermissions.Remove(rolePermission);
         }
 
-        internal void MarkAsDeletedScopePermission(Guid scopePermissionId)
+        internal void DeleteScopePermission(ScopePermission scopePermission)
         {
-            ScopePermission? scopePermission = _scopePermissions.FirstOrDefault(x => x.Id == scopePermissionId);
-            scopePermission?.MarkAsDeleted();
+            _scopePermissions.Remove(scopePermission);
         }
     }
 

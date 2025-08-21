@@ -22,30 +22,26 @@ namespace Auth.Domain.Entities
                                personName);
         }
 
-        public EmailAddress? PendingEmailAddress { get; private set; }
-
-        public bool IsEmailAddressChangeConfirmed { get; private set; }
+        public PendingEmailAddress? PendingEmailAddress { get; private set; }
 
         public EmailAddress EmailAddress { get; private set; }
 
         public PersonName PersonName { get; private set; }
 
-        internal void ChangeEmailAddress(EmailAddress emailAddress)
+        internal void ChangeEmailAddress(PendingEmailAddress pendingEmailAddress)
         {
-            PendingEmailAddress = emailAddress;
-            IsEmailAddressChangeConfirmed = false;
+            PendingEmailAddress = pendingEmailAddress;
         }
 
         internal void ConfirmEmailAddressChange()
         {
-            IsEmailAddressChangeConfirmed = true;
+            PendingEmailAddress = PendingEmailAddress!.Confirm();
         }
 
         internal void UpdateEmailAddress()
         {
-            EmailAddress = PendingEmailAddress!;
+            EmailAddress = PendingEmailAddress!.EmailAddress;
             PendingEmailAddress = null;
-            IsEmailAddressChangeConfirmed = false;
         }
 
         internal void ChangePersonName(PersonName personName)

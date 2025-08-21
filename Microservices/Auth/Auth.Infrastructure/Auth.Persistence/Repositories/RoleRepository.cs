@@ -1,6 +1,7 @@
 ﻿using Auth.Domain.Aggregates;
 using Auth.Persistence.Contexts;
 using Auth.Persistence.Extensions;
+using DDD.Primitives;
 using DDD.Repositories;
 using DDD.Specifications;
 using Microsoft.EntityFrameworkCore;

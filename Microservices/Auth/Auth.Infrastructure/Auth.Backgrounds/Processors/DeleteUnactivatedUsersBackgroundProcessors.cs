@@ -1,17 +1,20 @@
-﻿using Auth.Backgrounds.Abstractions.Processors;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Auth.Application.Abstractions.Services;
+using Auth.Backgrounds.Abstractions.Processors;
 
 namespace Auth.Backgrounds.Processors
 {
     public class DeleteUnactivatedUsersBackgroundProcessors : IBackgroundProcessor
     {
-        public Task HandleAsync(CancellationToken cancellation)
+        private readonly IDeleteUnactivatedUsersBackgroundService _deleteUnactivatedUsersBackgroundService;
+
+        public DeleteUnactivatedUsersBackgroundProcessors(IDeleteUnactivatedUsersBackgroundService deleteUnactivatedUsersBackgroundService)
         {
-            throw new NotImplementedException();
+            _deleteUnactivatedUsersBackgroundService = deleteUnactivatedUsersBackgroundService;
+        }
+
+        public async Task HandleAsync(CancellationToken cancellation)
+        {
+            await _deleteUnactivatedUsersBackgroundService.HandleAsync(cancellation);
         }
     }
 }

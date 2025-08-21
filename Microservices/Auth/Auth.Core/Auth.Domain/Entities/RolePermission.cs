@@ -34,8 +34,6 @@ namespace Auth.Domain.Entities
 
         public bool Revoked { get; private set; }
 
-        public bool Deleted { get; private set; }
-
         public bool IsValid()
         {
             return !Revoked;
@@ -44,11 +42,6 @@ namespace Auth.Domain.Entities
         internal void Revoke()
         {
             Revoked = true;
-        }
-
-        internal void MarkAsDeleted()
-        {
-            Deleted = true;
         }
     }
 

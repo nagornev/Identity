@@ -1,11 +1,4 @@
-﻿using Auth.Backgrounds.Processors;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Auth.Backgrounds.Abstractions.Processors
+﻿namespace Auth.Backgrounds.Abstractions.Processors
 {
     public interface IChannelKeyRotationBackgroundProcessor : IBackgroundProcessor
     {

@@ -40,11 +40,9 @@ namespace Auth.Domain.Entities
 
         public bool Revoked { get; private set; }
 
-        public bool Deleted { get; private set; }
-
         public bool IsValidAt(long timestamp)
         {
-            if (Revoked || Deleted)
+            if (Revoked)
                 return false;
 
             if (ExpiresAt.HasValue)
@@ -56,11 +54,6 @@ namespace Auth.Domain.Entities
         internal void Revoke()
         {
             Revoked = true;
-        }
-
-        internal void MarkAsDeleted()
-        {
-            Deleted = true;
         }
     }
 

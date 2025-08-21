@@ -1,6 +1,8 @@
 ﻿using Auth.Application.Abstractions.Clients;
+using Auth.Application.Abstractions.Providers;
 using Auth.Application.Abstractions.Services;
 using Auth.Application.Consts;
+using Auth.Application.DTOs;
 using Auth.Application.Exceptions.Applications.Users;
 using Auth.Domain.Aggregates;
 using DDD.Repositories;
@@ -15,13 +17,17 @@ namespace Auth.Application.Services
 
         private readonly IOtpClient _otpClient;
 
+        private readonly IOtpTokenPayloadProvider _otpTokenPayloadProvider;
+
         public EmailAddressChangeRequestService(IUserQueryService userQueryService,
                                                 IUnitOfWork unitOfWork,
-                                                IOtpClient otpClient)
+                                                IOtpClient otpClient,
+                                                IOtpTokenPayloadProvider otpTokenPayloadProvider)
         {
             _userQueryService = userQueryService;
             _unitOfWork = unitOfWork;
             _otpClient = otpClient;
+            _otpTokenPayloadProvider = otpTokenPayloadProvider;
         }
 
         public async Task<string> RequestAsync(Guid userId, string emailAddress, CancellationToken cancellation)
@@ -34,7 +40,10 @@ namespace Auth.Application.Services
 
             await _unitOfWork.SaveAsync(cancellation);
 
-            return await _otpClient.CreateAsync(user.Id, OtpTags.ChangeEmailAddress, cancellation: cancellation);
+            return await _otpClient.CreateAsync(user.Id, 
+                                                OtpTags.ChangeEmailAddress,
+                                                payload: _otpTokenPayloadProvider.Serialize(new ChangeEmailAddressOtpTokenPayload(user.Profile.PendingEmailAddress!.Version)),
+                                                cancellation: cancellation);
         }
     }
 }

@@ -3,6 +3,7 @@ using Auth.Application.Abstractions.Providers;
 using Auth.Application.Abstractions.Services;
 using Auth.Application.Abstractions.Validators;
 using Auth.Application.Consts;
+using Auth.Application.DTOs;
 using Auth.Application.Exceptions.Applications.Users;
 using Auth.Domain.Aggregates;
 using DDD.Repositories;
@@ -20,18 +21,21 @@ namespace Auth.Application.Services
         private readonly IUnitOfWork _unitOfWork;
 
         private readonly IOtpClient _otpClient;
+        private readonly IOtpTokenPayloadProvider _otpTokenPayloadProvider;
 
         public PasswordChangeRequestService(IUserQueryService userQueryService,
                                             IPasswordValidator passwordValidator,
                                             IPasswordHashProvider passwordHashProvider,
                                             IUnitOfWork unitOfWork,
-                                            IOtpClient otpClient)
+                                            IOtpClient otpClient,
+                                            IOtpTokenPayloadProvider otpTokenPayloadProvider)
         {
             _userQueryService = userQueryService;
             _passwordValidator = passwordValidator;
             _passwordHashProvider = passwordHashProvider;
             _unitOfWork = unitOfWork;
             _otpClient = otpClient;
+            _otpTokenPayloadProvider = otpTokenPayloadProvider;
         }
 
         public async Task<string> RequestAsync(Guid userId, string oldPassword, string newPassword, CancellationToken cancellation = default)
@@ -45,7 +49,10 @@ namespace Auth.Application.Services
 
             await _unitOfWork.SaveAsync(cancellation);
 
-            return await _otpClient.CreateAsync(user.Id, OtpTags.ChangePassword, cancellation: cancellation);
+            return await _otpClient.CreateAsync(user.Id, 
+                                                OtpTags.ChangePassword,
+                                                payload: _otpTokenPayloadProvider.Serialize(new ChangePasswordHashOtpTokenPayload(user.Authentication.PendingPasswordHash!.Version)),
+                                                cancellation: cancellation);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Auth.Application.Abstractions.Providers.Tokens
     public interface IChannelTokenProvider
     {
         /// <summary>
-        /// Creates email token.
+        /// Creates channel token.
         /// </summary>
         /// <param name="parameters"></param>
         /// <param name="keyPair"></param>

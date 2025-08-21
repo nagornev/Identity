@@ -10,6 +10,8 @@ namespace Auth.Application.Abstractions.Services
 
         Task<bool> IsUserAlreadyExistsAsync(string email, CancellationToken cancellation = default);
 
+        IAsyncEnumerable<User> FindUsersWithInvalidPermissionsAsyncStream(long timestamp);
+
         IAsyncEnumerable<User> FindUnactivatedUsersAsyncStream(long timestamp);
     }
 }

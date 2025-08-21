@@ -1,5 +1,6 @@
 ﻿using Auth.Application.Abstractions.Services;
 using Auth.Application.Abstractions.Validators;
+using Auth.Application.Exceptions.Applications.Security;
 using Auth.Application.Exceptions.Applications.Sessions;
 using Auth.Domain.Aggregates;
 

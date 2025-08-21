@@ -19,18 +19,18 @@ namespace Auth.Domain.Entities
                                       passwordHash);
         }
 
-        public PasswordHash? PendingPasswordHash { get; private set; }
+        public PendingPasswordHash? PendingPasswordHash { get; private set; }
 
         public PasswordHash PasswordHash { get; private set; }
 
-        internal void ChangePassword(PasswordHash passwordHash)
+        internal void ChangePassword(PendingPasswordHash pendingPasswordHash)
         {
-            PendingPasswordHash = passwordHash;
+            PendingPasswordHash = pendingPasswordHash;
         }
 
         internal void ConfirmPassword()
         {
-            PasswordHash = PendingPasswordHash!;
+            PasswordHash = PendingPasswordHash!.PasswordHash;
             PendingPasswordHash = null;
         }
     }

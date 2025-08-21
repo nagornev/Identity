@@ -72,7 +72,10 @@ namespace Auth.Domain.Aggregates
 
         public long CreatedAt { get; private set; }
 
+        public bool Deleted { get; private set; }
+
         public bool IsActive { get; private set; }
+
 
         /// <summary>
         /// Changes user`s pending password hash.
@@ -88,7 +91,9 @@ namespace Auth.Domain.Aggregates
             if (Authentication.PasswordHash == password)
                 throw new PasswordHashAlreadySetDomainException();
 
-            Authentication.ChangePassword(password);
+            PendingPasswordHash pendingPassword = PendingPasswordHash.Create(password);
+
+            Authentication.ChangePassword(pendingPassword);
         }
 
         /// <summary>
@@ -119,7 +124,9 @@ namespace Auth.Domain.Aggregates
             if (Profile.EmailAddress == emailAddress)
                 throw new EmailAddressAlreadySetDomainException(email);
 
-            Profile.ChangeEmailAddress(emailAddress);
+            PendingEmailAddress pendingEmailAddress = PendingEmailAddress.Create(emailAddress);
+
+            Profile.ChangeEmailAddress(pendingEmailAddress);
         }
 
         /// <summary>
@@ -133,7 +140,7 @@ namespace Auth.Domain.Aggregates
 
             Profile.ConfirmEmailAddressChange();
 
-            AddDomainEvent(new EmailAddressChangeConfirmedDomainEvent(Id, Profile.PendingEmailAddress!.Value));
+            AddDomainEvent(new EmailAddressChangeConfirmedDomainEvent(Id, Profile.PendingEmailAddress!.EmailAddress.Value));
         }
 
         /// <summary>
@@ -146,7 +153,7 @@ namespace Auth.Domain.Aggregates
             if (Profile.PendingEmailAddress is null)
                 throw new EmailAddressNullDomainException();
 
-            if (!Profile.IsEmailAddressChangeConfirmed)
+            if (!Profile.PendingEmailAddress.IsConfirmed)
                 throw new EmailAddressChangeUnconfirmedDomainException();
 
             Profile.UpdateEmailAddress();
@@ -165,6 +172,8 @@ namespace Auth.Domain.Aggregates
                                     throw new PersonNameNullDomainException();
 
             Profile.ChangePersonName(personName);
+
+            AddDomainEvent(new PersonNameChangedDomainEvent(Id, Profile.PersonName.Name));
         }
 
         /// <summary>
@@ -200,14 +209,12 @@ namespace Auth.Domain.Aggregates
         /// </summary>
         /// <param name="rolePermissionId"></param>
         /// <exception cref="PermissionNotFoundDomainException"></exception>
-        public void MarkAsDeletedRolePermission(Guid rolePermissionId)
+        public void DeleteRolePermission(Guid rolePermissionId)
         {
-            if (!Authorization.HasRolePermission(x => x.Id == rolePermissionId))
-                throw new PermissionNotFoundDomainException();
+            RolePermission rolePermission = Authorization.RolePermissions.FirstOrDefault(x => x.Id == rolePermissionId)??
+                                            throw new PermissionNotFoundDomainException();
 
-            RolePermission rolePermission = Authorization.RolePermissions.FirstOrDefault(x => x.Id == rolePermissionId)!;
-
-            Authorization.MarkAsDeletedRolePermission(rolePermission.Id);
+            Authorization.DeleteRolePermission(rolePermission);
 
             AddDomainEvent(new RolePermissionDeletedDomainEvent(Id, rolePermission.RoleId));
         }
@@ -222,7 +229,7 @@ namespace Auth.Domain.Aggregates
         public void GrantScopePermission(Guid scopeId, long createdAt, long? expiresAt = null)
         {
             if (Authorization.HasScopePermission(x => x.ScopeId == scopeId &&
-                                                     x.IsValidAt(createdAt)))
+                                                      x.IsValidAt(createdAt)))
                 throw new PermissionAlreadyExistsDomainException();
 
             Authorization.GrantScopePermission(scopeId, createdAt, expiresAt);
@@ -246,14 +253,12 @@ namespace Auth.Domain.Aggregates
         /// </summary>
         /// <param name="scopePermissionId"></param>
         /// <exception cref="PermissionNotFoundDomainException"></exception>
-        public void MarkAsDeletedScopePermission(Guid scopePermissionId)
+        public void DeleteScopePermission(Guid scopePermissionId)
         {
-            if (!Authorization.HasScopePermission(x => x.Id == scopePermissionId))
-                throw new PermissionNotFoundDomainException();
+            ScopePermission scopePermission = Authorization.ScopePermissions.FirstOrDefault(x => x.ScopeId == scopePermissionId)??
+                                              throw new PermissionNotFoundDomainException();
 
-            ScopePermission scopePermission = Authorization.ScopePermissions.FirstOrDefault(x => x.ScopeId == scopePermissionId)!;
-
-            Authorization.MarkAsDeletedScopePermission(scopePermissionId);
+            Authorization.DeleteScopePermission(scopePermission);
 
             AddDomainEvent(new ScopePermissionDeletedDomainEvent(Id, scopePermission.ScopeId));
         }
@@ -282,6 +287,16 @@ namespace Auth.Domain.Aggregates
             IsActive = false;
 
             AddDomainEvent(new UserDeactivatedDomainEvent(Id));
+        }
+
+        public void MarkAsDeleted()
+        {
+            if (Deleted)
+                throw new UserAlreadyDeletedDomainException(Id);
+
+            Deleted = true;
+
+            AddDomainEvent(new UserDeletedDomainEvent(Id));
         }
     }
 
