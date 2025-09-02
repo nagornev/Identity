@@ -10,10 +10,10 @@ namespace Auth.Application.Factories
     {
         private readonly ITimeProvider _timeProvider;
 
-        private SessionOptions _options;
+        private RefreshTokenOptions _options;
 
         public SessionFactory(ITimeProvider timeProvider,
-                              IOptions<SessionOptions> options)
+                              IOptions<RefreshTokenOptions> options)
         {
             _timeProvider = timeProvider;
             _options = options.Value;

@@ -2,6 +2,6 @@
 {
     public interface IBackgroundProcessor
     {
-        Task HandleAsync(CancellationToken cancellation);
+        Task StartAsync(CancellationToken cancellation);
     }
 }

@@ -7,7 +7,7 @@ namespace Auth.Application.Validators
     {
         public bool Validate(User user)
         {
-            return user.IsActive;
+            return user.Activated;
         }
     }
 }

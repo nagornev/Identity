@@ -8,7 +8,7 @@ namespace Auth.Security.Validators
 {
     public class RefreshTokenValidator : JwtTokenValidator, IRefreshTokenValidator
     {
-        public RefreshTokenValidator(ISecurityKeyProvider securityKeyProvider,
+        public RefreshTokenValidator(ISecurityKeysProvider securityKeyProvider,
                                      IJwtSignatureValidator jwtValidator,
                                      IOptions<ApplicationOptions> applicationOptions)
             : base(securityKeyProvider, jwtValidator, applicationOptions)

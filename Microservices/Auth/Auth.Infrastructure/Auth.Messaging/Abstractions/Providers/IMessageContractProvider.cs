@@ -5,6 +5,8 @@ namespace Auth.Messaging.Abstractions.Providers
 {
     public interface IMessageContractProvider
     {
-        IMessageContract Create(IDomainEvent domainEvent);
+        Type GetHandableType();
+
+        Task<IMessageContract> Create(IDomainEvent domainEvent);
     }
 }

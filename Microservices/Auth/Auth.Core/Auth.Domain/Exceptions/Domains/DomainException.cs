@@ -1,4 +1,4 @@
-﻿using Results;
+﻿using OperationResults;
 
 namespace Auth.Domain.Exceptions.Domains
 {

@@ -7,13 +7,11 @@ using Microsoft.Extensions.Options;
 
 namespace Auth.Application.Services
 {
-    public class ChannelKeyRotationService : KeyRotationService<ChannelKeyOptions, IChannelKeyStorage, IChannelKeyPairFactory>, IChannelKeyRotationService
+    public class ChannelKeyRotationService : KeyRotationService<IChannelKeyStorage, IChannelKeyPairFactory>, IChannelKeyRotationService
     {
         public ChannelKeyRotationService(IChannelKeyStorage keysStorage,
-                                         IChannelKeyPairFactory keysFactory,
-                                         ITimeProvider timeProvider,
-                                         IOptions<ChannelKeyOptions> keyOptions)
-            : base(keysStorage, keysFactory, timeProvider, keyOptions)
+                                         IChannelKeyPairFactory keysFactory)
+            : base(keysStorage, keysFactory)
         {
         }
     }

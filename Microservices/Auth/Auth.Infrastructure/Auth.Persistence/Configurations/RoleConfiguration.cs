@@ -14,9 +14,7 @@ namespace Auth.Persistence.Configurations
             builder.HasIndex(x => x.Name)
                    .IsUnique();
 
-            builder.Ignore(x => x.Entitlements);
-
-            builder.HasMany<Entitlement>("_entitlements")
+            builder.HasMany(e => e.Entitlements)
                    .WithOne()
                    .HasForeignKey(e => e.RoleId)
                    .OnDelete(DeleteBehavior.Cascade);

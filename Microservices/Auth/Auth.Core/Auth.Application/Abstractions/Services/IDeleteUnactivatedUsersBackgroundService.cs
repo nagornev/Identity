@@ -8,6 +8,6 @@ namespace Auth.Application.Abstractions.Services
 {
     public interface IDeleteUnactivatedUsersBackgroundService
     {
-        Task HandleAsync(CancellationToken cancellation = default);
+        Task DeleteUnactivatedUsersAsync(CancellationToken cancellation = default);
     }
 }

@@ -2,9 +2,7 @@
 {
     public class RefreshKeyStorageOptions : VaultKeyStorageOptions
     {
-        public RefreshKeyStorageOptions(string primaryKey,
-                                        string basePath)
-             : base(primaryKey, basePath)
+        public RefreshKeyStorageOptions(string primaryKey, string mountPoint, string basePath) : base(primaryKey, mountPoint, basePath)
         {
         }
     }

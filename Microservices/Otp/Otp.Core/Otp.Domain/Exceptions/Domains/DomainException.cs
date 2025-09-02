@@ -1,4 +1,4 @@
-﻿using Results;
+﻿using OperationResults;
 
 namespace Otp.Domain.Exceptions.Domains
 {

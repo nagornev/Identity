@@ -1,24 +1,30 @@
-﻿using Auth.Domain.Events;
-using Auth.Messaging.Abstractions.Providers;
+﻿using Auth.Messaging.Abstractions.Providers;
 using DDD.Events;
 using MessageContracts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Auth.Messaging.Providers
 {
-    public class MessageContractProvider : IMessageContractProvider
+    public abstract class MessageContractProvider<TDomainEventType> : IMessageContractProvider
+        where TDomainEventType : class, IDomainEvent
     {
-        public IMessageContract Create(IDomainEvent domainEvent)
+        public Type GetHandableType()
         {
-            return domainEvent switch
-            {
-                UserCreatedDomainEvent e => new UserCreatedMessageContract(e.AggregateId, e.EmailAddress),
-                UserActivatedDomainEvent e => new UserActivatedMessageContract(e.AggregateId, e.EmailAddress),
-                EmailAddressChangedDomainEvent e => new EmailAddressChangedMessageContract(e.AggregateId, e.EmailAddress),
-                EmailAddressChangeConfirmedDomainEvent e => new EmailAddressChangeConfirmedMessageContract(e.AggregateId, e.NewEmailAddress),
-                PasswordHashChangedDomainEvent e => new PasswordHashChangedMessageContract(e.AggregateId),
-
-                _ => throw new NotSupportedException()
-            };
+            return typeof(TDomainEventType);
         }
+
+        public Task<IMessageContract> Create(IDomainEvent domainEvent)
+        {
+            if (domainEvent is not TDomainEventType typedDomainEvent)
+                throw new InvalidCastException();
+
+            return Create(typedDomainEvent);
+        }
+
+        public abstract Task<IMessageContract> Create(TDomainEventType domainEvent);
     }
 }

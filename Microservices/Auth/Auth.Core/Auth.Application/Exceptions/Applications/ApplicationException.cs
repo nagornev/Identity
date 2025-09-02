@@ -1,4 +1,4 @@
-﻿using Results;
+﻿using OperationResults;
 
 namespace Auth.Application.Exceptions.Applications
 {

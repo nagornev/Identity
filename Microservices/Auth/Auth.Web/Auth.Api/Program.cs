@@ -1,27 +1,10 @@
-using Auth.Persistence.Contexts;
-using Microsoft.EntityFrameworkCore;
+using Auth.Api.Extensions.Startup;
+using System.IdentityModel.Tokens.Jwt;
 
-var builder = WebApplication.CreateBuilder(args);
-var services = builder.Services;
-var configuration = builder.Configuration;
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
 
-services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString(nameof(ApplicationDbContext))));
-services.AddControllers();
-services.AddEndpointsApiExplorer();
-services.AddSwaggerGen();
+var app = WebApplication.CreateBuilder(args)
+                        .CreateApplication();
 
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+await app.StartApplicationAsync();

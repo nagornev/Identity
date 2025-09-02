@@ -12,6 +12,12 @@ namespace Auth.Persistence.Configurations
 
             builder.HasIndex(x => x.UserId);
 
+            builder.OwnsOne(s => s.Audience, sa =>
+            {
+                sa.Property(a => a.Value)
+                   .HasColumnName(nameof(Session.Audience));
+            });
+
             builder.OwnsOne(s => s.Device, sd =>
             {
                 sd.Property(d => d.Value)

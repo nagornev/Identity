@@ -28,7 +28,7 @@ namespace Auth.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task HandleAsync(CancellationToken cancellation = default)
+        public async Task DeleteInvalidPermissionsAsync(CancellationToken cancellation = default)
         {
             IAsyncEnumerable<User> usersWithInvalidPermissions = _userQueryService.FindUsersWithInvalidPermissionsAsyncStream(_timeProvider.NowUnix());
 

@@ -13,16 +13,6 @@ namespace Auth.Security.Builders
             }
         }
 
-        public static RSA FromKeys(byte[] privateKey, byte[] publicKey)
-        {
-            RSA rsa = RSA.Create();
-
-            rsa.ImportRSAPrivateKey(new ReadOnlySpan<byte>(privateKey), out var _);
-            rsa.ImportRSAPublicKey(new ReadOnlySpan<byte>(publicKey), out var _);
-
-            return rsa;
-        }
-
         public static RSA FromPrivateKey(byte[] key)
         {
             RSA rsa = RSA.Create();

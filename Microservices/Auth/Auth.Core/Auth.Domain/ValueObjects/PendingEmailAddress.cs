@@ -21,7 +21,7 @@ namespace Auth.Domain.ValueObjects
 
         internal static PendingEmailAddress Create(EmailAddress emailAddress)
         {
-            if (emailAddress == null)
+            if (emailAddress is null)
                 throw new EmailAddressNullDomainException();
 
             return new PendingEmailAddress(emailAddress, false, Guid.NewGuid());
@@ -32,17 +32,21 @@ namespace Auth.Domain.ValueObjects
             return new PendingEmailAddress(EmailAddress, true, Version);
         }
 
-        public EmailAddress EmailAddress { get; }
+        public EmailAddress EmailAddress { get; private set; }
 
-        public bool IsConfirmed { get; }
+        public bool IsConfirmed { get; private set; }
 
-        public Guid Version { get; }
+        public Guid Version { get; private set; }
 
         protected override IEnumerable<object> GetEqualityComponents()
         {
             yield return EmailAddress;
             yield return IsConfirmed;
             yield return Version;
+        }
+
+        private PendingEmailAddress()
+        {
         }
     }
 }

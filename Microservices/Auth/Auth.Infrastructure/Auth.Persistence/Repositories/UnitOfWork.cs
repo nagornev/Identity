@@ -17,26 +17,25 @@ namespace Auth.Persistence.Repositories
 
         public async Task SaveAsync(CancellationToken cancellation = default)
         {
-            var outboxMessages = _context.ChangeTracker.Entries<AggregateRoot>()
-                                                       .Select(x => x.Entity)
-                                                       .SelectMany(aggregateRoot =>
-                                                       {
-                                                           var domainEvents = aggregateRoot.GetDomainEvents();
+            LinkedList<OutboxMessage> outboxMessages = new LinkedList<OutboxMessage>();
 
-                                                           aggregateRoot.ClearDomainEvents();
-
-                                                           return domainEvents;
-                                                       })
-                                                       .Select(domainEvent =>
-                                                               OutboxMessage.Create(domainEvent.AggregateId,
-                                                                                    domainEvent.GetType().Name,
-                                                                                    JsonConvert.SerializeObject(domainEvent,
-                                                                                                                new JsonSerializerSettings
-                                                                                                                {
-                                                                                                                    TypeNameHandling = TypeNameHandling.All
-                                                                                                                }),
-                                                                                    domainEvent.OccurredOn))
-                                                       .ToArray();
+            foreach(AggregateRoot aggregate in _context.ChangeTracker.Entries<AggregateRoot>()
+                                                                     .Select(x => x.Entity))
+            {
+                foreach(OutboxMessage outboxMessage in aggregate.GetDomainEvents()
+                                                                .Select(domainEvent => OutboxMessage.Create(domainEvent.AggregateId,
+                                                                                                            domainEvent.GetType().Name,
+                                                                                                            JsonConvert.SerializeObject(domainEvent,
+                                                                                                                                        new JsonSerializerSettings
+                                                                                                                                        {
+                                                                                                                                            TypeNameHandling = TypeNameHandling.All
+                                                                                                                                        }),
+                                                                                                            domainEvent.OccurredOn)))
+                {
+                    outboxMessages.AddLast(outboxMessage);
+                }
+                aggregate.ClearDomainEvents();
+            }
 
             await _context.Outbox.AddRangeAsync(outboxMessages);
 

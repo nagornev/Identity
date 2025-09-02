@@ -10,13 +10,13 @@ namespace Auth.Security.Validators
 {
     public abstract class JwtTokenValidator : ITokenValidator
     {
-        private readonly ISecurityKeyProvider _securityKeyProvider;
+        private readonly ISecurityKeysProvider _securityKeyProvider;
 
         private readonly IJwtSignatureValidator _jwtSignatureValidator;
 
         private readonly ApplicationOptions _applicationOptions;
 
-        public JwtTokenValidator(ISecurityKeyProvider securityKeyProvider,
+        public JwtTokenValidator(ISecurityKeysProvider securityKeyProvider,
                                  IJwtSignatureValidator jwtValidator,
                                  IOptions<ApplicationOptions> applicationOptions)
         {
@@ -27,7 +27,7 @@ namespace Auth.Security.Validators
 
         public bool Validate(string token, KeyPair keyPair, out IReadOnlyDictionary<string, string> payload)
         {
-            SecurityKey securityKey = _securityKeyProvider.Create(keyPair);
+            SecurityKey securityKey = _securityKeyProvider.CreateVerify(keyPair);
 
             return _jwtSignatureValidator.Validate(token, new()
             {

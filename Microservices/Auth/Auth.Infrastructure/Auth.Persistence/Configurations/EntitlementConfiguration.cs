@@ -13,10 +13,10 @@ namespace Auth.Persistence.Configurations
 
             builder.HasIndex(x => x.RoleId);
 
-            builder.HasOne<Role>()
-                   .WithMany()
-                   .HasForeignKey(e => e.RoleId)
-                   .OnDelete(DeleteBehavior.Cascade);
+            //builder.HasOne<Role>()
+            //       .WithMany()
+            //       .HasForeignKey(e => e.RoleId)
+            //       .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne<Scope>()
                    .WithMany()

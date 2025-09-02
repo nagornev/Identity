@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 
-namespace Results
+namespace OperationResults
 {
     [Serializable]
     public class ResultError

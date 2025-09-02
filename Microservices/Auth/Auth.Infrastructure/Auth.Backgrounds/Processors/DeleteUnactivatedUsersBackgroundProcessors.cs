@@ -1,20 +1,41 @@
 ﻿using Auth.Application.Abstractions.Services;
+using Auth.Application.Options;
 using Auth.Backgrounds.Abstractions.Processors;
+using Hangfire;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using System.Drawing;
 
 namespace Auth.Backgrounds.Processors
 {
-    public class DeleteUnactivatedUsersBackgroundProcessors : IBackgroundProcessor
+    public class DeleteUnactivatedUsersBackgroundProcessors : IDeleteUnactivatedUsersBackgroundProcessor
     {
-        private readonly IDeleteUnactivatedUsersBackgroundService _deleteUnactivatedUsersBackgroundService;
+        private const string _job = "delete-unactivated-users";
 
-        public DeleteUnactivatedUsersBackgroundProcessors(IDeleteUnactivatedUsersBackgroundService deleteUnactivatedUsersBackgroundService)
+        private readonly IServiceProvider _serviceProvider;
+
+        public DeleteUnactivatedUsersBackgroundProcessors(IServiceProvider serviceProvider)
         {
-            _deleteUnactivatedUsersBackgroundService = deleteUnactivatedUsersBackgroundService;
+            _serviceProvider = serviceProvider;
         }
 
-        public async Task HandleAsync(CancellationToken cancellation)
+        public Task StartAsync(CancellationToken cancellation)
         {
-            await _deleteUnactivatedUsersBackgroundService.HandleAsync(cancellation);
+            RecurringJob.AddOrUpdate(_job,
+                                     () => ExecuteAsync(cancellation),
+                                     Cron.Daily);
+
+            return Task.CompletedTask;
+        }
+
+        [AutomaticRetry(Attempts = 10)]
+        public async Task ExecuteAsync(CancellationToken cancellation = default)
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                IDeleteUnactivatedUsersBackgroundService deleteUnactivatedUsersBackgroundService = scope.ServiceProvider.GetRequiredService<IDeleteUnactivatedUsersBackgroundService>();
+                await deleteUnactivatedUsersBackgroundService.DeleteUnactivatedUsersAsync(cancellation);
+            }
         }
     }
 }

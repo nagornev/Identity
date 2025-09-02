@@ -1,10 +1,11 @@
 ﻿using Auth.Domain.Entities;
 using Auth.Domain.Exceptions.Domains.Roles;
 using DDD.Primitives;
+using System.Drawing;
 
 namespace Auth.Domain.Aggregates
 {
-    public class Role : AggregateRoot
+    public partial class Role : AggregateRoot
     {
         private List<Entitlement> _entitlements = new();
 
@@ -68,4 +69,14 @@ namespace Auth.Domain.Aggregates
             _entitlements.Remove(entitlement);
         }
     }
+
+    #region Ef
+    public partial class Role
+    {
+        private Role()
+        {
+
+        }
+    }
+    #endregion
 }

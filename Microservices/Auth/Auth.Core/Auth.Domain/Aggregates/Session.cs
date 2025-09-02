@@ -18,7 +18,7 @@ namespace Auth.Domain.Aggregates
                         IpAddress ipAddress,
                         long createdAt,
                         long expiresAt,
-                        bool isActive)
+                        bool activated)
         {
             Id = id;
             UserId = userId;
@@ -30,7 +30,7 @@ namespace Auth.Domain.Aggregates
             IpAddress = ipAddress;
             CreatedAt = createdAt;
             ExpiresAt = expiresAt;
-            IsActive = isActive;
+            Activated = activated;
         }
 
         /// <summary>
@@ -38,11 +38,14 @@ namespace Auth.Domain.Aggregates
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="kid"></param>
+        /// <param name="publicKey"></param>
+        /// <param name="audience"></param>
         /// <param name="device"></param>
         /// <param name="ipAddress"></param>
         /// <param name="createdAt"></param>
         /// <param name="expiresAt"></param>
         /// <returns></returns>
+        /// <exception cref="AudienceNullDomainException"></exception>
         /// <exception cref="DeviceNullDomainException"></exception>
         /// <exception cref="IpAddressNullDomainException"></exception>
         public static Session Create(Guid userId,
@@ -103,15 +106,15 @@ namespace Auth.Domain.Aggregates
 
         public bool Closed { get; private set; }
 
-        public bool Deleted { get; private set; }
-
         public bool Revoked { get; private set; }
 
-        public bool IsActive { get; private set; }
+        public bool Activated { get; private set; }
+
+        public bool Deleted { get; private set; }
 
         public bool IsValidAt(long timestamp)
         {
-            if (!IsActive || Closed || Revoked || Deleted)
+            if (!Activated || Closed || Revoked || Deleted)
                 return false;
 
             return ExpiresAt >= timestamp;
@@ -123,11 +126,9 @@ namespace Auth.Domain.Aggregates
                 return;
 
             Kid = kid;
-
-            AddDomainEvent(new SessionKidChangedDomainEvent(Id, Kid));
         }
 
-        public void UpdateSession(string publicKey, long updatedAt)
+        public void Update(string publicKey, long updatedAt)
         {
             if (UpdatedAt >= updatedAt)
                 throw new UpdatedAtOutOfRangeDomainException(UpdatedAt);
@@ -139,18 +140,23 @@ namespace Auth.Domain.Aggregates
             AddDomainEvent(new SessionUpdatedDomainEvent(Id, Kid, Version, Device.Value, IpAddress.Value));
         }
 
-        public void CloseSession()
+        public void Close()
         {
             Closed = true;
 
             AddDomainEvent(new SessionClosedDomainEvent(Id));
         }
 
-        public void RevokeSession()
+        public void Revoke()
         {
             Revoked = true;
 
             AddDomainEvent(new SessionRevokedDomainEvent(Id));
+        }
+
+        public void Activate()
+        {
+            Activated = true;
         }
 
         public void MarkAsDeleted()
@@ -158,11 +164,6 @@ namespace Auth.Domain.Aggregates
             Deleted = true;
 
             AddDomainEvent(new SessionDeletedDomainEvent(Id));
-        }
-
-        public void Activate()
-        {
-            IsActive = true;
         }
     }
 

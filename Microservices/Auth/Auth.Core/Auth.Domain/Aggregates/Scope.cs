@@ -51,7 +51,7 @@ namespace Auth.Domain.Aggregates
 
         public string Description { get; private set; }
 
-        public string GetHash()
+        public string GetName()
         {
             return $"{Action.Value}:{Resource.Value}";
         }

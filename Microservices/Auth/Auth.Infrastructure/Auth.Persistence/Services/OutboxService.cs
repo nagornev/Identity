@@ -10,6 +10,8 @@ namespace Auth.Persistence.Services
 {
     public class OutboxService : IOutboxService
     {
+        private const int _emptyOutboxBatchDelay = 5000;
+
         private static readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings()
         {
             TypeNameHandling = TypeNameHandling.All,
@@ -34,28 +36,34 @@ namespace Auth.Persistence.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task HandleMessageAsync(CancellationToken cancellation = default)
+        public async Task HandleAsync(CancellationToken cancellation = default)
         {
-            OutboxMessage? outboxMessage = await _outboxRepository.LockNextOutboxMessageAsync(_timeProvider.NowUnix(),
-                                                                                              cancellation);
+            IReadOnlyCollection<OutboxMessage> outboxBatch = await _outboxRepository.LockNextOutboxBatchAsync(_timeProvider.NowUnix(),
+                                                                                                              cancellation);
 
-            if (outboxMessage == null)
+            if (outboxBatch.Count < 1)
+            {
+                await Task.Delay(_emptyOutboxBatchDelay, cancellation);
                 return;
-
-            IDomainEvent domainEvent = JsonConvert.DeserializeObject<IDomainEvent>(outboxMessage.Payload,
-                                                                                   _jsonSerializerSettings)!;
-
-            try
-            {
-                await _publishEventService.PublishAsync(domainEvent, cancellation);
-
-                outboxMessage.MarkAsProccesed();
-                await _unitOfWork.SaveAsync();
             }
-            catch
+
+            await Task.WhenAll(outboxBatch.Select(outboxMessage => Task.Run(async () =>
             {
-                //TODO: log error
-            }
+                try
+                {
+                    IDomainEvent domainEvent = JsonConvert.DeserializeObject<IDomainEvent>(outboxMessage.Payload,
+                                                                                           _jsonSerializerSettings)!;
+
+                    await _publishEventService.PublishAsync(domainEvent);
+                    outboxMessage.MarkAsProccesed();
+                }
+                catch
+                {
+                    //TODO: log error
+                }
+            })));
+
+            await _unitOfWork.SaveAsync();
         }
     }
 }

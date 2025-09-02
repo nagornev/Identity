@@ -19,7 +19,7 @@ namespace Auth.Domain.ValueObjects
             return new Action(value);
         }
 
-        public string Value { get; }
+        public string Value { get; private set; }
 
         protected override IEnumerable<object> GetEqualityComponents()
         {

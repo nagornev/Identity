@@ -91,7 +91,8 @@ namespace Auth.Persistence.Repositories
 
         public async Task<bool> ExistsAsync(ISpecification<User> specification, CancellationToken cancellation = default)
         {
-            return await _context.Users.AnyAsync(specification.ToExpression(), cancellation);
+            return await _context.Users.WithIncludes()
+                                       .AnyAsync(specification.ToExpression(), cancellation);
         }
     }
 }

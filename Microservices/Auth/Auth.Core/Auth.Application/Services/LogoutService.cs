@@ -23,7 +23,7 @@ namespace Auth.Application.Services
 
             await foreach (Session session in sessions.WithCancellation(cancellation))
             {
-                session.CloseSession();
+                session.Close();
             }
 
             await _unitOfWork.SaveAsync(cancellation);
@@ -32,7 +32,7 @@ namespace Auth.Application.Services
         public async Task LogoutAsync(Guid sessionId, CancellationToken cancellation = default)
         {
             Session session = await _sessionQueryService.GetSessionByIdAsync(sessionId, cancellation);
-            session.CloseSession();
+            session.Close();
 
             await _unitOfWork.SaveAsync(cancellation);
         }

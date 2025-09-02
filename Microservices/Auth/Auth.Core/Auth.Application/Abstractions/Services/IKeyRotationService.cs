@@ -2,6 +2,6 @@
 {
     public interface IKeyRotationService
     {
-        Task<TimeSpan> RotateAsync(CancellationToken cancellation = default);
+        Task RotateAsync(CancellationToken cancellation = default);
     }
 }

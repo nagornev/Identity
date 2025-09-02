@@ -1,22 +1,34 @@
 ﻿using Auth.Application.Abstractions.Services;
 using Auth.Backgrounds.Abstractions.Processors;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Auth.Backgrounds.Processors
 {
     public class OutboxBackgroundProcessor : IOutboxBackroundProcessor
     {
-        private readonly IOutboxService _outboxService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public OutboxBackgroundProcessor(IOutboxService outboxService)
+        public OutboxBackgroundProcessor(IServiceProvider serviceProvider)
         {
-            _outboxService = outboxService;
+            _serviceProvider = serviceProvider;
         }
 
-        public async Task HandleAsync(CancellationToken cancellation)
+        public async Task StartAsync(CancellationToken cancellation)
         {
             while (!cancellation.IsCancellationRequested)
             {
-                await _outboxService.HandleMessageAsync(cancellation);
+                try
+                {
+                    using (var scope = _serviceProvider.CreateScope())
+                    {
+                        IOutboxService outboxService = scope.ServiceProvider.GetRequiredService<IOutboxService>();
+                        await outboxService.HandleAsync(cancellation);
+                    }
+                }
+                catch
+                {
+                    continue;
+                }
             }
         }
     }

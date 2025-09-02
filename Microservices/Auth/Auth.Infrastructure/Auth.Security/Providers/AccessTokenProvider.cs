@@ -15,7 +15,7 @@ namespace Auth.Security.Providers
 {
     public class AccessTokenProvider : IAccessTokenProvider
     {
-        private readonly ISecurityKeyProvider _securityKeyProvider;
+        private readonly ISecurityKeysProvider _securityKeyProvider;
 
         private readonly ITimeProvider _timeProvider;
 
@@ -25,7 +25,7 @@ namespace Auth.Security.Providers
 
         private readonly JwtSecurityTokenHandler _handler;
 
-        public AccessTokenProvider(ISecurityKeyProvider securityKeyProvider,
+        public AccessTokenProvider(ISecurityKeysProvider securityKeyProvider,
                                    ITimeProvider timeProvider,
                                    IOptions<ApplicationOptions> applicationOptions,
                                    IOptions<AccessTokenOptions> tokenOptions)
@@ -40,7 +40,7 @@ namespace Auth.Security.Providers
 
         public string Create(AccessTokenCreationParameters parameters, KeyPair keyPair)
         {
-            SecurityKey securityKey = _securityKeyProvider.Create(keyPair);
+            SecurityKey securityKey = _securityKeyProvider.CreateSign(keyPair);
 
             Claim[] claims = CreateClaims(parameters.User, parameters.Session, parameters.Scopes);
             SigningCredentials credentials = CreateCredentials(securityKey, keyPair.Algorithm);
@@ -82,7 +82,7 @@ namespace Auth.Security.Providers
 
             foreach (Scope scope in scopes)
             {
-                builder.Append($"{scope.GetHash()} ");
+                builder.Append($"{scope.GetName()} ");
             }
 
             return new Claim(ClaimNames.Scopes, builder.ToString());

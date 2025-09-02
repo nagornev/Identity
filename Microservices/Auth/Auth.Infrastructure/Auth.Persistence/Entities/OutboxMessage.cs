@@ -64,6 +64,8 @@
 
         public void MarkAsProccesed()
         {
+            LockedAt = null;
+            LockedUntil = null;
             Processed = true;
         }
     }
@@ -75,6 +77,6 @@
         {
         }
     }
-    #endregion
+    #endregion   
 
 }

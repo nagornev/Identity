@@ -3,7 +3,10 @@ using Auth.Application.DTOs;
 using Auth.Security.Abstractions.Providers;
 using Auth.Security.Options;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Logging;
+using System.Net;
 using VaultSharp;
+using VaultSharp.Core;
 
 namespace Auth.Security.Storages
 {
@@ -26,17 +29,15 @@ namespace Auth.Security.Storages
         public override async Task SetPrimaryAsync(KeyPair keyPair, CancellationToken cancellation = default)
         {
             KeyPair previewPrimaryKey = await GetPrimaryAsync(cancellation);
-            var previewPrimaryKeyDictionary = KeyPairToDictionary(previewPrimaryKey);
 
-            await _vaultClient.V1.Secrets.KeyValue.V2.WriteSecretAsync(
-                    path: $"{_keyStorageOptions.BasePath}/{previewPrimaryKey.Kid}",
-                    data: previewPrimaryKeyDictionary);
-
+            if(previewPrimaryKey != null)
+            {
+                var previewPrimaryKeyDictionary = KeyPairToDictionary(previewPrimaryKey);
+                await SetKeyPairAsync(previewPrimaryKeyDictionary, $"{_keyStorageOptions.BasePath}/{previewPrimaryKey.Kid}");
+            }
+            
             var nextPrimaryKey = KeyPairToDictionary(keyPair);
-
-            await _vaultClient.V1.Secrets.KeyValue.V2.WriteSecretAsync(
-                    path: $"{_keyStorageOptions.BasePath}/{_keyStorageOptions.PrimaryKey}",
-                    data: nextPrimaryKey);
+            await SetKeyPairAsync(nextPrimaryKey, $"{_keyStorageOptions.BasePath}/{_keyStorageOptions.PrimaryKey}");
         }
 
         public override async Task DeleteKeyPairAsync(Guid kid, CancellationToken cancellation = default)
@@ -48,46 +49,77 @@ namespace Auth.Security.Storages
         {
             KeyPair primaryKey = await GetPrimaryAsync(cancellation);
 
-            if (primaryKey.Kid == kid)
-                return primaryKey;
-
-            var secret = await _vaultClient.V1.Secrets.KeyValue.V2.ReadSecretAsync($"{_keyStorageOptions.BasePath}/{kid}");
-            return DictionaryToKeyPair(secret.Data.Data);
+            return primaryKey.Kid == kid ?
+                    primaryKey:
+                    await GetKeyPairAsync($"{_keyStorageOptions.BasePath}/{kid}");
         }
 
         public override async Task<IReadOnlyCollection<KeyPair>> GetKeyPairsAsync(CancellationToken cancellation = default)
         {
-            var paths = await _vaultClient.V1.Secrets.KeyValue.V2.ReadSecretPathsAsync($"{_keyStorageOptions.BasePath}/");
-
-            var keyPairs = await Task.WhenAll(paths.Data.Keys
-                                                        .Select(x => x.TrimEnd('/'))
-                                                        .Select(async key =>
-                                                        {
-                                                            if (key == _keyStorageOptions.PrimaryKey)
-                                                                return await GetPrimaryAsync(cancellation);
-
-                                                            return Guid.TryParse(key, out var kid) ?
-                                                                   await GetKeyPairAsync(kid, cancellation) :
-                                                                   null;
-                                                        }));
-
-            return keyPairs.Where(x => x != null)
-                           .DistinctBy(x => x!.Kid)
-                           .ToArray()!;
+            return await GetKeyPairsAsync($"{_keyStorageOptions.BasePath}");
         }
 
         public override async Task<KeyPair> GetPrimaryAsync(CancellationToken cancellation = default)
         {
-            var secret = await _vaultClient.V1.Secrets.KeyValue.V2.ReadSecretAsync($"{_keyStorageOptions.BasePath}/{_keyStorageOptions.PrimaryKey}");
-            return DictionaryToKeyPair(secret.Data.Data);
+            return await GetKeyPairAsync($"{_keyStorageOptions.BasePath}/{_keyStorageOptions.PrimaryKey}");
+        }
+
+        private async Task<KeyPair?> GetKeyPairAsync(string path, CancellationToken cancellation = default)
+        {
+            try
+            {
+                var secret = await _vaultClient.V1.Secrets.KeyValue.V2.ReadSecretAsync(path, mountPoint: _keyStorageOptions.MountPoint);
+                return DictionaryToKeyPair(secret.Data.Data);
+            }
+            catch(VaultApiException exception) when(exception.StatusCode == (int)HttpStatusCode.NotFound)
+            {
+                return default;
+            }
+        }
+
+        private async Task<IReadOnlyCollection<KeyPair>> GetKeyPairsAsync(string path, CancellationToken cancellation = default)
+        {
+            try
+            {
+
+                var paths = await _vaultClient.V1.Secrets.KeyValue.V2.ReadSecretPathsAsync(path, mountPoint: _keyStorageOptions.MountPoint);
+
+                var keyPairs = await Task.WhenAll(paths.Data.Keys
+                                                            .Select(x => x.TrimEnd('/'))
+                                                            .Select(async key =>
+                                                            {
+                                                                if (key == _keyStorageOptions.PrimaryKey)
+                                                                    return await GetPrimaryAsync(cancellation);
+
+                                                                return Guid.TryParse(key, out var kid) ?
+                                                                       await GetKeyPairAsync(kid, cancellation) :
+                                                                       null;
+                                                            }));
+
+                return keyPairs.Where(x => x != null)
+                               .DistinctBy(x => x!.Kid)
+                               .ToArray()!;
+            }
+            catch(VaultApiException exception) when(exception.StatusCode == (int)HttpStatusCode.NotFound)
+            {
+                return Array.Empty<KeyPair>();
+            }
+        }
+
+        private async Task SetKeyPairAsync(IDictionary<string, object> data, string path, CancellationToken cancellation = default)
+        {
+            await _vaultClient.V1.Secrets.KeyValue.V2.WriteSecretAsync(
+                    path: path,
+                    data: data,
+                    mountPoint: _keyStorageOptions.MountPoint);
         }
 
         private IDictionary<string, object> KeyPairToDictionary(KeyPair keyPair) => new Dictionary<string, object>
         {
             [Properties.Kid] = keyPair.Kid.ToString(),
             [Properties.Algorithm] = keyPair.Algorithm,
-            [Properties.PublicKey] = Convert.ToBase64String(keyPair.PublicKey),
             [Properties.PrivateKey] = Convert.ToBase64String(keyPair.PrivateKey),
+            [Properties.PublicKey] = Convert.ToBase64String(keyPair.PublicKey),
             [Properties.CreatedAt] = keyPair.CreatedAt,
             [Properties.ExpiresAt] = keyPair.ExpiresAt
         };
@@ -95,8 +127,8 @@ namespace Auth.Security.Storages
         private KeyPair DictionaryToKeyPair(IDictionary<string, object> dictionary) =>
             new KeyPair(Guid.Parse(dictionary[Properties.Kid].ToString()!),
                         dictionary[Properties.Algorithm].ToString()!,
-                        Convert.FromBase64String(dictionary[Properties.PublicKey].ToString()!),
                         Convert.FromBase64String(dictionary[Properties.PrivateKey].ToString()!),
+                        Convert.FromBase64String(dictionary[Properties.PublicKey].ToString()!),
                         long.Parse(dictionary[Properties.CreatedAt].ToString()!),
                         long.Parse(dictionary[Properties.ExpiresAt].ToString()!));
 

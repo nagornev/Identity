@@ -4,6 +4,6 @@ namespace Auth.Application.Abstractions.Services
 {
     public interface IRefreshService
     {
-        Task<TokenPair> RefreshAsync(string refreshToken, string newPublicKey, long timestamp, string signature, string device, string ipAddress, CancellationToken cancellation = default);
+        Task<TokenPair> RefreshAsync(string refreshToken, string newPublicKey, long timestamp, string signature, CancellationToken cancellation = default);
     }
 }

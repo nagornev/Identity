@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Results
+namespace OperationResults
 {
     public class ResultException : Exception
     {

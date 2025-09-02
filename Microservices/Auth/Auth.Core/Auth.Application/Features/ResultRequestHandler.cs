@@ -1,7 +1,7 @@
 ﻿using Auth.Application.Exceptions.Infrastructures;
 using Auth.Domain.Exceptions.Domains;
 using MediatR;
-using Results;
+using OperationResults;
 using ApplicationException = Auth.Application.Exceptions.Applications.ApplicationException;
 
 namespace Auth.Application.Features

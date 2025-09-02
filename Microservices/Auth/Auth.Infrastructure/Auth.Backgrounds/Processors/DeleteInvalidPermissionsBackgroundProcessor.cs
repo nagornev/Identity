@@ -1,6 +1,8 @@
 ﻿using Auth.Application.Abstractions.Services;
 using Auth.Application.Options;
 using Auth.Backgrounds.Abstractions.Processors;
+using Hangfire;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -12,21 +14,32 @@ namespace Auth.Backgrounds.Processors
 {
     public class DeleteInvalidPermissionsBackgroundProcessor : IDeleteInvalidPermissionsBackgroundProcessor
     {
-        private readonly IDeleteInvalidPermissionsBackgroundService _deleteInvalidPermissionsBackgroundService;
+        private const string _job = "delete-invalid-permissions";
 
-        private readonly ApplicationOptions _applicationOptions;
+        private readonly IServiceProvider _serviceProvider;
 
-        public DeleteInvalidPermissionsBackgroundProcessor(IDeleteInvalidPermissionsBackgroundService deleteInvalidPermissionsBackgroundService,
-                                                           IOptions<ApplicationOptions> applicationOptions)
+        public DeleteInvalidPermissionsBackgroundProcessor(IServiceProvider serviceProvider)
         {
-            _applicationOptions = applicationOptions.Value;
-            _deleteInvalidPermissionsBackgroundService = deleteInvalidPermissionsBackgroundService;
+            _serviceProvider = serviceProvider;
         }
 
-        public async Task HandleAsync(CancellationToken cancellation)
+        public Task StartAsync(CancellationToken cancellation)
         {
-            await _deleteInvalidPermissionsBackgroundService.HandleAsync(cancellation);
-            await Task.Delay(_applicationOptions.DeleteInvalidPermissionsDelay);
+            RecurringJob.AddOrUpdate(_job, 
+                                    () => ExecuteAsync(cancellation), 
+                                    Cron.Daily);
+
+            return Task.CompletedTask;
+        }
+
+        [AutomaticRetry(Attempts = 10)]
+        public async Task ExecuteAsync(CancellationToken cancellation = default)
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                IDeleteInvalidPermissionsBackgroundService deleteInvalidPermissionsBackgroundService = scope.ServiceProvider.GetRequiredService<IDeleteInvalidPermissionsBackgroundService>();
+                await deleteInvalidPermissionsBackgroundService.DeleteInvalidPermissionsAsync(cancellation);
+            }
         }
     }
 }

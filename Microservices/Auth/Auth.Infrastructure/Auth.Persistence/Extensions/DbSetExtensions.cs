@@ -3,21 +3,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Auth.Persistence.Extensions
 {
-    internal static class DbSetExtensions
+    public static class DbSetExtensions
     {
         public static IQueryable<User> WithIncludes(this DbSet<User> dbSet)
         {
             return dbSet.Include(x => x.Authentication)
                         .Include(x => x.Authorization)
-                            .ThenInclude(x => "_rolePermissions")
+                            .ThenInclude(x => x.RolePermissions)
                         .Include(x => x.Authorization)
-                            .ThenInclude(x => "_scopePermissions")
+                            .ThenInclude(x => x.ScopePermissions)
                         .Include(x => x.Profile);
         }
 
         public static IQueryable<Role> WithIncludes(this DbSet<Role> dbSet)
         {
-            return dbSet.Include(x => "_entitlements");
+            return dbSet.Include(x => x.Entitlements);
         }
     }
 }

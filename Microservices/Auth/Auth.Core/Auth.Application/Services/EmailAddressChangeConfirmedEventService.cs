@@ -10,7 +10,7 @@ using DDD.Repositories;
 
 namespace Auth.Application.Services
 {
-    internal class EmailAddressChangeConfirmedEventService : IEmailAddressChangeConfirmedEventService
+    public class EmailAddressChangeConfirmedEventService : IEmailAddressChangeConfirmedEventService
     {
         private readonly IChannelKeyStorage _channelKeyStorage;
 

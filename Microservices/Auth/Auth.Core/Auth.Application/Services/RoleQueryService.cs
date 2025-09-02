@@ -24,7 +24,7 @@ namespace Auth.Application.Services
 
         public async Task<Role> GetRoleByIdAsync(Guid id, CancellationToken cancellation = default)
         {
-            RoleIdSpecification roleIdSpecification = new RoleIdSpecification(id);
+            RoleByIdSpecification roleIdSpecification = new RoleByIdSpecification(id);
 
             return await _roleRepository.GetAsync(roleIdSpecification, cancellation) ??
                    throw new RoleNotFoundApplicationException(id);
@@ -32,7 +32,7 @@ namespace Auth.Application.Services
 
         public async Task<Role> GetRoleByNameAsync(string name, CancellationToken cancellation = default)
         {
-            RoleNameSpecification roleNameSpecification = new RoleNameSpecification(name);
+            RoleByNameSpecification roleNameSpecification = new RoleByNameSpecification(name);
 
             return await _roleRepository.GetAsync(roleNameSpecification, cancellation) ??
                    throw new RoleNotFoundApplicationException(name);

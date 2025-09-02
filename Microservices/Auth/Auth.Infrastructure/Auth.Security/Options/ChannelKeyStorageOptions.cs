@@ -2,9 +2,7 @@
 {
     public class ChannelKeyStorageOptions : VaultKeyStorageOptions
     {
-        public ChannelKeyStorageOptions(string primaryKey,
-                                        string basePath)
-            : base(primaryKey, basePath)
+        public ChannelKeyStorageOptions(string primaryKey, string mountPoint, string basePath) : base(primaryKey, mountPoint, basePath)
         {
         }
     }

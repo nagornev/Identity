@@ -7,11 +7,11 @@ namespace Auth.Security.Extensions
 {
     public static class KeyStorageReaderExtensions
     {
-        public static async Task<IReadOnlyCollection<JsonWebKey>> GetJsonWebKeySetAsync(this IKeyStorageReader keyStorage, ISecurityKeyProvider securityKeyProvider, CancellationToken cancellation = default)
+        public static async Task<IReadOnlyCollection<JsonWebKey>> GetJsonWebKeySetAsync(this IKeyStorageReader keyStorage, ISecurityKeysProvider securityKeyProvider, CancellationToken cancellation = default)
         {
             IReadOnlyCollection<KeyPair> keyPairs = await keyStorage.GetKeyPairsAsync(cancellation);
 
-            return keyPairs.Select(securityKeyProvider.Create)
+            return keyPairs.Select(securityKeyProvider.CreateVerify)
                            .Select(JsonWebKeyConverter.ConvertFromSecurityKey)
                            .ToArray();
         }

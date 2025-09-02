@@ -2,6 +2,6 @@
 {
     public interface IOutboxService
     {
-        Task HandleMessageAsync(CancellationToken cancellation = default);
+        Task HandleAsync(CancellationToken cancellation = default);
     }
 }

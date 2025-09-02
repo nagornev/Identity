@@ -10,18 +10,20 @@ namespace Auth.Persistence.Configurations
         {
             builder.HasKey(a => a.Id);
 
-            builder.Ignore(a => a.RolePermissions);
-            builder.Ignore(a => a.ScopePermissions);
+            builder.Navigation(a => a.RolePermissions).UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Navigation(a => a.ScopePermissions).UsePropertyAccessMode(PropertyAccessMode.Field);
 
-            builder.HasMany<RolePermission>("_rolePermissions")
+            builder.HasMany(a => a.RolePermissions)
                    .WithOne()
                    .HasForeignKey(rp => rp.AuthorizationId)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany<ScopePermission>("_scopePermissions")
+            builder.HasMany(a => a.ScopePermissions)
                    .WithOne()
                    .HasForeignKey(sp => sp.AuthorizationId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            
         }
     }
 }

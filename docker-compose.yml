@@ -1,12 +1,12 @@
 version: "3.9"
 
 services:
-  identity_db:
-    container_name: identity_db
+  database:
+    container_name: database
     image: mcr.microsoft.com/mssql/server:latest
     restart: always
     volumes:
-        - ./Data/Auth:/var/opt/mssql/data
+        - ./Data/Database:/var/opt/mssql/data
     ports:
       - 5001:1433
     environment:
@@ -14,7 +14,51 @@ services:
       SA_PASSWORD: "HHHHhhhh1111"
     networks:
       - application
-      
+
+  scheduler:
+    container_name: scheduler
+    image: postgres:16
+    environment:
+      POSTGRES_DB: Scheduler
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: HHHHhhhh1111
+    ports:
+      - "5002:5432"
+    volumes:
+      - ./Data/Scheduler:/var/lib/postgresql/data
+    networks:
+      - application
+  
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:4-management
+    hostname: rabbitmq
+    restart: always
+    volumes:
+      - ./Data/RabbitMQ:/var/lib/rabbitmq
+    ports:
+      - 15672:15672
+      - 5672:5672
+    environment:
+      - RABBITMQ_DEFAULT_USER=mquser
+      - RABBITMQ_DEFAULT_PASS=HHHHhhhh1111
+    networks:
+      - application
+ 
+  vault:
+    image: hashicorp/vault:1.20.1
+    container_name: vault
+    ports:
+      - "8200:8200"
+    volumes:
+      - ./Data/Vault:/vault/file
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: myroot
+      VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8200"
+    cap_add:
+      - IPC_LOCK
+
+
   adminer:
     container_name: adminer
     image: adminer

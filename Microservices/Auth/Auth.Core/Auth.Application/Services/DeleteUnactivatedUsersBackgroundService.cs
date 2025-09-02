@@ -28,7 +28,7 @@ namespace Auth.Application.Services
             _applicationOptions = applicationOptions.Value;
         }
 
-        public async Task HandleAsync(CancellationToken cancellation = default)
+        public async Task DeleteUnactivatedUsersAsync(CancellationToken cancellation = default)
         {
             long timestamp = _timeProvider.NowUnix() - _applicationOptions.UnactivatedUsersLifetime;
 

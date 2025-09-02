@@ -18,7 +18,7 @@ namespace Auth.Domain.ValueObjects
             return new TokenVersion(value);
         }
 
-        public Guid Value { get; }
+        public Guid Value { get; private set; }
 
         protected override IEnumerable<object> GetEqualityComponents()
         {

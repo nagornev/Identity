@@ -8,7 +8,7 @@ namespace Auth.Security.Validators
 {
     public class ChannelTokenValidator : JwtTokenValidator, IChannelTokenValidator
     {
-        public ChannelTokenValidator(ISecurityKeyProvider securityKeyProvider,
+        public ChannelTokenValidator(ISecurityKeysProvider securityKeyProvider,
                                      IJwtSignatureValidator jwtValidator,
                                      IOptions<ApplicationOptions> applicationOptions)
             : base(securityKeyProvider, jwtValidator, applicationOptions)

@@ -13,10 +13,10 @@ namespace Auth.Persistence.Configurations
 
             builder.HasIndex(sp => sp.AuthorizationId);
 
-            builder.HasOne<Authorization>()
-                   .WithMany()
-                   .HasForeignKey(sp => sp.AuthorizationId)
-                   .OnDelete(DeleteBehavior.Cascade);
+            //builder.HasOne<Authorization>()
+            //       .WithMany()
+            //       .HasForeignKey(sp => sp.AuthorizationId)
+            //       .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne<Scope>()
                    .WithMany()

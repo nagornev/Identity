@@ -13,7 +13,7 @@ namespace Auth.Persistence.Configurations
 
             builder.HasIndex(u => u.Id);
 
-            builder.Property(u => u.IsActive)
+            builder.Property(u => u.Activated)
                    .IsRequired();
 
             builder.HasOne(a => a.Authentication)

@@ -13,7 +13,7 @@ namespace Auth.Security.Providers
 {
     public class ChannelTokenProvider : IChannelTokenProvider
     {
-        private readonly ISecurityKeyProvider _securityKeyProvider;
+        private readonly ISecurityKeysProvider _securityKeyProvider;
 
         private readonly ITimeProvider _timeProvider;
 
@@ -23,7 +23,7 @@ namespace Auth.Security.Providers
 
         private readonly JwtSecurityTokenHandler _handler;
 
-        public ChannelTokenProvider(ISecurityKeyProvider securityKeyProvider,
+        public ChannelTokenProvider(ISecurityKeysProvider securityKeyProvider,
                                     ITimeProvider timeProvider,
                                     IOptions<ApplicationOptions> applicationOptions,
                                     IOptions<ChannelTokenOptions> tokenOptions)
@@ -38,7 +38,7 @@ namespace Auth.Security.Providers
 
         public string Create(ChannelTokenCreationParameters parameters, KeyPair keyPair)
         {
-            SecurityKey securityKey = _securityKeyProvider.Create(keyPair);
+            SecurityKey securityKey = _securityKeyProvider.CreateSign(keyPair);
 
             Claim[] claims = CreateClaims(parameters);
             SigningCredentials credentials = CreateCredentials(securityKey, keyPair.Algorithm);

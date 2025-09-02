@@ -2,8 +2,10 @@
 {
     public static class InfrastructuireErrorTypes
     {
-        public const int Unavailable = 1;
+        public const int Invalid = 1;
 
-        public const int TransactionFailed = 2;
+        public const int Unavailable = 2;
+
+        public const int Canceled = 3;
     }
 }

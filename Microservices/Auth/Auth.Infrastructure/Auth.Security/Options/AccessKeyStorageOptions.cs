@@ -2,9 +2,7 @@
 {
     public class AccessKeyStorageOptions : VaultKeyStorageOptions
     {
-        public AccessKeyStorageOptions(string primaryKey,
-                                       string basePath)
-            : base(primaryKey, basePath)
+        public AccessKeyStorageOptions(string primaryKey, string mountPoint, string basePath) : base(primaryKey, mountPoint, basePath)
         {
         }
     }

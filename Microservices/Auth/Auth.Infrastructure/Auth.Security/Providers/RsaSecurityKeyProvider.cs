@@ -8,15 +8,28 @@ namespace Auth.Security.Providers
 {
     public class RsaSecurityKeyProvider : ISecurityKeyProvider
     {
-        public bool CanHandle(string algorithm) => algorithm == SecurityAlgorithms.RsaSha256;
-
-        public SecurityKey Create(KeyPair key)
+        public string GetHandableAlgorithm()
         {
-            RSA rsa = RsaBuilder.FromKeys(key.PrivateKey, key.PublicKey);
+            return SecurityAlgorithms.RsaSha256;
+        }
+
+        public SecurityKey CreateSign(KeyPair keyPair)
+        {
+            RSA rsa = RsaBuilder.FromPrivateKey(keyPair.PrivateKey);
 
             return new RsaSecurityKey(rsa)
             {
-                KeyId = key.Kid.ToString()
+                KeyId = keyPair.Kid.ToString()
+            };
+        }
+
+        public SecurityKey CreateVerify(KeyPair keyPair)
+        {
+            RSA rsa = RsaBuilder.FromPublicKey(keyPair.PublicKey);
+
+            return new RsaSecurityKey(rsa)
+            {
+                KeyId = keyPair.Kid.ToString()
             };
         }
     }

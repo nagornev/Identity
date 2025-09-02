@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Results
+namespace OperationResults
 {
     [Serializable]
     public class Result

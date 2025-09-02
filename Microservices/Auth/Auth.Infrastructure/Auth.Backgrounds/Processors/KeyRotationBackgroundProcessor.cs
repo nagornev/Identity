@@ -1,23 +1,47 @@
 ﻿using Auth.Application.Abstractions.Services;
+using Auth.Application.Options;
+using Hangfire.Common;
+using Hangfire;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Auth.Backgrounds.Processors
 {
-    public class KeyRotationBackgroundProcessor<TKeyRotationServiceType>
+    public class KeyRotationBackgroundProcessor<TKeyRotationServiceType, TKeyOptionsType>
         where TKeyRotationServiceType : IKeyRotationService
+        where TKeyOptionsType: KeyOptions
     {
-        private readonly IKeyRotationService _keyRotationService;
+        private readonly string _job;
 
-        public KeyRotationBackgroundProcessor(TKeyRotationServiceType keyRotationService)
+        private readonly IServiceProvider _serviceProvider;
+
+        private readonly TKeyOptionsType _keyOptions;
+
+        public KeyRotationBackgroundProcessor(string jobName,
+                                              IServiceProvider serviceProvider,
+                                              IOptions<TKeyOptionsType> keyOptions)
         {
-            _keyRotationService = keyRotationService;
+            _job = jobName;
+            _serviceProvider = serviceProvider;
+            _keyOptions = keyOptions.Value;
         }
 
-        public async Task HandleAsync(CancellationToken cancellation)
+        public Task StartAsync(CancellationToken cancellation)
         {
-            while (!cancellation.IsCancellationRequested)
+            RecurringJob.AddOrUpdate(_job,
+                                     () => ExecuteAsync(cancellation),
+                                     _keyOptions.RotationInterval);
+
+            return Task.CompletedTask;
+        }
+
+        [AutomaticRetry(Attempts = int.MaxValue)]
+        public async Task ExecuteAsync(CancellationToken cancellation = default)
+        {
+            using (var scope = _serviceProvider.CreateScope())
             {
-                TimeSpan delay = await _keyRotationService.RotateAsync(cancellation);
-                await Task.Delay(delay);
+                TKeyRotationServiceType keyRotationService = scope.ServiceProvider.GetRequiredService<TKeyRotationServiceType>();
+                await keyRotationService.RotateAsync(cancellation);
             }
         }
     }

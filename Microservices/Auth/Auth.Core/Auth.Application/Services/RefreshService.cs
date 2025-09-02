@@ -28,11 +28,11 @@ namespace Auth.Application.Services
 
         private readonly ITimeProvider _timeProvider;
 
-        private readonly IAccessKeyStorage _accessKeysStorage;
+        private readonly IAccessKeyStorage _accessKeyStorage;
 
-        private readonly IRefreshKeyStorage _refreshKeysStorage;
+        private readonly IRefreshKeyStorage _refreshKeyStorage;
 
-        private readonly RefreshOptions _options;
+        private readonly WindowOptions _options;
 
         private readonly IUnitOfWork _unitOfWork;
 
@@ -44,9 +44,9 @@ namespace Auth.Application.Services
                               IAccessTokenProvider accessTokenProvider,
                               IRefreshTokenProvider refreshTokenProvider,
                               ITimeProvider timeProvider,
-                              IAccessKeyStorage accessKeysStorage,
-                              IRefreshKeyStorage refreshKeysStorage,
-                              IOptions<RefreshOptions> options,
+                              IAccessKeyStorage accessKeyStorage,
+                              IRefreshKeyStorage refreshKeyStorage,
+                              IOptions<WindowOptions> options,
                               IUnitOfWork unitOfWork)
         {
             _refreshValidationService = refreshValidationService;
@@ -57,8 +57,8 @@ namespace Auth.Application.Services
             _accessTokenProvider = accessTokenProvider;
             _refreshTokenProvider = refreshTokenProvider;
             _timeProvider = timeProvider;
-            _accessKeysStorage = accessKeysStorage;
-            _refreshKeysStorage = refreshKeysStorage;
+            _accessKeyStorage = accessKeyStorage;
+            _refreshKeyStorage = refreshKeyStorage;
             _unitOfWork = unitOfWork;
             _options = options.Value;
         }
@@ -67,14 +67,12 @@ namespace Auth.Application.Services
                                                   string newPublicKey,
                                                   long timestamp,
                                                   string signature,
-                                                  string device,
-                                                  string ipAddress,
                                                   CancellationToken cancellation = default)
         {
             _refreshValidationService.ValidateWindow(timestamp, _options.Window);
 
             Guid refreshTokenKid = _tokenKidProvider.Get(refreshToken);
-            KeyPair refreshValidationKey = await _refreshKeysStorage.GetKeyPairAsync(refreshTokenKid, cancellation);
+            KeyPair refreshValidationKey = await _refreshKeyStorage.GetKeyPairAsync(refreshTokenKid, cancellation);
             RefreshTokenPayload refreshTokenPayload = _refreshValidationService.ValidateToken(refreshToken, refreshValidationKey);
 
             Session session = await _sessionQueryService.GetSessionByIdAsync(refreshTokenPayload.SessionId, cancellation);
@@ -82,11 +80,11 @@ namespace Auth.Application.Services
             _refreshValidationService.ValidateSession(session, refreshTokenPayload);
             _refreshValidationService.ValidateFingerprint(refreshToken, newPublicKey, timestamp, signature, session);
 
-            KeyPair accessPrimaryKey = await _accessKeysStorage.GetPrimaryAsync(cancellation);
-            KeyPair refreshPrimaryKey = await _refreshKeysStorage.GetPrimaryAsync(cancellation);
+            KeyPair accessPrimaryKey = await _accessKeyStorage.GetPrimaryAsync(cancellation);
+            KeyPair refreshPrimaryKey = await _refreshKeyStorage.GetPrimaryAsync(cancellation);
 
             session.ChangeKidIfNeed(refreshPrimaryKey.Kid);
-            session.UpdateSession(newPublicKey, _timeProvider.NowUnix());
+            session.Update(newPublicKey, _timeProvider.NowUnix());
 
             User user = await _userQueryService.GetUserByIdAsync(refreshTokenPayload.UserId, cancellation);
             IReadOnlyCollection<Scope> scopes = await _userScopesService.GetUserScopesAsync(user, session.Audience);

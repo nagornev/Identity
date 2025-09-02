@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Results;
+using OperationResults;
 
 namespace Auth.Application.Features
 {

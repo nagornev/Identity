@@ -18,7 +18,7 @@ namespace Auth.Application.Services
 
         public async Task<User> GetUserByIdAsync(Guid id, CancellationToken cancellation = default)
         {
-            UserIdSpecification specification = new UserIdSpecification(id);
+            UserByIdSpecification specification = new UserByIdSpecification(id);
 
             return await _userRepository.GetAsync(specification, cancellation) ??
                    throw new UserNotFoundApplicationException(id);
@@ -26,7 +26,7 @@ namespace Auth.Application.Services
 
         public async Task<User> GetUserByEmailAsync(string email, CancellationToken cancellation = default)
         {
-            UserEmailSpecification specification = new UserEmailSpecification(email);
+            UserByEmailSpecification specification = new UserByEmailSpecification(email);
 
             return await _userRepository.GetAsync(specification, cancellation) ??
                    throw new UserNotFoundApplicationException(email);
@@ -34,23 +34,23 @@ namespace Auth.Application.Services
 
         public async Task<bool> IsUserAlreadyExistsAsync(string email, CancellationToken cancellation = default)
         {
-            UserEmailSpecification emailSpecification = new UserEmailSpecification(email);
-            UserActiveSpecification activeSpecification = new UserActiveSpecification(true);
+            UserByEmailSpecification emailSpecification = new UserByEmailSpecification(email);
+            UserByActiveSpecification activeSpecification = new UserByActiveSpecification(true);
 
             return await _userRepository.ExistsAsync(emailSpecification.And(activeSpecification), cancellation);
         }
 
         public IAsyncEnumerable<User> FindUnactivatedUsersAsyncStream(long timestamp)
         {
-            UserActiveSpecification userActiveSpecification = new UserActiveSpecification(false);
-            UserCreatedBeforeSpecification userCreatedBeforeSpecification = new UserCreatedBeforeSpecification(timestamp);
+            UserByActiveSpecification userActiveSpecification = new UserByActiveSpecification(false);
+            UserByCreatedBeforeSpecification userCreatedBeforeSpecification = new UserByCreatedBeforeSpecification(timestamp);
 
             return _userRepository.AsyncStream(userActiveSpecification.And(userCreatedBeforeSpecification));
         }
 
         public IAsyncEnumerable<User> FindUsersWithInvalidPermissionsAsyncStream(long timestamp)
         {
-            UserInvalidPermissionsSpecification specification = new UserInvalidPermissionsSpecification(timestamp);
+            UserByInvalidPermissionSpecification specification = new UserByInvalidPermissionSpecification(timestamp);
 
             return _userRepository.AsyncStream(specification);
         }

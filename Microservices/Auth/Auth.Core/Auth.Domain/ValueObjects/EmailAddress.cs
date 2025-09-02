@@ -1,5 +1,6 @@
 ﻿using Auth.Domain.Exceptions.Domains.Users;
 using DDD.Primitives;
+using System.Drawing;
 using System.Text.RegularExpressions;
 
 namespace Auth.Domain.ValueObjects
@@ -26,7 +27,7 @@ namespace Auth.Domain.ValueObjects
                                          .ToLowerInvariant());
         }
 
-        public string Value { get; }
+        public string Value { get; private set; }
 
         protected override IEnumerable<object> GetEqualityComponents()
         {

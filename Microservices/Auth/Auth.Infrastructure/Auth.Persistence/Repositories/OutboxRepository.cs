@@ -8,29 +8,39 @@ namespace Auth.Persistence.Repositories
 {
     public class OutboxRepository : IOutboxRepository
     {
-        private const string _lockNextOutboxMessageQuery =
+        private const string _lockOutboxBatchQuery =
         """
-            WITH NextMessage AS (
-                SELECT TOP 1 om.*
-                FROM OutboxMessages om
-                WHERE om.Processed = 0
-                  AND (om.LockedUntil IS NULL OR om.LockedUntil < @now)
-                  AND NOT EXISTS (
-                      SELECT 1
-                      FROM OutboxMessages o2
-                      WHERE o2.StreamId = om.StreamId
-                        AND o2.LockedUntil IS NOT NULL
-                        AND o2.LockedUntil > @now
-                  )
-                ORDER BY om.CreatedAt
-            )
-            UPDATE om
-            SET
-                LockedAt = @now,
-                LockedUntil = @now + om.Locktime
-            OUTPUT inserted.*
-            FROM OutboxMessages om
-            JOIN NextMessage nm ON om.Id = nm.Id;
+            WITH NextAggregate AS (
+            SELECT TOP 1 om.StreamId, om.CreatedAt
+            FROM Outbox om
+            WHERE om.Processed = 0
+              AND (om.LockedUntil IS NULL OR om.LockedUntil < @now)
+              AND NOT EXISTS (
+                  SELECT 1
+                  FROM Outbox o2
+                  WHERE o2.StreamId = om.StreamId
+                    AND o2.LockedUntil IS NOT NULL
+                    AND o2.LockedUntil > @now
+              )
+              AND NOT EXISTS (
+                  SELECT 1
+                  FROM Outbox o3
+                  WHERE o3.StreamId = om.StreamId
+                    AND o3.Processed = 0
+                    AND (o3.LockedUntil IS NULL OR o3.LockedUntil < @now)
+                    AND o3.CreatedAt < om.CreatedAt
+              )
+            ORDER BY om.CreatedAt
+        )
+        UPDATE om
+        SET
+            LockedAt = @now,
+            LockedUntil = @now + om.Locktime
+        OUTPUT inserted.*
+        FROM Outbox om
+        JOIN NextAggregate na ON om.StreamId = na.StreamId
+        WHERE om.Processed = 0
+          AND (om.LockedUntil IS NULL OR om.LockedUntil < @now);
         """;
 
 
@@ -41,12 +51,13 @@ namespace Auth.Persistence.Repositories
             _context = context;
         }
 
-        public async Task<OutboxMessage?> LockNextOutboxMessageAsync(long timestamp,
-                                                                     CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyCollection<OutboxMessage>> LockNextOutboxBatchAsync(long timestamp,
+                                                                                       CancellationToken cancellationToken = default)
         {
             return await _context.Outbox
-                                 .FromSqlRaw(_lockNextOutboxMessageQuery, new SqlParameter("@now", timestamp))
-                                 .FirstOrDefaultAsync(cancellationToken);
+                                 .FromSqlRaw(_lockOutboxBatchQuery, new SqlParameter("@now", timestamp))
+                                 //.OrderBy(x=>x.CreatedAt)
+                                 .ToArrayAsync(cancellationToken);
         }
     }
 }

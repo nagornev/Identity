@@ -1,8 +1,9 @@
 ﻿using Auth.Application.Abstractions.Services;
+using Auth.Application.DTOs;
 
 namespace Auth.Application.Features.Refresh
 {
-    public class RefreshHandler : ResultTRequestHandler<RefreshCommand, DTOs.TokenPair>
+    public class RefreshHandler : ResultTRequestHandler<RefreshCommand, TokenPair>
     {
         private readonly IRefreshService _refreshService;
 
@@ -11,14 +12,12 @@ namespace Auth.Application.Features.Refresh
             _refreshService = refreshService;
         }
 
-        public override async Task<DTOs.TokenPair> HandleAsync(RefreshCommand request, CancellationToken cancellation)
+        public override async Task<TokenPair> HandleAsync(RefreshCommand request, CancellationToken cancellation)
         {
             return await _refreshService.RefreshAsync(request.RefreshToken,
                                                       request.NewPublicKey,
                                                       request.Timestamp,
                                                       request.Signature,
-                                                      request.Device,
-                                                      request.IpAddress,
                                                       cancellation);
         }
     }

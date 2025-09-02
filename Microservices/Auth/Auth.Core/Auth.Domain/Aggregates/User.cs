@@ -13,14 +13,14 @@ namespace Auth.Domain.Aggregates
                      Authorization authorization,
                      Profile profile,
                      long createdAt,
-                     bool isActive)
+                     bool activated)
         {
             Id = id;
             Authentication = authentication;
             Authorization = authorization;
             Profile = profile;
             CreatedAt = createdAt;
-            IsActive = isActive;
+            Activated = activated;
         }
 
         /// <summary>
@@ -72,10 +72,9 @@ namespace Auth.Domain.Aggregates
 
         public long CreatedAt { get; private set; }
 
+        public bool Activated { get; private set; }
+
         public bool Deleted { get; private set; }
-
-        public bool IsActive { get; private set; }
-
 
         /// <summary>
         /// Changes user`s pending password hash.
@@ -268,10 +267,10 @@ namespace Auth.Domain.Aggregates
         /// </summary>
         public void Activate()
         {
-            if (IsActive)
+            if (Activated)
                 throw new UserAlreadyActiveDomainException(Id);
 
-            IsActive = true;
+            Activated = true;
 
             AddDomainEvent(new UserActivatedDomainEvent(Id, Profile.EmailAddress.Value));
         }
@@ -281,14 +280,18 @@ namespace Auth.Domain.Aggregates
         /// </summary>
         public void Deactivate()
         {
-            if (!IsActive)
+            if (!Activated)
                 throw new UserAlreadyDeactiveDomainException(Id);
 
-            IsActive = false;
+            Activated = false;
 
             AddDomainEvent(new UserDeactivatedDomainEvent(Id));
         }
 
+        /// <summary>
+        /// Deletes the user account.
+        /// </summary>
+        /// <exception cref="UserAlreadyDeletedDomainException"></exception>
         public void MarkAsDeleted()
         {
             if (Deleted)

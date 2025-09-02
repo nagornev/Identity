@@ -2,10 +2,7 @@
 {
     public class AccessKeyOptions : KeyOptions
     {
-        public AccessKeyOptions(int size,
-                                int timeToLive,
-                                int rotationInterval)
-            : base(size, timeToLive, rotationInterval)
+        public AccessKeyOptions(int size, int timeToLive, string rotationInterval) : base(size, timeToLive, rotationInterval)
         {
         }
     }

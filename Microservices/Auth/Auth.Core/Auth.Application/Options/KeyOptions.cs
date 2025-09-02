@@ -4,7 +4,7 @@
     {
         public KeyOptions(int size,
                           int timeToLive,
-                          int rotationInterval)
+                          string rotationInterval)
         {
             Size = size;
             TimeToLive = timeToLive;
@@ -15,6 +15,9 @@
 
         public int TimeToLive { get; }
 
-        public int RotationInterval { get; }
+        /// <summary>
+        /// Cron format
+        /// </summary>
+        public string RotationInterval { get; }
     }
 }
