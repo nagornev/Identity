@@ -1,6 +1,6 @@
 ﻿namespace Auth.Application.Features.ChangePassword.Commands
 {
-    public class RequestPasswordChangeCommand : ResultTRequest<string>
+    public class RequestPasswordChangeCommand : ResultTRequest<Guid>
     {
         public RequestPasswordChangeCommand(Guid userId, string oldPassword, string newPassword)
         {

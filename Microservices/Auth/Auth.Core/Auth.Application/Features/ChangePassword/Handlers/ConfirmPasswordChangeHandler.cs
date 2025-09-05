@@ -14,7 +14,7 @@ namespace Auth.Application.Features.ChangePassword.Handlers
 
         public override async Task HandleAsync(ConfirmPasswordChangeCommand request, CancellationToken cancellation)
         {
-            await _passwordChangeConfirmService.ConfirmAsync(request.OtpToken, request.Otp, cancellation);
+            await _passwordChangeConfirmService.ConfirmAsync(request.OtpId, request.Otp, cancellation);
         }
     }
 }

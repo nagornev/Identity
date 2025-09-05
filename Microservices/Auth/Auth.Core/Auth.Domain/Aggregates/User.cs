@@ -34,6 +34,7 @@ namespace Auth.Domain.Aggregates
         public static User Create(string emailAddress,
                                   string personName,
                                   string passwordHash,
+                                  string passwordSalt,
                                   long createdAt)
         {
             Guid id = Guid.NewGuid();
@@ -41,7 +42,8 @@ namespace Auth.Domain.Aggregates
             User user = new User(id,
                                  Authentication.Create(id,
                                                        PasswordHash.Create(passwordHash) ??
-                                                       throw new PasswordHashNullDomainException()) ??
+                                                       throw new PasswordHashNullDomainException(),
+                                                       passwordSalt) ??
                                  throw new AuthenticationNullDomainException(),
 
                                  Authorization.Create(id) ??

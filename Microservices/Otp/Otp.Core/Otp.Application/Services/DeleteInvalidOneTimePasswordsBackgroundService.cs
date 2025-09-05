@@ -1,0 +1,47 @@
+﻿using DDD.Repositories;
+using Otp.Application.Abstractions.Providers;
+using Otp.Application.Abstractions.Services;
+using Otp.Domain.Aggregates;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Otp.Application.Services
+{
+    public class DeleteInvalidOneTimePasswordsBackgroundService : IDeleteInvalidOneTimePasswordsBackgroundService
+    {
+        private readonly IOneTimePasswordQueryService _oneTimePasswordQueryService;
+
+        private readonly IRepositoryWriter<OneTimePassword> _oneTimePasswordRepository;
+
+        private readonly ITimeProvider _timeProvider;
+
+        private readonly IUnitOfWork _unitOfWork;
+
+        public DeleteInvalidOneTimePasswordsBackgroundService(IOneTimePasswordQueryService oneTimePasswordQueryService,
+                                                              IRepositoryWriter<OneTimePassword> oneTimePasswordRepository,
+                                                              ITimeProvider timeProvider,
+                                                              IUnitOfWork unitOfWork)
+        {
+            _oneTimePasswordQueryService = oneTimePasswordQueryService;
+            _oneTimePasswordRepository = oneTimePasswordRepository;
+            _timeProvider = timeProvider;
+            _unitOfWork = unitOfWork;
+        }
+
+        public async Task DeleteAsync(CancellationToken cancellation = default)
+        {
+            IAsyncEnumerable<OneTimePassword> invalidOneTimePasswords = _oneTimePasswordQueryService.GetExpiredOneTimePasswordsAsyncEnumerable(_timeProvider.NowUnix());
+
+            await foreach(OneTimePassword invalidOneTimePassword in invalidOneTimePasswords)
+            {
+                invalidOneTimePassword.MarkAsDeleted();
+                await _oneTimePasswordRepository.DeleteAsync(invalidOneTimePassword);
+            }
+
+            await _unitOfWork.SaveAsync(cancellation);
+        }
+    }
+}

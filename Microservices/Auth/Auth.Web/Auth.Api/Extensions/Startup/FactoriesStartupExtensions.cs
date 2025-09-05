@@ -18,7 +18,8 @@ namespace Auth.Api.Extensions.Startup
         public static IServiceCollection AddApplicationFactories(this IServiceCollection services)
         {
             return services.AddSingleton<IUserFactory, UserFactory>()
-                           .AddSingleton<ISessionFactory, SessionFactory>();
+                           .AddSingleton<ISessionFactory, SessionFactory>()
+                           .AddSingleton<ISaltFactory, SaltFactory>();
         }
 
         public static IServiceCollection AddInfastructureFactories(this IServiceCollection services)

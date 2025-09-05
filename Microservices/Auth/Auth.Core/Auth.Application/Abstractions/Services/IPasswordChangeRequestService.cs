@@ -2,6 +2,6 @@
 {
     public interface IPasswordChangeRequestService
     {
-        Task<string> RequestAsync(Guid userId, string oldPassword, string newPassword, CancellationToken cancellation = default);
+        Task<Guid> RequestAsync(Guid userId, string oldPassword, string newPassword, CancellationToken cancellation = default);
     }
 }

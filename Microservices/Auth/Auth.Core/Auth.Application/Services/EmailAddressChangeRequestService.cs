@@ -30,7 +30,7 @@ namespace Auth.Application.Services
             _otpTokenPayloadProvider = otpTokenPayloadProvider;
         }
 
-        public async Task<string> RequestAsync(Guid userId, string emailAddress, CancellationToken cancellation)
+        public async Task<Guid> RequestAsync(Guid userId, string emailAddress, CancellationToken cancellation)
         {
             if (await _userQueryService.IsUserAlreadyExistsAsync(emailAddress, cancellation))
                 throw new UserInvalidEmailAddressApplicationException(emailAddress);

@@ -56,7 +56,6 @@ namespace Auth.Persistence.Repositories
         {
             return await _context.Outbox
                                  .FromSqlRaw(_lockOutboxBatchQuery, new SqlParameter("@now", timestamp))
-                                 //.OrderBy(x=>x.CreatedAt)
                                  .ToArrayAsync(cancellationToken);
         }
     }

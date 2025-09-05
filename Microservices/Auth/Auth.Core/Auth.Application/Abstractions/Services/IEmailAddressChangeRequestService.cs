@@ -2,6 +2,6 @@
 {
     public interface IEmailAddressChangeRequestService
     {
-        Task<string> RequestAsync(Guid userId, string emailAddress, CancellationToken cancellation);
+        Task<Guid> RequestAsync(Guid userId, string emailAddress, CancellationToken cancellation);
     }
 }

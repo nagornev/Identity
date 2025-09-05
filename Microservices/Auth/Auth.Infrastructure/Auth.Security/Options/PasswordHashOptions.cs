@@ -8,11 +8,15 @@ namespace Auth.Security.Options
 {
     public class PasswordHashOptions
     {
-        public PasswordHashOptions(string salt)
+        public PasswordHashOptions(int size,
+                                   int iterations)
         {
-            Salt = salt;
+            Size = size;
+            Iterations = iterations;
         }
 
-        public string Salt { get; }
+        public int Size { get; }
+
+        public int Iterations { get; }
     }
 }

@@ -41,16 +41,16 @@ namespace Auth.Application.Services
             _sessionValidationService.ValidateWithoutActive(session);
         }
 
-        public void ValidateFingerprint(string otpToken, string otp, long timestamp, string signature, Session session)
+        public void ValidateFingerprint(Guid otpId, string otp, long timestamp, string signature, Session session)
         {
-            _fingerprintValidationService.Validate(new FingerprintValidationParameters(_fingerprintMessageProvider.GetMessage(otpToken, otp, timestamp),
+            _fingerprintValidationService.Validate(new FingerprintValidationParameters(_fingerprintMessageProvider.GetMessage(otpId, otp, timestamp),
                                                                                        signature),
                                                    session.PublicKey);
         }
 
-        public async Task<OtpContent> ValidateOtpAsync(string otpToken, string otp, CancellationToken cancellation = default)
+        public async Task<OtpContent> ValidateOtpAsync(Guid otpId, string otp, CancellationToken cancellation = default)
         {
-            return await _otpValidationService.ValidateAsync(otpToken, otp, OtpTags.SignIn, cancellation);
+            return await _otpValidationService.ValidateAsync(otpId, otp, OtpTags.SignIn, cancellation);
         }
     }
 }

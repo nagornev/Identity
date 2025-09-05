@@ -9,8 +9,8 @@ namespace Auth.Application.Abstractions.Services
 
         void ValidateSession(Session session);
 
-        void ValidateFingerprint(string otpToken, string otp, long timestamp, string signature, Session session);
+        void ValidateFingerprint(Guid otpId, string otp, long timestamp, string signature, Session session);
 
-        Task<OtpContent> ValidateOtpAsync(string otpToken, string otp, CancellationToken cancellation = default);
+        Task<OtpContent> ValidateOtpAsync(Guid otpId, string otp, CancellationToken cancellation = default);
     }
 }

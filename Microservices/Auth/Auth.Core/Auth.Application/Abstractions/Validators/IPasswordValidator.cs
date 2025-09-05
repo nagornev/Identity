@@ -2,6 +2,6 @@
 {
     public interface IPasswordValidator
     {
-        bool Verify(string password, string hash);
+        bool Verify(string password, string hash, string salt);
     }
 }

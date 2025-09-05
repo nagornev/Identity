@@ -3,7 +3,7 @@ using Auth.Application.Features.ChangeEmailAddress.Commands;
 
 namespace Auth.Application.Features.ChangeEmailAddress.Handlers
 {
-    public class RequestEmailAddressChangeHandler : ResultTRequestHandler<RequestEmailAddressChangeCommand, string>
+    public class RequestEmailAddressChangeHandler : ResultTRequestHandler<RequestEmailAddressChangeCommand, Guid>
     {
         private readonly IEmailAddressChangeRequestService _emailAddressChangeRequestService;
 
@@ -12,7 +12,7 @@ namespace Auth.Application.Features.ChangeEmailAddress.Handlers
             _emailAddressChangeRequestService = emailAddressChangeRequestService;
         }
 
-        public override async Task<string> HandleAsync(RequestEmailAddressChangeCommand request, CancellationToken cancellation)
+        public override async Task<Guid> HandleAsync(RequestEmailAddressChangeCommand request, CancellationToken cancellation)
         {
             return await _emailAddressChangeRequestService.RequestAsync(request.UserId, request.EmailAddress, cancellation);
         }

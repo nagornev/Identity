@@ -2,14 +2,14 @@
 {
     public class ConfirmEmailAddressChangeCommand : ResultRequest
     {
-        public ConfirmEmailAddressChangeCommand(string optToken,
+        public ConfirmEmailAddressChangeCommand(Guid otpId,
                                                 string opt)
         {
-            OptToken = optToken;
+            OtpId = otpId;
             Opt = opt;
         }
 
-        public string OptToken { get; }
+        public Guid OtpId { get; }
 
         public string Opt { get; }
     }

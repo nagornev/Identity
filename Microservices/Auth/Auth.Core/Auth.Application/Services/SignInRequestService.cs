@@ -47,19 +47,19 @@ namespace Auth.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<string> RequestAsync(string emailAddress,
-                                               string password,
-                                               string audience,
-                                               string publicKey,
-                                               RequestContext requestContext,
-                                               CancellationToken cancellation = default)
+        public async Task<Guid> RequestAsync(string emailAddress,
+                                             string password,
+                                             string audience,
+                                             string publicKey,
+                                             RequestContext requestContext,
+                                             CancellationToken cancellation = default)
         {
             User user = await _userQueryService.GetUserByEmailAsync(emailAddress, cancellation);
 
             if (!_userValidator.Validate(user))
                 throw new UserInvalidApplicationException(emailAddress);
 
-            if (!_passwordValidator.Verify(password, user.Authentication.PasswordHash.Value))
+            if (!_passwordValidator.Verify(password, user.Authentication.PasswordHash.Value, user.Authentication.PasswordSalt))
                 throw new UserInvalidPasswordApplicationException(emailAddress);
 
             KeyPair refreshPrimaryKey = await _refreshKeyStorage.GetPrimaryAsync(cancellation);

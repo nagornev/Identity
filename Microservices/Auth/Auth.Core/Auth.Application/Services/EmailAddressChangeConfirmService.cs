@@ -29,9 +29,9 @@ namespace Auth.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task ConfirmAsync(string otpToken, string otp, CancellationToken cancellation = default)
+        public async Task ConfirmAsync(Guid otpId, string otp, CancellationToken cancellation = default)
         {
-            OtpContent otpContent = await _otpValidationService.ValidateAsync(otpToken, otp, OtpTags.ChangeEmailAddress, cancellation);
+            OtpContent otpContent = await _otpValidationService.ValidateAsync(otpId, otp, OtpTags.ChangeEmailAddress, cancellation);
             ChangeEmailAddressOtpTokenPayload changeEmailAddressOtpTokenPayload = _otpTokenPayloadProvider.Deserialize<ChangeEmailAddressOtpTokenPayload>(otpContent.Payload);
 
             User user = await _userQueryService.GetUserByIdAsync(otpContent.Subject, cancellation);

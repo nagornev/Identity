@@ -2,13 +2,13 @@
 {
     public class ConfirmPasswordChangeCommand : ResultRequest
     {
-        public ConfirmPasswordChangeCommand(string otpToken, string otp)
+        public ConfirmPasswordChangeCommand(Guid otpId, string otp)
         {
-            OtpToken = otpToken;
+            OtpId = otpId;
             Otp = otp;
         }
 
-        public string OtpToken { get; }
+        public Guid OtpId { get; }
 
         public string Otp { get; }
     }

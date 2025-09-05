@@ -2,6 +2,6 @@
 {
     public interface IPasswordChangeConfirmService
     {
-        Task ConfirmAsync(string otpToken, string otp, CancellationToken cancellation = default);
+        Task ConfirmAsync(Guid otpId, string otp, CancellationToken cancellation = default);
     }
 }

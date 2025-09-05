@@ -63,7 +63,7 @@ namespace Auth.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<TokenPair> ConfirmAsync(string otpToken,
+        public async Task<TokenPair> ConfirmAsync(Guid otpId,
                                                   string otp,
                                                   string newPublicKey,
                                                   long timestamp,
@@ -72,13 +72,13 @@ namespace Auth.Application.Services
         {
             _signInValidationService.ValidateWindow(timestamp, _options.Window);
 
-            OtpContent otpContent = await _signInValidationService.ValidateOtpAsync(otpToken, otp, cancellation);
+            OtpContent otpContent = await _signInValidationService.ValidateOtpAsync(otpId, otp, cancellation);
             SignInOtpTokenPayload signInOtpTokenPayload = _otpTokenPayloadProvider.Deserialize<SignInOtpTokenPayload>(otpContent.Payload);
 
             Session session = await _sessionQueryService.GetSessionByIdAsync(signInOtpTokenPayload.SessionId);
 
             _signInValidationService.ValidateSession(session);
-            _signInValidationService.ValidateFingerprint(otpToken, otp, timestamp, signature, session);
+            _signInValidationService.ValidateFingerprint(otpId, otp, timestamp, signature, session);
 
             KeyPair accessPrimaryKey = await _accessKeysStorage.GetPrimaryAsync(cancellation);
             KeyPair refreshPrimaryKey = await _refreshKeysStorage.GetPrimaryAsync(cancellation);

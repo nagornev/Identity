@@ -29,9 +29,9 @@ namespace Auth.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task ConfirmAsync(string otpToken, string otp, CancellationToken cancellation = default)
+        public async Task ConfirmAsync(Guid otpId, string otp, CancellationToken cancellation = default)
         {
-            OtpContent otpContent = await _otpValidationService.ValidateAsync(otpToken, otp, OtpTags.ChangePassword, cancellation);
+            OtpContent otpContent = await _otpValidationService.ValidateAsync(otpId, otp, OtpTags.ChangePassword, cancellation);
             ChangePasswordHashOtpTokenPayload changePasswordHashOtpTokenPayload = _otpTokenPayloadProvider.Deserialize<ChangePasswordHashOtpTokenPayload>(otpContent.Payload);
 
             User user = await _userQueryService.GetUserByIdAsync(otpContent.Subject, cancellation);

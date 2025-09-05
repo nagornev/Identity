@@ -38,14 +38,14 @@ namespace Auth.Application.Services
             _otpTokenPayloadProvider = otpTokenPayloadProvider;
         }
 
-        public async Task<string> RequestAsync(Guid userId, string oldPassword, string newPassword, CancellationToken cancellation = default)
+        public async Task<Guid> RequestAsync(Guid userId, string oldPassword, string newPassword, CancellationToken cancellation = default)
         {
             User user = await _userQueryService.GetUserByIdAsync(userId, cancellation);
 
-            if (_passwordValidator.Verify(oldPassword, user.Authentication.PasswordHash.Value))
+            if (_passwordValidator.Verify(oldPassword, user.Authentication.PasswordHash.Value, user.Authentication.PasswordSalt))
                 throw new UserInvalidPasswordApplicationException(userId);
 
-            user.ChangePassword(_passwordHashProvider.Hash(newPassword));
+            user.ChangePassword(_passwordHashProvider.Hash(newPassword, user.Authentication.PasswordSalt));
 
             await _unitOfWork.SaveAsync(cancellation);
 

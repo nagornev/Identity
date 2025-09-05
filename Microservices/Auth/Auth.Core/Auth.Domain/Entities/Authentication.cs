@@ -6,22 +6,28 @@ namespace Auth.Domain.Entities
     public partial class Authentication : Entity
     {
         private Authentication(Guid id,
-                               PasswordHash passwordHash)
+                               PasswordHash passwordHash,
+                               string passwordSalt)
         {
             Id = id;
             PasswordHash = passwordHash;
+            PasswordSalt = passwordSalt;
         }
 
         internal static Authentication Create(Guid id,
-                                              PasswordHash passwordHash)
+                                              PasswordHash passwordHash,
+                                              string passwordSalt)
         {
             return new Authentication(id,
-                                      passwordHash);
+                                      passwordHash,
+                                      passwordSalt);
         }
 
         public PendingPasswordHash? PendingPasswordHash { get; private set; }
 
         public PasswordHash PasswordHash { get; private set; }
+
+        public string PasswordSalt { get; private set; }
 
         internal void ChangePassword(PendingPasswordHash pendingPasswordHash)
         {

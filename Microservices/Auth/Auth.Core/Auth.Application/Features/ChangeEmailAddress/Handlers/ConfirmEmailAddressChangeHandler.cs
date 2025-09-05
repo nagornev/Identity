@@ -14,7 +14,7 @@ namespace Auth.Application.Features.ChangeEmailAddress.Handlers
 
         public override async Task HandleAsync(ConfirmEmailAddressChangeCommand request, CancellationToken cancellation)
         {
-            await _emalAddressChangeConfirmService.ConfirmAsync(request.OptToken, request.Opt, cancellation);
+            await _emalAddressChangeConfirmService.ConfirmAsync(request.OtpId, request.Opt, cancellation);
         }
     }
 }

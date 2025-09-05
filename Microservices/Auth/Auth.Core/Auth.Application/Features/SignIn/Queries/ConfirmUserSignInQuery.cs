@@ -4,20 +4,20 @@ namespace Auth.Application.Features.SignIn.Queries
 {
     public class ConfirmUserSignInQuery : ResultTRequest<TokenPair>
     {
-        public ConfirmUserSignInQuery(string otpToken,
+        public ConfirmUserSignInQuery(Guid otpId,
                                       string otp,
                                       string newPublicKey,
                                       long timestamp,
                                       string signature)
         {
-            OtpToken = otpToken;
+            OtpId = otpId;
             Otp = otp;
             NewPublicKey = newPublicKey;
             Timestamp = timestamp;
             Signature = signature;
         }
 
-        public string OtpToken { get; }
+        public Guid OtpId { get; }
 
         public string Otp { get; }
 

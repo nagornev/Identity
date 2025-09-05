@@ -14,9 +14,9 @@ namespace Auth.Application.Validators
             _passwordHashProvider = hashProvider;
         }
 
-        public bool Verify(string password, string hash)
+        public bool Verify(string password, string hash, string salt)
         {
-            return CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(_passwordHashProvider.Hash(password)),
+            return CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(_passwordHashProvider.Hash(password, salt)),
                                                            Encoding.UTF8.GetBytes(hash));
         }
     }

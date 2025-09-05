@@ -14,9 +14,9 @@ namespace Auth.Application.Services
             _otpClient = otpClient;
         }
 
-        public async Task<OtpContent> ValidateAsync(string otpToken, string otp, string tag, CancellationToken cancellation = default)
+        public async Task<OtpContent> ValidateAsync(Guid otpId, string otp, string tag, CancellationToken cancellation = default)
         {
-            OtpValidation otpValidation = await _otpClient.ValidateAsync(otpToken, otp, tag, cancellation);
+            OtpValidation otpValidation = await _otpClient.ValidateAsync(otpId, otp, tag, cancellation);
 
             if (!otpValidation.IsValid)
                 throw new OtpInvalidApplicationException();
