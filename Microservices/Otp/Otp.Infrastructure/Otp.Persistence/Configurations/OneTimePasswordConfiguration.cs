@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Otp.Domain.Aggregates;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 
 namespace Otp.Persistence.Configurations

@@ -1,17 +1,6 @@
-var builder = WebApplication.CreateBuilder(args);
+using Otp.Api.Extensions.Startup;
 
+var app = WebApplication.CreateBuilder(args)
+                        .CreateApplication();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-app.Run();
-
+await app.StartApplicationAsync();

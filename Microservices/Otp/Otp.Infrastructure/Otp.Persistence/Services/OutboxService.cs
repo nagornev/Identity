@@ -5,11 +5,6 @@ using Otp.Application.Abstractions.Providers;
 using Otp.Application.Abstractions.Services;
 using Otp.Persistence.Abstractions.Repositories;
 using Otp.Persistence.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Otp.Persistence.Services
 {

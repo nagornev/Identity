@@ -40,7 +40,7 @@ namespace Auth.Application.Services
 
             await _unitOfWork.SaveAsync(cancellation);
 
-            return await _otpClient.CreateAsync(user.Id, 
+            return await _otpClient.CreateAsync(user.Id,
                                                 OtpTags.ChangeEmailAddress,
                                                 payload: _otpTokenPayloadProvider.Serialize(new ChangeEmailAddressOtpTokenPayload(user.Profile.PendingEmailAddress!.Version)),
                                                 cancellation: cancellation);

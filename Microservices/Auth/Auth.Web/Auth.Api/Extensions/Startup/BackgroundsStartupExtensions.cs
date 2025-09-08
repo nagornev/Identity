@@ -12,7 +12,7 @@ namespace Auth.Api.Extensions.Startup
 
         public static IServiceCollection AddBackgrounds(this IServiceCollection services, IConfiguration configuration)
         {
-            return services.AddHangfire(options => 
+            return services.AddHangfire(options =>
                             {
                                 options.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                                        .UseSimpleAssemblyNameTypeSerializer()
@@ -32,7 +32,7 @@ namespace Auth.Api.Extensions.Startup
                            .AddSingleton<IBackgroundProcessor, DeleteInvalidSessionsBackgroundProcessors>()
                            .AddSingleton<IBackgroundProcessor, DeleteInvalidPermissionsBackgroundProcessor>()
                            .AddSingleton<IBackgroundProcessor, OutboxBackgroundProcessor>()
-                           
+
                            .AddHostedService<BackgroundsProcessorsStarter>();
         }
     }

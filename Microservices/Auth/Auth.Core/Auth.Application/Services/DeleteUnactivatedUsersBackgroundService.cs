@@ -34,7 +34,7 @@ namespace Auth.Application.Services
 
             IAsyncEnumerable<User> unactivatedUsers = _userQueryService.FindUnactivatedUsersAsyncStream(timestamp);
 
-            await foreach(User unactivatedUser in unactivatedUsers)
+            await foreach (User unactivatedUser in unactivatedUsers)
             {
                 unactivatedUser.MarkAsDeleted();
             }

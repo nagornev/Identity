@@ -1,6 +1,5 @@
 ﻿using Auth.Application.Abstractions.Services;
 using Auth.Application.Options;
-using Hangfire.Common;
 using Hangfire;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -9,7 +8,7 @@ namespace Auth.Backgrounds.Processors
 {
     public class KeyRotationBackgroundProcessor<TKeyRotationServiceType, TKeyOptionsType>
         where TKeyRotationServiceType : IKeyRotationService
-        where TKeyOptionsType: KeyOptions
+        where TKeyOptionsType : KeyOptions
     {
         private readonly string _job;
 

@@ -47,7 +47,7 @@ namespace Auth.Persistence.Decorators
 
         public async Task AddAsync(TAggregateType aggregate, CancellationToken cancellation = default)
         {
-            await CallAsync(() => _repository.AddAsync(aggregate, cancellation)); 
+            await CallAsync(() => _repository.AddAsync(aggregate, cancellation));
         }
 
         public async Task DeleteAsync(TAggregateType aggregate, CancellationToken cancellation = default)

@@ -15,9 +15,14 @@
 
 # Mono auto generated files
 mono_crash.*
-Data/Database/*
-Data/Scheduler/*
-Data/RabbitMQ/*
+Data/AuthDatabase/*
+Data/AuthScheduler/*
+Data/OtpDatabase/*
+Data/OtpScheduler/*
+Data/NotificationDatabase/*
+Data/NotificationScheduler/*
+Data/RabbitMQ/
+
 Data/Vault/*
 # Build results
 [Dd]ebug/

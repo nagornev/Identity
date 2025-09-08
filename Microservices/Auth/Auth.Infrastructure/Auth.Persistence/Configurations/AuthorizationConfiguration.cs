@@ -23,7 +23,7 @@ namespace Auth.Persistence.Configurations
                    .HasForeignKey(sp => sp.AuthorizationId)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            
+
         }
     }
 }

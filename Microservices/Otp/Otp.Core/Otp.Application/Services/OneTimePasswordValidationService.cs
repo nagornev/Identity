@@ -3,11 +3,6 @@ using Otp.Application.Abstractions.Providers;
 using Otp.Application.Abstractions.Services;
 using Otp.Application.DTOs;
 using Otp.Domain.Aggregates;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Otp.Application.Services
 {
@@ -36,7 +31,7 @@ namespace Otp.Application.Services
 
             await _unitOfWork.SaveAsync(cancellation);
 
-            return isValid?
+            return isValid ?
                     new OneTimePasswordValidation(true, oneTimePassword.Subject, oneTimePassword.Payload) :
                     new OneTimePasswordValidation(false, Guid.NewGuid());
         }

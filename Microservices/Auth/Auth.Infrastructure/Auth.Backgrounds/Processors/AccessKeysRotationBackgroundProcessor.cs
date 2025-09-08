@@ -9,7 +9,7 @@ namespace Auth.Backgrounds.Processors
     {
         private const string _job = "rotate-access-key";
 
-        public AccessKeysRotationBackgroundProcessor(IServiceProvider serviceProvider, IOptions<AccessKeyOptions> keyOptions) 
+        public AccessKeysRotationBackgroundProcessor(IServiceProvider serviceProvider, IOptions<AccessKeyOptions> keyOptions)
             : base(_job, serviceProvider, keyOptions)
         {
         }

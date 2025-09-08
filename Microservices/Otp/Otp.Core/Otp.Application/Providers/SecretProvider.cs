@@ -1,12 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using Otp.Application.Abstractions.Providers;
 using Otp.Application.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Otp.Application.Providers
 {

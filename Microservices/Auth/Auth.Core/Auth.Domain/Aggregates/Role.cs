@@ -1,7 +1,6 @@
 ﻿using Auth.Domain.Entities;
 using Auth.Domain.Exceptions.Domains.Roles;
 using DDD.Primitives;
-using System.Drawing;
 
 namespace Auth.Domain.Aggregates
 {

@@ -2,7 +2,6 @@
 using Auth.Application.Abstractions.Factories.Keys;
 using Auth.Application.Factories;
 using Auth.Security.Factories;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Auth.Api.Extensions.Startup
 {
@@ -12,7 +11,7 @@ namespace Auth.Api.Extensions.Startup
         {
             return services.AddApplicationFactories()
                            .AddInfastructureFactories();
-                            
+
         }
 
         public static IServiceCollection AddApplicationFactories(this IServiceCollection services)

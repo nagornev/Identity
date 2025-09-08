@@ -1,12 +1,9 @@
 ﻿using Auth.Application.Abstractions.Clients;
-using Auth.Application.Abstractions.Providers;
 using Auth.Application.Abstractions.Providers.Tokens;
 using Auth.Application.Abstractions.Services;
 using Auth.Application.Abstractions.Storages;
 using Auth.Application.Consts;
 using Auth.Application.DTOs;
-using Auth.Domain.Aggregates;
-using DDD.Repositories;
 
 namespace Auth.Application.Services
 {

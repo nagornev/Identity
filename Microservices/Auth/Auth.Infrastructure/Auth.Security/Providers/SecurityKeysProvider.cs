@@ -15,7 +15,7 @@ namespace Auth.Security.Providers
 
         public SecurityKey CreateSign(KeyPair keyPair)
         {
-            return _providers.TryGetValue(keyPair.Algorithm, out var provider)?
+            return _providers.TryGetValue(keyPair.Algorithm, out var provider) ?
                     provider.CreateSign(keyPair) :
                     throw new NotSupportedException("Unsupported algorithm type.");
         }

@@ -3,11 +3,6 @@ using DDD.Specifications;
 using Microsoft.EntityFrameworkCore;
 using Otp.Domain.Aggregates;
 using Otp.Persistence.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Otp.Persistence.Repositories
 {

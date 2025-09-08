@@ -1,11 +1,6 @@
 ﻿using MassTransit;
 using Otp.Application.Abstractions.Services;
 using Otp.Messaging.Abstractions.Providers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Otp.Messaging.Services
 {

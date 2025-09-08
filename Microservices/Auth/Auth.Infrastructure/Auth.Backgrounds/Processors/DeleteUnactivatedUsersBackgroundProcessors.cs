@@ -1,10 +1,7 @@
 ﻿using Auth.Application.Abstractions.Services;
-using Auth.Application.Options;
 using Auth.Backgrounds.Abstractions.Processors;
 using Hangfire;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using System.Drawing;
 
 namespace Auth.Backgrounds.Processors
 {

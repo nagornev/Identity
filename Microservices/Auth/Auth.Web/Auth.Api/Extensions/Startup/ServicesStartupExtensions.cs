@@ -2,7 +2,6 @@
 using Auth.Application.Services;
 using Auth.Messaging.Services;
 using Auth.Persistence.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Auth.Api.Extensions.Startup
 {

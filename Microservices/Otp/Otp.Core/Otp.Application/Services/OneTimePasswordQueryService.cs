@@ -3,11 +3,6 @@ using Otp.Application.Abstractions.Services;
 using Otp.Application.Exceptions.Applications.OneTimePasswords;
 using Otp.Domain.Aggregates;
 using Otp.Domain.Specifications;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Otp.Application.Services
 {
@@ -19,7 +14,7 @@ namespace Otp.Application.Services
         {
             _oneTimePasswordRepository = oneTimePasswordRepository;
         }
-  
+
         public async Task<OneTimePassword> GetOneTimePasswordByIdAsync(Guid id, CancellationToken cancellation = default)
         {
             OneTimePasswordByIdSpecification specification = new OneTimePasswordByIdSpecification(id);

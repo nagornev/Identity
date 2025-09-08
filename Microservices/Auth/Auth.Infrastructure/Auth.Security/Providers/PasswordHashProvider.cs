@@ -1,13 +1,8 @@
 ﻿using Auth.Application.Abstractions.Providers;
 using Auth.Security.Options;
-using Konscious.Security.Cryptography;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Auth.Security.Providers
 {

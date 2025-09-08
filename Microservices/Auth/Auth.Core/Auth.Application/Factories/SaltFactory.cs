@@ -1,12 +1,7 @@
 ﻿using Auth.Application.Abstractions.Factories;
 using Auth.Application.Options;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Auth.Application.Factories
 {

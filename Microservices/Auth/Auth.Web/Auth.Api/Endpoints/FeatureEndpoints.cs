@@ -1,14 +1,8 @@
-﻿using Auth.Api.Contracts;
-using Auth.Application.Abstractions.Services;
-using Auth.Application.Features.SignUp.Commands;
-using Auth.Domain.Specifications;
-using Auth.Persistence.Contexts;
-using Auth.Persistence.Extensions;
+﻿using Auth.Application.Features.SignUp.Commands;
 using Carter;
 using MassTransit;
 using MediatR;
 using MessageContracts;
-using Microsoft.EntityFrameworkCore;
 using OperationResults;
 
 namespace Auth.Api.Endpoints
@@ -40,7 +34,7 @@ namespace Auth.Api.Endpoints
             Result activateResult = await mediator.Send(new ConfirmUserSignUpCommand(token), cancellation);
 
             return activateResult.IsSuccess ?
-                    Results.Ok(activateResult):
+                    Results.Ok(activateResult) :
                     Results.BadRequest(activateResult);
         }
 

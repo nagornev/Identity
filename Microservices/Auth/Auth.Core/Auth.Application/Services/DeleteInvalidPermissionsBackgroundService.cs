@@ -3,11 +3,6 @@ using Auth.Application.Abstractions.Services;
 using Auth.Domain.Aggregates;
 using Auth.Domain.Entities;
 using DDD.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Auth.Application.Services
 {
@@ -32,18 +27,18 @@ namespace Auth.Application.Services
         {
             IAsyncEnumerable<User> usersWithInvalidPermissions = _userQueryService.FindUsersWithInvalidPermissionsAsyncStream(_timeProvider.NowUnix());
 
-            await foreach(User user in usersWithInvalidPermissions)
+            await foreach (User user in usersWithInvalidPermissions)
             {
                 IEnumerable<RolePermission> invalidRolePermissions = user.Authorization.RolePermissions.Where(x => !x.IsValid());
 
-                foreach(RolePermission invalidRolePermission in invalidRolePermissions)
+                foreach (RolePermission invalidRolePermission in invalidRolePermissions)
                 {
                     user.DeleteRolePermission(invalidRolePermission.Id);
                 }
 
                 IEnumerable<ScopePermission> invalidScopePermissions = user.Authorization.ScopePermissions.Where(x => !x.IsValidAt(_timeProvider.NowUnix()));
 
-                foreach(ScopePermission invalidScopePermission in invalidScopePermissions)
+                foreach (ScopePermission invalidScopePermission in invalidScopePermissions)
                 {
                     user.DeleteScopePermission(invalidScopePermission.Id);
                 }

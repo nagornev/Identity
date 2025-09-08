@@ -3,7 +3,6 @@ using Auth.Application.DTOs;
 using Auth.Security.Abstractions.Providers;
 using Auth.Security.Options;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Logging;
 using System.Net;
 using VaultSharp;
 using VaultSharp.Core;
@@ -30,12 +29,12 @@ namespace Auth.Security.Storages
         {
             KeyPair previewPrimaryKey = await GetPrimaryAsync(cancellation);
 
-            if(previewPrimaryKey != null)
+            if (previewPrimaryKey != null)
             {
                 var previewPrimaryKeyDictionary = KeyPairToDictionary(previewPrimaryKey);
                 await SetKeyPairAsync(previewPrimaryKeyDictionary, $"{_keyStorageOptions.BasePath}/{previewPrimaryKey.Kid}");
             }
-            
+
             var nextPrimaryKey = KeyPairToDictionary(keyPair);
             await SetKeyPairAsync(nextPrimaryKey, $"{_keyStorageOptions.BasePath}/{_keyStorageOptions.PrimaryKey}");
         }
@@ -50,7 +49,7 @@ namespace Auth.Security.Storages
             KeyPair primaryKey = await GetPrimaryAsync(cancellation);
 
             return primaryKey.Kid == kid ?
-                    primaryKey:
+                    primaryKey :
                     await GetKeyPairAsync($"{_keyStorageOptions.BasePath}/{kid}");
         }
 
@@ -71,7 +70,7 @@ namespace Auth.Security.Storages
                 var secret = await _vaultClient.V1.Secrets.KeyValue.V2.ReadSecretAsync(path, mountPoint: _keyStorageOptions.MountPoint);
                 return DictionaryToKeyPair(secret.Data.Data);
             }
-            catch(VaultApiException exception) when(exception.StatusCode == (int)HttpStatusCode.NotFound)
+            catch (VaultApiException exception) when (exception.StatusCode == (int)HttpStatusCode.NotFound)
             {
                 return default;
             }
@@ -100,7 +99,7 @@ namespace Auth.Security.Storages
                                .DistinctBy(x => x!.Kid)
                                .ToArray()!;
             }
-            catch(VaultApiException exception) when(exception.StatusCode == (int)HttpStatusCode.NotFound)
+            catch (VaultApiException exception) when (exception.StatusCode == (int)HttpStatusCode.NotFound)
             {
                 return Array.Empty<KeyPair>();
             }

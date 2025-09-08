@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Otp.Application.DTOs
+﻿namespace Otp.Application.DTOs
 {
     public class OneTimePasswordValidation
     {
         public OneTimePasswordValidation(bool isValid,
                                          Guid subject,
-                                         string? payload="")
+                                         string? payload = "")
         {
             IsValid = isValid;
             Subject = subject;

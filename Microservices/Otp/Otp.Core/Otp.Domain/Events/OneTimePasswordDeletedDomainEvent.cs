@@ -1,15 +1,10 @@
 ﻿using DDD.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Otp.Domain.Events
 {
     public class OneTimePasswordDeletedDomainEvent : DomainEvent
     {
-        public OneTimePasswordDeletedDomainEvent(Guid oneTimePasswordId, Guid subject, string tag, long createdAt, bool used) 
+        public OneTimePasswordDeletedDomainEvent(Guid oneTimePasswordId, Guid subject, string tag, long createdAt, bool used)
             : base(subject)
         {
             OneTimePasswordId = oneTimePasswordId;

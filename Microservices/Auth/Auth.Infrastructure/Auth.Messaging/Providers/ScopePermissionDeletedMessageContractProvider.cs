@@ -1,7 +1,6 @@
 ﻿using Auth.Application.Abstractions.Services;
 using Auth.Domain.Aggregates;
 using Auth.Domain.Events;
-using Auth.Messaging.Abstractions.Providers;
 using MessageContracts;
 
 namespace Auth.Messaging.Providers

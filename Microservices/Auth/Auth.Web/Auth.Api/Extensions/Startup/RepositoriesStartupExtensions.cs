@@ -19,7 +19,7 @@ namespace Auth.Api.Extensions.Startup
                            .AddScopeRepository()
                            .AddOutboxRepository()
                            .AddScoped<IUnitOfWork, UnitOfWork>();
-                 
+
         }
 
         private static IServiceCollection AddContext(this IServiceCollection services, IConfiguration configuration)
@@ -27,7 +27,7 @@ namespace Auth.Api.Extensions.Startup
             return services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString(nameof(ApplicationDbContext))));
         }
 
-        private static IServiceCollection AddUserRepoistory(this IServiceCollection services) 
+        private static IServiceCollection AddUserRepoistory(this IServiceCollection services)
         {
             return services.AddScoped<IRepository<User>, UserRepository>()
                            .Decorate<IRepository<User>, RepositoryExceptionDecorator<User>>()

@@ -1,6 +1,5 @@
 ﻿using Auth.Application.Abstractions.Clients;
 using MassTransit;
-using MessageContracts;
 using Microsoft.Extensions.Logging;
 
 namespace Auth.Messaging.Clients

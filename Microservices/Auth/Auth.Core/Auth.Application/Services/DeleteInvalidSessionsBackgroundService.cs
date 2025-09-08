@@ -28,7 +28,7 @@ namespace Auth.Application.Services
 
             IAsyncEnumerable<Session> invalidSessions = _sessionQueryService.FindInvalidSessionsAsyncStream(timestamp);
 
-            await foreach(Session invalidSession in invalidSessions)
+            await foreach (Session invalidSession in invalidSessions)
             {
                 if (invalidSession.IsValidAt(timestamp))
                     continue;

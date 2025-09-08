@@ -1,6 +1,5 @@
 ﻿using Auth.Domain.Exceptions.Domains.Users;
 using DDD.Primitives;
-using System.Drawing;
 using System.Text.RegularExpressions;
 
 namespace Auth.Domain.ValueObjects

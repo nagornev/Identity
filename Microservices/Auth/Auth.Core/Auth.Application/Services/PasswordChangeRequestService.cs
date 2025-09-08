@@ -49,7 +49,7 @@ namespace Auth.Application.Services
 
             await _unitOfWork.SaveAsync(cancellation);
 
-            return await _otpClient.CreateAsync(user.Id, 
+            return await _otpClient.CreateAsync(user.Id,
                                                 OtpTags.ChangePassword,
                                                 payload: _otpTokenPayloadProvider.Serialize(new ChangePasswordHashOtpTokenPayload(user.Authentication.PendingPasswordHash!.Version)),
                                                 cancellation: cancellation);

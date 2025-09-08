@@ -5,7 +5,6 @@ using Auth.Messaging.Abstractions.Providers;
 using Auth.Messaging.Providers;
 using Auth.Security.Abstractions.Providers;
 using Auth.Security.Providers;
-using DDD.Events;
 
 namespace Auth.Api.Extensions.Startup
 {
@@ -43,7 +42,7 @@ namespace Auth.Api.Extensions.Startup
                            //ISecurityKeyProvider
                            .AddSingleton<ISecurityKeyProvider, RsaSecurityKeyProvider>()
                            .AddSingleton<ISecurityKeysProvider, SecurityKeysProvider>()
-   
+
                            //IMessageContractProvider
                            .AddScoped<IMessageContractProvider, EmailAddressChangeConfirmedMessageContractProvider>()
                            .AddScoped<IMessageContractProvider, EmailAddressChangedMessageContractProvider>()
@@ -55,7 +54,6 @@ namespace Auth.Api.Extensions.Startup
                            .AddScoped<IMessageContractProvider, UserCreatedMessageContractProvider>()
                            .AddScoped<IMessageContractProvider, UserDeletedMessageContractProvider>()
                            .AddScoped<IMessageContractsProvider, MessageContractsProvider>();
-                           ;
         }
     }
 }

@@ -9,6 +9,7 @@ using Carter;
 using Hangfire;
 using Hangfire.Dashboard;
 using Microsoft.Extensions.Options;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Auth.Api.Extensions.Startup
 {
@@ -30,7 +31,7 @@ namespace Auth.Api.Extensions.Startup
                     .AddClients(configuration)
                     .AddBackgrounds(configuration)
                     .AddCarter()
-                    .AddMediatR(cfg=>cfg.RegisterServicesFromAssembly(typeof(ApplicationAssembly).Assembly))
+                    .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssembly).Assembly))
 
                     .AddEndpointsApiExplorer()
                     .AddSwaggerGen();
@@ -63,6 +64,9 @@ namespace Auth.Api.Extensions.Startup
 
         private static async Task SeedAsync(WebApplication app)
         {
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
+
             using (var scope = app.Services.CreateScope())
             {
                 await ApplicationDbContextSeeder.SeedAsync(scope.ServiceProvider.GetRequiredService<ApplicationDbContext>(),

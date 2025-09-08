@@ -3,7 +3,6 @@ using Auth.Application.Exceptions.Applications.Users;
 using Auth.Domain.Aggregates;
 using Auth.Domain.Specifications;
 using DDD.Repositories;
-using System.Threading.Tasks;
 
 namespace Auth.Application.Services
 {

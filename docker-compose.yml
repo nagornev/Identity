@@ -1,12 +1,12 @@
 version: "3.9"
 
 services:
-  database:
-    container_name: database
+  auth_database:
+    container_name: auth_database
     image: mcr.microsoft.com/mssql/server:latest
     restart: always
     volumes:
-        - ./Data/Database:/var/opt/mssql/data
+        - ./Data/AuthDatabase:/var/opt/mssql/data
     ports:
       - 5001:1433
     environment:
@@ -15,17 +15,59 @@ services:
     networks:
       - application
 
-  scheduler:
-    container_name: scheduler
+  otp_database:
+    container_name: otp_database
+    image: postgres:16
+    environment:
+      POSTGRES_DB: Otp
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: HHHHhhhh1111
+    ports:
+      - "5002:5432"
+    volumes:
+      - ./Data/OtpDatabase:/var/lib/postgresql/data
+    networks:
+      - application
+      
+  notification_database:
+    container_name: notification_database
+    image: postgres:16
+    environment:
+      POSTGRES_DB: Notification
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: HHHHhhhh1111
+    ports:
+      - "5003:5432"
+    volumes:
+      - ./Data/NotificationDatabase:/var/lib/postgresql/data
+    networks:
+      - application
+
+  auth_scheduler:
+    container_name: auth_scheduler
     image: postgres:16
     environment:
       POSTGRES_DB: Scheduler
       POSTGRES_USER: sa
       POSTGRES_PASSWORD: HHHHhhhh1111
     ports:
-      - "5002:5432"
+      - "5004:5432"
     volumes:
-      - ./Data/Scheduler:/var/lib/postgresql/data
+      - ./Data/AuthScheduler:/var/lib/postgresql/data
+    networks:
+      - application
+
+  otp_scheduler:
+    container_name: otp_scheduler
+    image: postgres:16
+    environment:
+      POSTGRES_DB: Scheduler
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: HHHHhhhh1111
+    ports:
+      - "5005:5432"
+    volumes:
+      - ./Data/OtpScheduler:/var/lib/postgresql/data
     networks:
       - application
   

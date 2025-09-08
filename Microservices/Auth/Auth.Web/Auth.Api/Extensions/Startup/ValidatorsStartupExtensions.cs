@@ -27,7 +27,7 @@ namespace Auth.Api.Extensions.Startup
             return services.AddSingleton<IRefreshTokenValidator, RefreshTokenValidator>()
                            .AddSingleton<IChannelTokenValidator, ChannelTokenValidator>()
                            .AddSingleton<IFingerprintValidator, FingerprintValidator>()
-                           
+
                            //Infastructure only
                            .AddSingleton<IJwtSignatureValidator, JwtSignatureValidator>()
                            .AddSingleton<IEd25519SignatureValidator, Ed25519SignatureValidator>();

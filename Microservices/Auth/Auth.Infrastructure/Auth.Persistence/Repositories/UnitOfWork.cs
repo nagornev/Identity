@@ -19,10 +19,10 @@ namespace Auth.Persistence.Repositories
         {
             LinkedList<OutboxMessage> outboxMessages = new LinkedList<OutboxMessage>();
 
-            foreach(AggregateRoot aggregate in _context.ChangeTracker.Entries<AggregateRoot>()
+            foreach (AggregateRoot aggregate in _context.ChangeTracker.Entries<AggregateRoot>()
                                                                      .Select(x => x.Entity))
             {
-                foreach(OutboxMessage outboxMessage in aggregate.GetDomainEvents()
+                foreach (OutboxMessage outboxMessage in aggregate.GetDomainEvents()
                                                                 .Select(domainEvent => OutboxMessage.Create(domainEvent.AggregateId,
                                                                                                             domainEvent.GetType().Name,
                                                                                                             JsonConvert.SerializeObject(domainEvent,

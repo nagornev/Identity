@@ -2,11 +2,6 @@
 using Otp.Application.Abstractions.Providers;
 using Otp.Application.Abstractions.Services;
 using Otp.Domain.Aggregates;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Otp.Application.Services
 {
@@ -35,7 +30,7 @@ namespace Otp.Application.Services
         {
             IAsyncEnumerable<OneTimePassword> invalidOneTimePasswords = _oneTimePasswordQueryService.GetExpiredOneTimePasswordsAsyncEnumerable(_timeProvider.NowUnix());
 
-            await foreach(OneTimePassword invalidOneTimePassword in invalidOneTimePasswords)
+            await foreach (OneTimePassword invalidOneTimePassword in invalidOneTimePasswords)
             {
                 invalidOneTimePassword.MarkAsDeleted();
                 await _oneTimePasswordRepository.DeleteAsync(invalidOneTimePassword);

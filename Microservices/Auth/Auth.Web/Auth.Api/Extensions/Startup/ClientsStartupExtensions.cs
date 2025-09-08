@@ -3,7 +3,6 @@ using Auth.Messaging.Clients;
 using Auth.Messaging.Consumers;
 using Auth.Messaging.Options;
 using MassTransit;
-using Microsoft.Extensions.Logging.Console;
 
 namespace Auth.Api.Extensions.Startup
 {

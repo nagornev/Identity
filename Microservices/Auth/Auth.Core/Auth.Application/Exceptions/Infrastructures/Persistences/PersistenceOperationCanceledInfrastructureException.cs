@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Auth.Application.Exceptions.Infrastructures.Persistences
+﻿namespace Auth.Application.Exceptions.Infrastructures.Persistences
 {
     public class PersistenceOperationCanceledInfrastructureException : CanceledInfrastructureException
     {
         private const string _message = "The persistence operation was cancel.";
 
-        public PersistenceOperationCanceledInfrastructureException(Exception? inner = null) 
+        public PersistenceOperationCanceledInfrastructureException(Exception? inner = null)
             : base(_message, inner)
         {
         }

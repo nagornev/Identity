@@ -1,8 +1,8 @@
 ﻿using Auth.Application.Abstractions.Storages;
 using Auth.Security.Abstractions.Providers;
-using Microsoft.IdentityModel.Tokens;
 using Auth.Security.Extensions;
 using Carter;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Auth.Api.Endpoints
 {

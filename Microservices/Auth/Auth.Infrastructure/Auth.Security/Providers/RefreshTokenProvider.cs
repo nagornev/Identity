@@ -1,5 +1,4 @@
-﻿using Auth.Application.Abstractions.Providers;
-using Auth.Application.Abstractions.Providers.Tokens;
+﻿using Auth.Application.Abstractions.Providers.Tokens;
 using Auth.Application.DTOs;
 using Auth.Application.Options;
 using Auth.Domain.Aggregates;

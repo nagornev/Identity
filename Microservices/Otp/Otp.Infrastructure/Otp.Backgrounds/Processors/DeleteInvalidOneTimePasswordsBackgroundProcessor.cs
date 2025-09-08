@@ -1,15 +1,9 @@
 ﻿using Hangfire;
-using Hangfire.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Otp.Application.Abstractions.Services;
 using Otp.Application.Options;
 using Otp.Backgrounds.Abstractions.Processors;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Otp.Backgrounds.Processors
 {
@@ -27,7 +21,7 @@ namespace Otp.Backgrounds.Processors
             _serviceProvider = serviceProvider;
             _oneTimePasswordOptions = oneTimePasswordOptions.Value;
         }
-         public Task StartAsync(CancellationToken cancellation)
+        public Task StartAsync(CancellationToken cancellation)
         {
             RecurringJob.AddOrUpdate(_job,
                                      () => ExecuteAsync(cancellation),

@@ -2,7 +2,6 @@
 using Auth.Messaging.Abstractions.Providers;
 using DDD.Events;
 using MassTransit;
-using MessageContracts;
 
 namespace Auth.Messaging.Services
 {
@@ -12,7 +11,7 @@ namespace Auth.Messaging.Services
 
         private readonly IPublishEndpoint _publishService;
 
-        public PublishEventService(IMessageContractsProvider messageContractProvider, 
+        public PublishEventService(IMessageContractsProvider messageContractProvider,
                                    IPublishEndpoint publishService)
         {
             _publishService = publishService;

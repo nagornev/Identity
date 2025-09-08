@@ -29,7 +29,7 @@ namespace Otp.Domain.Aggregates
 
                                                                   Secret.Create(secret) ??
                                                                   throw new SecretNullDomainException(),
-                                                                  
+
                                                                   tag,
                                                                   subject,
                                                                   payload,
@@ -59,7 +59,7 @@ namespace Otp.Domain.Aggregates
 
         public bool Deleted { get; private set; }
 
-        public string GetValue(int digits = 6) 
+        public string GetValue(int digits = 6)
         {
             byte[] key = Secret.DecodeToBytes();
             string message = $"{Subject}{Payload}{CreatedAt}";
@@ -81,9 +81,9 @@ namespace Otp.Domain.Aggregates
 
         public bool ValidateAt(string otp, string tag, long timestamp)
         {
-            if (Attempts >= _maximumAttempts || 
+            if (Attempts >= _maximumAttempts ||
                 timestamp > ExpiresAt ||
-                Tag != tag||
+                Tag != tag ||
                 Used)
                 return false;
 
@@ -119,7 +119,7 @@ namespace Otp.Domain.Aggregates
     {
         private OneTimePassword()
         {
-            
+
         }
     }
 

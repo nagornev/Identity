@@ -1,5 +1,4 @@
-﻿using Auth.Domain.Events;
-using Auth.Messaging.Abstractions.Providers;
+﻿using Auth.Messaging.Abstractions.Providers;
 using DDD.Events;
 using MessageContracts;
 

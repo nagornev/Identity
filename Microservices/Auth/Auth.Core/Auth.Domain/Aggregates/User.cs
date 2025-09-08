@@ -212,7 +212,7 @@ namespace Auth.Domain.Aggregates
         /// <exception cref="PermissionNotFoundDomainException"></exception>
         public void DeleteRolePermission(Guid rolePermissionId)
         {
-            RolePermission rolePermission = Authorization.RolePermissions.FirstOrDefault(x => x.Id == rolePermissionId)??
+            RolePermission rolePermission = Authorization.RolePermissions.FirstOrDefault(x => x.Id == rolePermissionId) ??
                                             throw new PermissionNotFoundDomainException();
 
             Authorization.DeleteRolePermission(rolePermission);
@@ -256,7 +256,7 @@ namespace Auth.Domain.Aggregates
         /// <exception cref="PermissionNotFoundDomainException"></exception>
         public void DeleteScopePermission(Guid scopePermissionId)
         {
-            ScopePermission scopePermission = Authorization.ScopePermissions.FirstOrDefault(x => x.ScopeId == scopePermissionId)??
+            ScopePermission scopePermission = Authorization.ScopePermissions.FirstOrDefault(x => x.ScopeId == scopePermissionId) ??
                                               throw new PermissionNotFoundDomainException();
 
             Authorization.DeleteScopePermission(scopePermission);
