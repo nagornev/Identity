@@ -1,6 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class EmailAddressChangeConfirmedMessageContract : IMessageContract
+    public class EmailAddressChangeConfirmedMessageContract 
     {
         public EmailAddressChangeConfirmedMessageContract(Guid userId,
                                                           string newEmailAddress)

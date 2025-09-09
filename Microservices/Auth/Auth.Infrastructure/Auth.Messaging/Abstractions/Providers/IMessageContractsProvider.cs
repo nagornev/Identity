@@ -5,6 +5,6 @@ namespace Auth.Messaging.Abstractions.Providers
 {
     public interface IMessageContractsProvider
     {
-        Task<IMessageContract> Create(IDomainEvent domainEvent);
+        Task<dynamic> Create(IDomainEvent domainEvent);
     }
 }

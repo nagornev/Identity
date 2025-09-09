@@ -3,6 +3,7 @@ using Auth.Messaging.Clients;
 using Auth.Messaging.Consumers;
 using Auth.Messaging.Options;
 using MassTransit;
+using MessageContracts;
 
 namespace Auth.Api.Extensions.Startup
 {
@@ -22,9 +23,14 @@ namespace Auth.Api.Extensions.Startup
 
             return services.AddMassTransit(options =>
             {
+                options.SetKebabCaseEndpointNameFormatter();
+
                 options.AddConsumer<EmailAddressChangeConfirmedMessageConsumer>();
                 options.AddConsumer<PasswordHashChangedMessageConsumer>();
                 options.AddConsumer<UserCreatedMessageConsumer>();
+
+                options.AddRequestClient<OneTimePasswordCreationRequest>();
+                options.AddRequestClient<OneTimePasswordValidationRequest>();
 
                 options.UsingRabbitMq((context, cfg) =>
                 {
@@ -34,20 +40,7 @@ namespace Auth.Api.Extensions.Startup
                         h.Password(messageBrokerOptions.Password);
                     });
 
-                    cfg.ReceiveEndpoint("auth-email-address-change-confirmed-queue", e =>
-                    {
-                        e.ConfigureConsumer<EmailAddressChangeConfirmedMessageConsumer>(context);
-                    });
-
-                    cfg.ReceiveEndpoint("auth-password-hash-changed-queue", e =>
-                    {
-                        e.ConfigureConsumer<PasswordHashChangedMessageConsumer>(context);
-                    });
-
-                    cfg.ReceiveEndpoint("auth-user-created-queue", e =>
-                    {
-                        e.ConfigureConsumer<UserCreatedMessageConsumer>(context);
-                    });
+                    cfg.ConfigureEndpoints(context);
                 });
             });
         }

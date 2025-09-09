@@ -1,6 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class ChannelNotificationMessageContract : IMessageContract
+    public class ChannelNotificationMessageContract
     {
         public ChannelNotificationMessageContract(Guid userId,
                                                   string channel,

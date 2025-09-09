@@ -5,9 +5,9 @@ namespace Auth.Messaging.Providers
 {
     public class UserActivatedMessageContractProvider : MessageContractProvider<UserActivatedDomainEvent>
     {
-        public override Task<IMessageContract> Create(UserActivatedDomainEvent domainEvent)
+        public override Task<dynamic> Create(UserActivatedDomainEvent domainEvent)
         {
-            return Task.FromResult<IMessageContract>(new UserActivatedMessageContract(domainEvent.AggregateId, domainEvent.EmailAddress));
+            return Task.FromResult<dynamic>(new UserActivatedMessageContract(domainEvent.AggregateId, domainEvent.EmailAddress));
         }
     }
 }

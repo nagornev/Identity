@@ -13,7 +13,7 @@ namespace Otp.Messaging.Providers
             _messageContractProviders = messageContractProviders.ToDictionary(x => x.GetHandableType(), x => x);
         }
 
-        public async Task<IMessageContract> CreateAsync(IDomainEvent domainEvent, CancellationToken cancellation = default)
+        public async Task<dynamic> CreateAsync(IDomainEvent domainEvent, CancellationToken cancellation = default)
         {
             return _messageContractProviders.TryGetValue(domainEvent.GetType(), out var messageContractProvider) ?
                    await messageContractProvider.Create(domainEvent) :

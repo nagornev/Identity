@@ -13,7 +13,7 @@ namespace Auth.Messaging.Providers
             _messageContractProviders = messageContractProviders.ToDictionary(x => x.GetHandableType(), x => x);
         }
 
-        public async Task<IMessageContract> Create(IDomainEvent domainEvent)
+        public async Task<dynamic> Create(IDomainEvent domainEvent)
         {
             return _messageContractProviders.TryGetValue(domainEvent.GetType(), out var messageContractProvider) ?
                    await messageContractProvider.Create(domainEvent) :

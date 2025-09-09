@@ -15,6 +15,7 @@ namespace Otp.Domain.Aggregates
         {
             Id = id;
             Secret = secret;
+            Tag = tag;
             Subject = subject;
             Payload = payload;
             CreatedAt = createdAt;

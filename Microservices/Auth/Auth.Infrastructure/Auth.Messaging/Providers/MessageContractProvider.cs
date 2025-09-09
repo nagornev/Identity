@@ -12,7 +12,7 @@ namespace Auth.Messaging.Providers
             return typeof(TDomainEventType);
         }
 
-        public Task<IMessageContract> Create(IDomainEvent domainEvent)
+        public Task<dynamic> Create(IDomainEvent domainEvent)
         {
             if (domainEvent is not TDomainEventType typedDomainEvent)
                 throw new InvalidCastException();
@@ -20,6 +20,6 @@ namespace Auth.Messaging.Providers
             return Create(typedDomainEvent);
         }
 
-        public abstract Task<IMessageContract> Create(TDomainEventType domainEvent);
+        public abstract Task<dynamic> Create(TDomainEventType domainEvent);
     }
 }

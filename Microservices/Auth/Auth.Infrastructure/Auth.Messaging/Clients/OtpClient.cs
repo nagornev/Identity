@@ -8,28 +8,27 @@ namespace Auth.Messaging.Clients
 {
     public class OtpClient : IOtpClient
     {
-        private readonly IRequestClient<OneTimePasswordCreationRequest> _otpCreationClient;
+        private readonly IRequestClient<OneTimePasswordCreationRequest> _otpCreationRequestClient;
 
-        private readonly IRequestClient<OneTimePasswordValidationRequest> _otpValidationClient;
+        private readonly IRequestClient<OneTimePasswordValidationRequest> _otpValidationRequestClient;
 
-        public OtpClient(IRequestClient<OneTimePasswordCreationRequest> otpCreationClient,
-                         IRequestClient<OneTimePasswordValidationRequest> otpValidationClient)
+        public OtpClient(IRequestClient<OneTimePasswordCreationRequest> otpCreationRequestClient,
+                         IRequestClient<OneTimePasswordValidationRequest> otpValidationRequestClient)
         {
-            _otpCreationClient = otpCreationClient;
-            _otpValidationClient = otpValidationClient;
+            _otpCreationRequestClient = otpCreationRequestClient;
+            _otpValidationRequestClient = otpValidationRequestClient;
         }
 
         public async Task<Guid> CreateAsync(Guid subject, string tag, string payload = "", CancellationToken cancellation = default)
         {
-            var response = await _otpCreationClient.GetResponse<OneTimePasswordCreationCompleted, Fault<OneTimePasswordCreationRequest>>(new OneTimePasswordCreationRequest(subject,
-                                                                                                                                        tag,
-                                                                                                                                        payload),
+            var response = await _otpCreationRequestClient.GetResponse<OneTimePasswordCreationCompleted>(new OneTimePasswordCreationRequest(subject,
+                                                                                                                         tag,
+                                                                                                                         payload),
                                                                                                                  cancellation);
 
             return response switch
             {
                 { Message: OneTimePasswordCreationCompleted completed } => completed.OneTimePasswordId,
-                { Message: Fault<OneTimePasswordCreationRequest> fault } => throw new MessagingInvalidOperationInfrastructureException(GetExceptionMessage(fault)),
 
                 _ => throw new MessagingInvalidOperationInfrastructureException("Unexpected response from OTP service.")
             };
@@ -37,7 +36,7 @@ namespace Auth.Messaging.Clients
 
         public async Task<OtpValidation> ValidateAsync(Guid otpId, string otp, string tag, CancellationToken cancellation = default)
         {
-            var response = await _otpValidationClient.GetResponse<OneTimePasswordValidationCompleted, Fault<OneTimePasswordValidationRequest>>(new OneTimePasswordValidationRequest(
+            var response = await _otpValidationRequestClient.GetResponse<OneTimePasswordValidationCompleted, Fault<OneTimePasswordValidationRequest>>(new OneTimePasswordValidationRequest(
                                                                                                                                                 otpId,
                                                                                                                                                 otp,
                                                                                                                                                 tag),

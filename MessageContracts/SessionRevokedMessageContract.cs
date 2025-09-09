@@ -1,6 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class SessionRevokedMessageContract : IMessageContract
+    public class SessionRevokedMessageContract
     {
         public SessionRevokedMessageContract(Guid sessionId)
         {

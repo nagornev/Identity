@@ -1,6 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class OneTimePasswordDeletedMessageContract : IMessageContract
+    public class OneTimePasswordDeletedMessageContract
     {
         public OneTimePasswordDeletedMessageContract(Guid oneTimePasswordId, Guid subject, string tag, long createdAt, bool used)
         {

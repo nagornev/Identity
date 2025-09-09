@@ -1,6 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class OneTimePasswordValidationCompleted : IMessageContract
+    public class OneTimePasswordValidationCompleted
     {
         public OneTimePasswordValidationCompleted(bool isValid,
                                       Guid subject,

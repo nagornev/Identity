@@ -5,9 +5,9 @@ namespace Auth.Messaging.Providers
 {
     public class PasswordHashChangedMessageContractProvider : MessageContractProvider<PasswordHashChangedDomainEvent>
     {
-        public override Task<IMessageContract> Create(PasswordHashChangedDomainEvent domainEvent)
+        public override Task<dynamic> Create(PasswordHashChangedDomainEvent domainEvent)
         {
-            return Task.FromResult<IMessageContract>(new PasswordHashChangedMessageContract(domainEvent.AggregateId));
+            return Task.FromResult<dynamic>(new PasswordHashChangedMessageContract(domainEvent.AggregateId));
         }
     }
 }

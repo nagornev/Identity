@@ -15,10 +15,11 @@ namespace Otp.Messaging.Consumers
 
         public async Task Consume(ConsumeContext<OneTimePasswordCreationRequest> context)
         {
-            Guid oneTimePasswordId = await _oneTimeCreateService.CreateAsync(context.Message.Tag,
-                                                                             context.Message.Subject,
-                                                                             context.Message.Payload,
-                                                                             context.CancellationToken);
+            Guid oneTimePasswordId = await _oneTimeCreateService.CreateAsync(
+                     context.Message.Tag,
+                     context.Message.Subject,
+                     context.Message.Payload,
+                     context.CancellationToken);
 
             await context.RespondAsync(new OneTimePasswordCreationCompleted(oneTimePasswordId));
         }

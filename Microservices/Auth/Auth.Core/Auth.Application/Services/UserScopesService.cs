@@ -43,9 +43,11 @@ namespace Auth.Application.Services
             IReadOnlyCollection<Scope> audienceUserScopes = scopes.Where(x => x.Audience == audience)
                                                                   .ToArray();
 
-            return audienceUserScopes.Count > 0 ?
-                   audienceUserScopes :
-                   throw new ScopesNotFoundApplicationException(audience.Value);
+            return audienceUserScopes;
+
+            //return audienceUserScopes.Count > 0 ?
+            //       audienceUserScopes :
+            //       throw new ScopesNotFoundApplicationException(audience.Value);
         }
     }
 }

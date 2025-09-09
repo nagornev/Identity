@@ -21,6 +21,8 @@ namespace Otp.Api.Extensions.Startup
 
             return services.AddMassTransit(options =>
             {
+                options.SetKebabCaseEndpointNameFormatter();
+
                 options.AddConsumer<OneTimePasswordCreatedConsumer>();
                 options.AddConsumer<OneTimePasswordUsedConsumer>();
                 options.AddConsumer<OneTimePasswordCreationRequestConsumer>();
@@ -34,25 +36,7 @@ namespace Otp.Api.Extensions.Startup
                         h.Password(messageBrokerOptions.Password);
                     });
 
-                    cfg.ReceiveEndpoint("otp-created-queue", e =>
-                    {
-                        e.ConfigureConsumer<OneTimePasswordCreatedConsumer>(context);
-                    });
-
-                    cfg.ReceiveEndpoint("otp-used-queue", e =>
-                    {
-                        e.ConfigureConsumer<OneTimePasswordUsedConsumer>(context);
-                    });
-
-                    cfg.ReceiveEndpoint("otp-creation-request-queue", e =>
-                    {
-                        e.ConfigureConsumer<OneTimePasswordCreationRequestConsumer>(context);
-                    });
-
-                    cfg.ReceiveEndpoint("otp-validation-request-queue", e =>
-                    {
-                        e.ConfigureConsumer<OneTimePasswordValidationRequestConsumer>(context);
-                    });
+                    cfg.ConfigureEndpoints(context);
                 });
             });
         }

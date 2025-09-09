@@ -67,12 +67,14 @@ namespace Auth.Application.Services
             Session session = _sessionFactory.Create(user.Id, refreshPrimaryKey.Kid, publicKey, audience, requestContext.Device, requestContext.IpAddress);
             await _sessionRepository.AddAsync(session, cancellation);
 
+            Guid otpId = await _otpClient.CreateAsync(user.Id,
+                                                      OtpTags.SignIn,
+                                                      payload: _otpPayloadMapper.Serialize(new SignInOtpTokenPayload(session.Id)),
+                                                      cancellation: cancellation);
+
             await _unitOfWork.SaveAsync(cancellation);
 
-            return await _otpClient.CreateAsync(user.Id,
-                                                OtpTags.SignIn,
-                                                payload: _otpPayloadMapper.Serialize(new SignInOtpTokenPayload(session.Id)),
-                                                cancellation: cancellation);
+            return otpId;
         }
     }
 }

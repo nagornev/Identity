@@ -5,9 +5,9 @@ namespace Auth.Messaging.Providers
 {
     public class EmailAddressChangeConfirmedMessageContractProvider : MessageContractProvider<EmailAddressChangeConfirmedDomainEvent>
     {
-        public override Task<IMessageContract> Create(EmailAddressChangeConfirmedDomainEvent domainEvent)
+        public override Task<dynamic> Create(EmailAddressChangeConfirmedDomainEvent domainEvent)
         {
-            return Task.FromResult<IMessageContract>(new EmailAddressChangeConfirmedMessageContract(domainEvent.AggregateId, domainEvent.NewEmailAddress));
+            return Task.FromResult<dynamic>(new EmailAddressChangeConfirmedMessageContract(domainEvent.AggregateId, domainEvent.NewEmailAddress));
         }
     }
 }

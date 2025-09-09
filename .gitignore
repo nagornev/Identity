@@ -21,8 +21,7 @@ Data/OtpDatabase/*
 Data/OtpScheduler/*
 Data/NotificationDatabase/*
 Data/NotificationScheduler/*
-Data/RabbitMQ/
-
+Data/RabbitMQ/*
 Data/Vault/*
 # Build results
 [Dd]ebug/

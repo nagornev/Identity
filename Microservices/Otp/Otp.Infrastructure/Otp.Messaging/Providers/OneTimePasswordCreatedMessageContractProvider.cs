@@ -5,9 +5,9 @@ namespace Otp.Messaging.Providers
 {
     public class OneTimePasswordCreatedMessageContractProvider : MessageContractProvider<OneTimePasswordCreatedDomainEvent>
     {
-        public override Task<IMessageContract> Create(OneTimePasswordCreatedDomainEvent domainEvent)
+        public override Task<dynamic> Create(OneTimePasswordCreatedDomainEvent domainEvent)
         {
-            return Task.FromResult<IMessageContract>(new OneTimePasswordCreatedMessageContract(domainEvent.AggregateId));
+            return Task.FromResult<dynamic>(new OneTimePasswordCreatedMessageContract(domainEvent.AggregateId));
         }
     }
 }

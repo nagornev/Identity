@@ -1,5 +1,6 @@
 ﻿using DDD.Primitives;
 using Otp.Domain.Exceptions.Domains.OneTimePasswords;
+using System.Buffers.Text;
 
 namespace Otp.Domain.ValueObjects
 {
@@ -30,30 +31,7 @@ namespace Otp.Domain.ValueObjects
 
         public byte[] DecodeToBytes()
         {
-            return Base32Decode(Value);
-        }
-
-        private static byte[] Base32Decode(string base32)
-        {
-            int bitBuffer = 0, bitCount = 0;
-            var result = new List<byte>();
-
-            foreach (char c in base32.TrimEnd('=').ToUpperInvariant())
-            {
-                int val = _alphabet.IndexOf(c);
-                if (val < 0) throw new ArgumentException("Invalid Base32 char");
-
-                bitBuffer = (bitBuffer << 5) | val;
-                bitCount += 5;
-
-                if (bitCount >= 8)
-                {
-                    result.Add((byte)(bitBuffer >> (bitCount - 8)));
-                    bitCount -= 8;
-                }
-            }
-
-            return result.ToArray();
+            return Convert.FromBase64String(Value);
         }
     }
 }

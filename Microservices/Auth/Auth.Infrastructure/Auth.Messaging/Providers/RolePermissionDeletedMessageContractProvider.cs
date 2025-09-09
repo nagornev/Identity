@@ -14,7 +14,7 @@ namespace Auth.Messaging.Providers
             _roleQueryService = roleQueryService;
         }
 
-        public override async Task<IMessageContract> Create(RolePermissionDeletedDomainEvent domainEvent)
+        public override async Task<dynamic> Create(RolePermissionDeletedDomainEvent domainEvent)
         {
             Role role = await _roleQueryService.GetRoleByIdAsync(domainEvent.RoleId);
 

@@ -1,6 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class ScopePermissionDeletedMessageContract : IMessageContract
+    public class ScopePermissionDeletedMessageContract
     {
         public ScopePermissionDeletedMessageContract(Guid userId, Guid scopeId, string audience, string name)
         {

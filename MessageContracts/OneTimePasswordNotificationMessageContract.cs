@@ -1,6 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class OneTimePasswordNotificationMessageContract : IMessageContract
+    public class OneTimePasswordNotificationMessageContract
     {
         public OneTimePasswordNotificationMessageContract(Guid subject,
                                                           string oneTimePasswordValue)

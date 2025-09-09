@@ -29,7 +29,9 @@ namespace Auth.Api.Extensions.Startup
                            .AddSingleton(Options.Create(configuration.GetSection(nameof(RefreshKeyOptions))
                                                                      .Get<RefreshKeyOptions>()!))
                            .AddSingleton(Options.Create(configuration.GetSection(nameof(ChannelKeyOptions))
-                                                                     .Get<ChannelKeyOptions>()!));
+                                                                     .Get<ChannelKeyOptions>()!))
+                           .AddSingleton(Options.Create(configuration.GetSection(nameof(SaltOptions))
+                                                                     .Get<SaltOptions>()!));
         }
 
         private static IServiceCollection AddInfrastructureOptions(this IServiceCollection services, IConfiguration configuration)

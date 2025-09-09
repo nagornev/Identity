@@ -1,6 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class UserDeletedMessageContract : IMessageContract
+    public class UserDeletedMessageContract
     {
         public UserDeletedMessageContract(Guid userId)
         {

@@ -14,7 +14,7 @@ namespace Auth.Messaging.Providers
             _scopeQueryService = scopeQueryService;
         }
 
-        public override async Task<IMessageContract> Create(ScopePermissionDeletedDomainEvent domainEvent)
+        public override async Task<dynamic> Create(ScopePermissionDeletedDomainEvent domainEvent)
         {
             Scope scope = await _scopeQueryService.GetScopeByIdAsync(domainEvent.ScopeId);
 

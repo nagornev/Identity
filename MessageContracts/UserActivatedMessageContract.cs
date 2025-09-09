@@ -1,6 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class UserActivatedMessageContract : IMessageContract
+    public class UserActivatedMessageContract
     {
         public UserActivatedMessageContract(Guid userId,
                                             string emailAddress)

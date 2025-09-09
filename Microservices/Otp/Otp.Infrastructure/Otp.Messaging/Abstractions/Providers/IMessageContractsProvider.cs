@@ -5,6 +5,6 @@ namespace Otp.Messaging.Abstractions.Providers
 {
     public interface IMessageContractsProvider
     {
-        Task<IMessageContract> CreateAsync(IDomainEvent domainEvent, CancellationToken cancellation = default);
+        Task<dynamic> CreateAsync(IDomainEvent domainEvent, CancellationToken cancellation = default);
     }
 }

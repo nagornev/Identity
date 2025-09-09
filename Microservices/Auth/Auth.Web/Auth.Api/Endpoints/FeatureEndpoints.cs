@@ -1,4 +1,6 @@
-﻿using Auth.Application.Features.SignUp.Commands;
+﻿using Auth.Application.DTOs;
+using Auth.Application.Features.SignIn.Queries;
+using Auth.Application.Features.SignUp.Commands;
 using Carter;
 using MassTransit;
 using MediatR;
@@ -14,7 +16,9 @@ namespace Auth.Api.Endpoints
             var group = app.MapGroup("api/identity");
 
             group.MapPost("sign/up", SignUp);
-            group.MapGet("sign/activate/{token}", Activate);
+            group.MapGet("sign/up/activate/{token}", Activate);
+            group.MapPost("sign/in", SignIn);
+            group.MapPost("sign/in/confirm", Confirm);
 
 
             group.MapGet("test", Test);
@@ -38,11 +42,39 @@ namespace Auth.Api.Endpoints
                     Results.BadRequest(activateResult);
         }
 
-        private static async Task<IResult> Test(IPublishEndpoint publisher, CancellationToken cancellation = default)
+        private static async Task<IResult> SignIn(RequestUserSignInQuery query, IMediator mediator, CancellationToken cancellation = default)
         {
-            IMessageContract messageContract = new UserCreatedMessageContract(Guid.NewGuid(), "test@ya.ru");
+            Result<Guid> signInResult = await mediator.Send(query, cancellation);
+            
+            return signInResult.IsSuccess?
+                    Results.Ok(signInResult) : 
+                    Results.BadRequest(signInResult);
+        }
 
-            await publisher.Publish(messageContract, messageContract.GetType(), cancellation);
+        private static async Task<IResult> Confirm(ConfirmUserSignInQuery query, IMediator mediator, CancellationToken cancellation = default)
+        {
+            Result<TokenPair> confirmSignInResult = await mediator.Send(query, cancellation);
+
+            return confirmSignInResult.IsSuccess ?
+                    Results.Ok(confirmSignInResult) :
+                    Results.BadRequest(confirmSignInResult);
+        }
+
+        private static async Task<IResult> Test(IRequestClient<OneTimePasswordCreationRequest> otpCreationRequestClient, CancellationToken cancellation = default)
+        {
+
+            //var response = await otpCreationRequestClient.GetResponse<OneTimePasswordCreationCompleted, Fault<OneTimePasswordCreationRequest>>(new OneTimePasswordCreationRequest(Guid.NewGuid,
+            //                                                                                                             tag,
+            //                                                                                                             payload),
+            //                                                                                                     cancellation);
+
+            //return response switch
+            //{
+            //    { Message: OneTimePasswordCreationCompleted completed } => completed.OneTimePasswordId,
+            //    { Message: Fault<OneTimePasswordCreationRequest> fault } => throw new MessagingInvalidOperationInfrastructureException(fault.Message.ToString()!),
+
+            //    _ => throw new MessagingInvalidOperationInfrastructureException("Unexpected response from OTP service.")
+            //};
 
             return Results.Ok();
         }

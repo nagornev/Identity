@@ -5,9 +5,9 @@ namespace Auth.Messaging.Providers
 {
     public class SessionRevokedMessageContractProvider : MessageContractProvider<SessionRevokedDomainEvent>
     {
-        public override Task<IMessageContract> Create(SessionRevokedDomainEvent domainEvent)
+        public override Task<dynamic> Create(SessionRevokedDomainEvent domainEvent)
         {
-            return Task.FromResult<IMessageContract>(new SessionRevokedMessageContract(domainEvent.AggregateId));
+            return Task.FromResult<dynamic>(new SessionRevokedMessageContract(domainEvent.AggregateId));
         }
     }
 }

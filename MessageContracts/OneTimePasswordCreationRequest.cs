@@ -1,6 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class OneTimePasswordCreationRequest : IRequestMessageContract
+    public class OneTimePasswordCreationRequest
     {
         public OneTimePasswordCreationRequest(Guid subject, string tag, string payload)
         {

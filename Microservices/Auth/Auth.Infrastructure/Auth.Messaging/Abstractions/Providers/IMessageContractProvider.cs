@@ -7,6 +7,6 @@ namespace Auth.Messaging.Abstractions.Providers
     {
         Type GetHandableType();
 
-        Task<IMessageContract> Create(IDomainEvent domainEvent);
+        Task<dynamic> Create(IDomainEvent domainEvent);
     }
 }

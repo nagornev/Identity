@@ -1,6 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class PasswordHashChangedMessageContract : IMessageContract
+    public class PasswordHashChangedMessageContract
     {
         public PasswordHashChangedMessageContract(Guid userId)
         {

@@ -16,7 +16,7 @@ namespace Otp.Api.Extensions.Startup
         {
             return services.AddSingleton(Options.Create(configuration.GetSection(nameof(OneTimePasswordOptions))
                                                                      .Get<OneTimePasswordOptions>()!))
-                            .AddSingleton(Options.Create(configuration.GetSection(nameof(SecretOptions))
+                           .AddSingleton(Options.Create(configuration.GetSection(nameof(SecretOptions))
                                                                      .Get<SecretOptions>()!));
         }
 

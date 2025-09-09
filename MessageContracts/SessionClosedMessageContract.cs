@@ -1,6 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class SessionClosedMessageContract : IMessageContract
+    public class SessionClosedMessageContract
     {
         public SessionClosedMessageContract(Guid sessionId)
         {
