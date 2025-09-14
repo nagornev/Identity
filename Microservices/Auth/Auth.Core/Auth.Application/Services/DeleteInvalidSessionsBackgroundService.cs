@@ -26,16 +26,17 @@ namespace Auth.Application.Services
         {
             long timestamp = _timeProvider.NowUnix();
 
-            IAsyncEnumerable<Session> invalidSessions = _sessionQueryService.FindInvalidSessionsAsyncStream(timestamp);
+            IReadOnlyCollection<Session> invalidSessions = await _sessionQueryService.FindInvalidSessionsAsync(timestamp);
 
-            await foreach (Session invalidSession in invalidSessions)
+            foreach (Session invalidSession in invalidSessions)
             {
                 if (invalidSession.IsValidAt(timestamp))
                     continue;
 
                 invalidSession.MarkAsDeleted();
-                await _unitOfWork.SaveAsync(cancellation);
             }
+
+            await _unitOfWork.SaveAsync(cancellation);
         }
     }
 }

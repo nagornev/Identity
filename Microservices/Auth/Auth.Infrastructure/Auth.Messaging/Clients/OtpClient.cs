@@ -19,38 +19,61 @@ namespace Auth.Messaging.Clients
             _otpValidationRequestClient = otpValidationRequestClient;
         }
 
-        public async Task<Guid> CreateAsync(Guid subject, string tag, string payload = "", CancellationToken cancellation = default)
+        public async Task<Otp> CreateAsync(Guid userId, string tag, string payload = "", CancellationToken cancellation = default)
         {
-            var response = await _otpCreationRequestClient.GetResponse<OneTimePasswordCreationCompleted>(new OneTimePasswordCreationRequest(subject,
-                                                                                                                         tag,
-                                                                                                                         payload),
-                                                                                                                 cancellation);
-
-            return response switch
+            try
             {
-                { Message: OneTimePasswordCreationCompleted completed } => completed.OneTimePasswordId,
+                var response = await _otpCreationRequestClient.GetResponse<OneTimePasswordCreationCompleted>(new OneTimePasswordCreationRequest(userId,
+                                                                                                                                                tag,
+                                                                                                                                                payload),
+                                                                                                             cancellation);
+                return response switch
+                {
+                    { Message: OneTimePasswordCreationCompleted completed } => new Otp(completed.OneTimePasswordId,
+                                                                                       completed.Type,
+                                                                                       completed.Channel,
+                                                                                       completed.ExpiresAt),
 
-                _ => throw new MessagingInvalidOperationInfrastructureException("Unexpected response from OTP service.")
-            };
+                    _ => throw new MessagingInvalidOperationInfrastructureException("Unexpected response from OTP service.")
+                };
+            }
+            catch(RequestFaultException exception) when(exception.Fault is Fault<OneTimePasswordCreationRequest> fault)
+            {
+                throw new MessagingInvalidOperationInfrastructureException(GetExceptionMessage(fault));
+            }
+            catch
+            {
+                throw new MessagingInvalidOperationInfrastructureException("Unexpected response from OTP service.");
+            }
         }
 
         public async Task<OtpValidation> ValidateAsync(Guid otpId, string otp, string tag, CancellationToken cancellation = default)
         {
-            var response = await _otpValidationRequestClient.GetResponse<OneTimePasswordValidationCompleted, Fault<OneTimePasswordValidationRequest>>(new OneTimePasswordValidationRequest(
-                                                                                                                                                otpId,
-                                                                                                                                                otp,
-                                                                                                                                                tag),
-                                                                                                                       cancellation);
-
-            return response switch
+            try
             {
-                { Message: OneTimePasswordValidationCompleted completed } => new OtpValidation(completed.IsValid,
-                                                                                               completed.Subject,
-                                                                                               completed.Payload),
-                { Message: Fault<OneTimePasswordValidationRequest> fault } => throw new MessagingInvalidOperationInfrastructureException(GetExceptionMessage(fault)),
 
-                _ => throw new MessagingInvalidOperationInfrastructureException("Unexpected response from OTP service.")
-            };
+                var response = await _otpValidationRequestClient.GetResponse<OneTimePasswordValidationCompleted>(new OneTimePasswordValidationRequest(otpId,
+                                                                                                                                                      otp,
+                                                                                                                                                      tag),
+                                                                                                                 cancellation);
+
+                return response switch
+                {
+                    { Message: OneTimePasswordValidationCompleted completed } => new OtpValidation(completed.IsValid,
+                                                                                                   completed.UserId,
+                                                                                                   completed.Payload),
+
+                    _ => throw new MessagingInvalidOperationInfrastructureException("Unexpected response from OTP service.")
+                };
+            }
+            catch(RequestFaultException exception) when(exception.Fault is Fault<OneTimePasswordValidationRequest> fault)
+            {
+                throw new MessagingInvalidOperationInfrastructureException(GetExceptionMessage(fault));
+            }
+            catch
+            {
+                throw new MessagingInvalidOperationInfrastructureException("Unexpected response from OTP service.");
+            }
         }
 
         private string GetExceptionMessage<T>(Fault<T> faultMessage)

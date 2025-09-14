@@ -4,6 +4,6 @@ namespace Auth.Application.Abstractions.Services
 {
     public interface ISignInRequestService
     {
-        Task<Guid> RequestAsync(string emailAddress, string password, string audience, string publicKey, RequestContext requestContext, CancellationToken cancellation = default);
+        Task<Otp> RequestAsync(string emailAddress, string password, string audience, string publicKey, RequestContext requestContext, CancellationToken cancellation = default);
     }
 }

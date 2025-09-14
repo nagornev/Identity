@@ -32,7 +32,7 @@ namespace Auth.Application.Services
 
         private async Task<Role> GetBasicRole(CancellationToken cancellation = default)
         {
-            return await _roleQueryService.GetRoleByNameAsync(_applicationOptions.BasicRoleName, cancellation);
+            return await _roleQueryService.GetRoleByNameAsync(_applicationOptions.Roles.Basic.Name, cancellation);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Auth.Application.Services
             if (!otpValidation.IsValid)
                 throw new OtpInvalidApplicationException();
 
-            return new OtpContent(otpValidation.Subject, otpValidation.Payload);
+            return new OtpContent(otpValidation.UserId, otpValidation.Payload);
         }
     }
 }

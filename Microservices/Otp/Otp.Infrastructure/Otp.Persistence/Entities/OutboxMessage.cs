@@ -2,7 +2,7 @@
 {
     public partial class OutboxMessage
     {
-        public const int LocktimeDefault = 60_000;
+        public const int LocktimeDefault = 60;
 
         public OutboxMessage(Guid id,
                              Guid streamId,

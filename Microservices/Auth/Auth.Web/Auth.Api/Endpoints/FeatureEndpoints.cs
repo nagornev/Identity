@@ -1,10 +1,16 @@
-﻿using Auth.Application.DTOs;
+﻿using Auth.Api.Contracts;
+using Auth.Api.Extensions;
+using Auth.Application.DTOs;
+using Auth.Application.Features.ChangeEmailAddress.Commands;
+using Auth.Application.Features.ChangePassword.Commands;
+using Auth.Application.Features.ChangePersonName;
+using Auth.Application.Features.Refresh;
 using Auth.Application.Features.SignIn.Queries;
 using Auth.Application.Features.SignUp.Commands;
 using Carter;
-using MassTransit;
 using MediatR;
-using MessageContracts;
+using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.Extensions.FileSystemGlobbing;
 using OperationResults;
 
 namespace Auth.Api.Endpoints
@@ -15,13 +21,38 @@ namespace Auth.Api.Endpoints
         {
             var group = app.MapGroup("api/identity");
 
+            #region SignUp
+
             group.MapPost("sign/up", SignUp);
             group.MapGet("sign/up/activate/{token}", Activate);
+
+            #endregion
+
+            #region SignIn
+
             group.MapPost("sign/in", SignIn);
             group.MapPost("sign/in/confirm", Confirm);
+            group.MapPost("token/refresh", RefreshTokenPair);
 
+            #endregion
 
-            group.MapGet("test", Test);
+            #region Profile
+
+            group.MapPost("change/email/request", ChangeEmailRequest)
+                 .RequireAuthorization("edit:profile");
+            group.MapPost("change/email/confirm", ChangeEmailConfirm)
+                 .RequireAuthorization("edit:profile");
+            group.MapGet("change/email/update/{token}", ChangeEmailUpdate);
+
+            group.MapPost("change/password/request", ChangePasswordRequest)
+                 .RequireAuthorization("edit:profile");
+            group.MapPost("change/password/confirm", ChangePasswordConfirm)
+                 .RequireAuthorization("edit:profile");
+
+            group.MapPost("change/name", ChangePersonName)
+                 .RequireAuthorization("edit:profile");
+            #endregion
+
         }
 
         private static async Task<IResult> SignUp(RequestUserSignUpCommand command, IMediator mediator, CancellationToken cancellation = default)
@@ -44,7 +75,7 @@ namespace Auth.Api.Endpoints
 
         private static async Task<IResult> SignIn(RequestUserSignInQuery query, IMediator mediator, CancellationToken cancellation = default)
         {
-            Result<Guid> signInResult = await mediator.Send(query, cancellation);
+            Result<Otp> signInResult = await mediator.Send(query, cancellation);
             
             return signInResult.IsSuccess?
                     Results.Ok(signInResult) : 
@@ -60,23 +91,67 @@ namespace Auth.Api.Endpoints
                     Results.BadRequest(confirmSignInResult);
         }
 
-        private static async Task<IResult> Test(IRequestClient<OneTimePasswordCreationRequest> otpCreationRequestClient, CancellationToken cancellation = default)
+        private static async Task<IResult> RefreshTokenPair(RefreshCommand command, IMediator mediator, CancellationToken cancellation = default)
         {
+            Result<TokenPair> refreshResult = await mediator.Send(command, cancellation);
 
-            //var response = await otpCreationRequestClient.GetResponse<OneTimePasswordCreationCompleted, Fault<OneTimePasswordCreationRequest>>(new OneTimePasswordCreationRequest(Guid.NewGuid,
-            //                                                                                                             tag,
-            //                                                                                                             payload),
-            //                                                                                                     cancellation);
+            return refreshResult.IsSuccess ?
+                    Results.Ok(refreshResult) :
+                    Results.BadRequest(refreshResult);
+        }
 
-            //return response switch
-            //{
-            //    { Message: OneTimePasswordCreationCompleted completed } => completed.OneTimePasswordId,
-            //    { Message: Fault<OneTimePasswordCreationRequest> fault } => throw new MessagingInvalidOperationInfrastructureException(fault.Message.ToString()!),
+        private static async Task<IResult> ChangeEmailRequest(RequestEmailAddressChangeContract contract, IMediator mediator, HttpContext context, CancellationToken cancellation = default)
+        {
+            Result<Otp> changeEmailRequestResult = await mediator.Send(new RequestEmailAddressChangeCommand(context.User.GetUserId(), contract.NewEmailAddress), cancellation);
 
-            //    _ => throw new MessagingInvalidOperationInfrastructureException("Unexpected response from OTP service.")
-            //};
+            return changeEmailRequestResult.IsSuccess ?
+                    Results.Ok(changeEmailRequestResult):
+                    Results.BadRequest(changeEmailRequestResult);
+        }
 
-            return Results.Ok();
+        private static async Task<IResult> ChangeEmailConfirm(ConfirmEmailAddressChangeCommand command, IMediator mediator, CancellationToken cancellation = default)
+        {
+            Result changeEmailConfirmResult = await mediator.Send(command, cancellation);
+
+            return changeEmailConfirmResult.IsSuccess ?
+                    Results.Ok(changeEmailConfirmResult):
+                    Results.BadRequest(changeEmailConfirmResult);
+        }
+
+        private static async Task<IResult> ChangeEmailUpdate(string token, IMediator mediator, CancellationToken cancellation = default)
+        {
+            Result changeEmailUpdateResult = await mediator.Send(new EmailAddressUpdateCommand(token), cancellation);
+
+            return changeEmailUpdateResult.IsSuccess ?
+                    Results.Ok(changeEmailUpdateResult) :
+                    Results.BadRequest(changeEmailUpdateResult);
+        }
+
+        private static async Task<IResult> ChangePasswordRequest(RequestPasswordChangeContract contract, IMediator mediator, HttpContext context, CancellationToken cancellation = default)
+        {
+            Result<Otp> changePasswordRequestResult = await mediator.Send(new RequestPasswordChangeCommand(context.User.GetUserId(), contract.OldPassword, contract.NewPassword), cancellation);
+
+            return changePasswordRequestResult.IsSuccess ?
+                    Results.Ok(changePasswordRequestResult):
+                    Results.BadRequest(changePasswordRequestResult);
+        }
+
+        private static async Task<IResult> ChangePasswordConfirm(ConfirmPasswordChangeCommand command, IMediator mediator, CancellationToken cancellation =default)
+        {
+            Result changePasswordConfirmResult = await mediator.Send(command, cancellation);
+
+            return changePasswordConfirmResult.IsSuccess?
+                    Results.Ok(changePasswordConfirmResult):
+                    Results.BadRequest(changePasswordConfirmResult);
+        }
+
+        private static async Task<IResult> ChangePersonName(PersonNameChangeContract contract, IMediator mediator, HttpContext context, CancellationToken cancellation = default) 
+        {
+            Result changePersonNameResult = await mediator.Send(new PersonNameChangeCommand(context.User.GetUserId(), contract.NewPersonName), cancellation);
+
+            return changePersonNameResult.IsSuccess ?
+                    Results.Ok(changePersonNameResult):
+                    Results.BadRequest(changePersonNameResult);
         }
     }
 }

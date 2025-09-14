@@ -50,6 +50,9 @@ namespace Auth.Api.Extensions.Startup
                            .AddScoped<IUserInitializeService, UserInitializeService>()
                            .AddScoped<IUserQueryService, UserQueryService>()
                            .AddScoped<IUserScopesService, UserScopesService>()
+                           .AddScoped<IAccessKeyDeletionService, AccessKeyDeletionService>()
+                           .AddScoped<IRefreshKeyDeletionService, RefreshKeyDeletionService>()
+                           .AddScoped<IChannelKeyDeletionService, ChannelKeyDeletionService>()
                            .AddScoped<IWindowValidationService, WindowValidationService>();
         }
 

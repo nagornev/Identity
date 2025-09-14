@@ -28,9 +28,9 @@ namespace Otp.Application.Services
 
         public async Task DeleteAsync(CancellationToken cancellation = default)
         {
-            IAsyncEnumerable<OneTimePassword> invalidOneTimePasswords = _oneTimePasswordQueryService.GetExpiredOneTimePasswordsAsyncEnumerable(_timeProvider.NowUnix());
+            IReadOnlyCollection<OneTimePassword> invalidOneTimePasswords = await _oneTimePasswordQueryService.GetExpiredOneTimePasswordsAsync(_timeProvider.NowUnix());
 
-            await foreach (OneTimePassword invalidOneTimePassword in invalidOneTimePasswords)
+            foreach (OneTimePassword invalidOneTimePassword in invalidOneTimePasswords)
             {
                 invalidOneTimePassword.MarkAsDeleted();
                 await _oneTimePasswordRepository.DeleteAsync(invalidOneTimePassword);

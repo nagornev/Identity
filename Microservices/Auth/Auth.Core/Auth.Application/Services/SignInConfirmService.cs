@@ -26,13 +26,9 @@ namespace Auth.Application.Services
 
         private readonly IRefreshTokenProvider _refreshTokenProvider;
 
-        private readonly ITimeProvider _timeProvider;
-
         private readonly IAccessKeyStorage _accessKeysStorage;
 
         private readonly IRefreshKeyStorage _refreshKeysStorage;
-
-        private readonly WindowOptions _options;
 
         private readonly IUnitOfWork _unitOfWork;
 
@@ -43,10 +39,8 @@ namespace Auth.Application.Services
                                     IOtpTokenPayloadProvider otpTokenPayloadProvider,
                                     IAccessTokenProvider accessTokenProvider,
                                     IRefreshTokenProvider refreshTokenProvider,
-                                    ITimeProvider timeProvider,
                                     IAccessKeyStorage accessKeysStorage,
                                     IRefreshKeyStorage refreshKeysStorage,
-                                    IOptions<WindowOptions> options,
                                     IUnitOfWork unitOfWork)
         {
             _signInValidationService = signInValidationService;
@@ -56,38 +50,29 @@ namespace Auth.Application.Services
             _otpTokenPayloadProvider = otpTokenPayloadProvider;
             _accessTokenProvider = accessTokenProvider;
             _refreshTokenProvider = refreshTokenProvider;
-            _timeProvider = timeProvider;
             _accessKeysStorage = accessKeysStorage;
             _refreshKeysStorage = refreshKeysStorage;
-            _options = options.Value;
             _unitOfWork = unitOfWork;
         }
 
         public async Task<TokenPair> ConfirmAsync(Guid otpId,
                                                   string otp,
-                                                  string newPublicKey,
-                                                  long timestamp,
-                                                  string signature,
                                                   CancellationToken cancellation = default)
         {
-            _signInValidationService.ValidateWindow(timestamp, _options.Window);
-
             OtpContent otpContent = await _signInValidationService.ValidateOtpAsync(otpId, otp, cancellation);
             SignInOtpTokenPayload signInOtpTokenPayload = _otpTokenPayloadProvider.Deserialize<SignInOtpTokenPayload>(otpContent.Payload);
 
             Session session = await _sessionQueryService.GetSessionByIdAsync(signInOtpTokenPayload.SessionId);
 
             _signInValidationService.ValidateSession(session);
-            _signInValidationService.ValidateFingerprint(otpId, otp, timestamp, signature, session);
-
+          
             KeyPair accessPrimaryKey = await _accessKeysStorage.GetPrimaryAsync(cancellation);
             KeyPair refreshPrimaryKey = await _refreshKeysStorage.GetPrimaryAsync(cancellation);
 
             session.Activate();
             session.ChangeKidIfNeed(refreshPrimaryKey.Kid);
-            session.Update(newPublicKey, _timeProvider.NowUnix());
 
-            User user = await _userQueryService.GetUserByIdAsync(otpContent.Subject, cancellation);
+            User user = await _userQueryService.GetUserByIdAsync(otpContent.UserId, cancellation);
             IReadOnlyCollection<Scope> scopes = await _userScopesService.GetUserScopesAsync(user, session.Audience);
 
             await _unitOfWork.SaveAsync(cancellation);

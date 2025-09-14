@@ -1,16 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class OneTimePasswordNotificationMessageContract
+    public record OneTimePasswordNotificationMessageContract(Guid UserId, string OneTimePasswordValue, string Type, string Channel)
     {
-        public OneTimePasswordNotificationMessageContract(Guid subject,
-                                                          string oneTimePasswordValue)
-        {
-            Subject = subject;
-            OneTimePasswordValue = oneTimePasswordValue;
-        }
-
-        public Guid Subject { get; }
-
-        public string OneTimePasswordValue { get; }
     }
 }

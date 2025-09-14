@@ -2,14 +2,14 @@
 {
     public class OtpContent
     {
-        public OtpContent(Guid subject,
+        public OtpContent(Guid userId,
                           string payload)
         {
-            Subject = subject;
+            UserId = userId;
             Payload = payload;
         }
 
-        public Guid Subject { get; }
+        public Guid UserId { get; }
 
         public string Payload { get; }
     }

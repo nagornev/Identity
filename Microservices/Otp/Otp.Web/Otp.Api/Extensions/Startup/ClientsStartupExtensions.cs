@@ -22,11 +22,14 @@ namespace Otp.Api.Extensions.Startup
             return services.AddMassTransit(options =>
             {
                 options.SetKebabCaseEndpointNameFormatter();
-
+  
                 options.AddConsumer<OneTimePasswordCreatedConsumer>();
                 options.AddConsumer<OneTimePasswordUsedConsumer>();
                 options.AddConsumer<OneTimePasswordCreationRequestConsumer>();
                 options.AddConsumer<OneTimePasswordValidationRequestConsumer>();
+                options.AddConsumer<EmailAddressChangedConsumer>();
+                options.AddConsumer<UserActivatedConsumer>();
+                options.AddConsumer<OneTimePasswordResendedConsumer>();
 
                 options.UsingRabbitMq((context, cfg) =>
                 {

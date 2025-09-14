@@ -1,12 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class PasswordHashChangedMessageContract
+    public record PasswordHashChangedMessageContract(Guid UserId)
     {
-        public PasswordHashChangedMessageContract(Guid userId)
-        {
-            UserId = userId;
-        }
-
-        public Guid UserId { get; }
     }
 }

@@ -34,7 +34,7 @@ namespace Auth.Application.Services
             OtpContent otpContent = await _otpValidationService.ValidateAsync(otpId, otp, OtpTags.ChangePassword, cancellation);
             ChangePasswordHashOtpTokenPayload changePasswordHashOtpTokenPayload = _otpTokenPayloadProvider.Deserialize<ChangePasswordHashOtpTokenPayload>(otpContent.Payload);
 
-            User user = await _userQueryService.GetUserByIdAsync(otpContent.Subject, cancellation);
+            User user = await _userQueryService.GetUserByIdAsync(otpContent.UserId, cancellation);
 
             if (user.Authentication.PendingPasswordHash?.Version != changePasswordHashOtpTokenPayload.Version)
                 throw new PendingPasswordVersionInvalidApplicationException(user.Id);

@@ -18,11 +18,14 @@ namespace Otp.Messaging.Clients
             _logger = logger;
         }
 
-        public async Task OneTimePasswordNotificationAsync(Guid subject, string oneTimePasswordValue, CancellationToken cancellation = default)
+        public async Task OneTimePasswordNotificationAsync(Guid userId, string oneTimePasswordValue, string type, string channel, CancellationToken cancellation = default)
         {
-            OneTimePasswordNotificationMessageContract messageContract = new OneTimePasswordNotificationMessageContract(subject, oneTimePasswordValue);
+            OneTimePasswordNotificationMessageContract messageContract = new OneTimePasswordNotificationMessageContract(userId, oneTimePasswordValue, type, channel);
 
-            _logger.LogInformation($"{oneTimePasswordValue}____________________________________________________CODE!!!!");
+            _logger.LogInformation($"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"+
+                                   $"Code - {oneTimePasswordValue}.\n" +
+                                   $"Type - {type}, channel - {channel}.\n" +
+                                   $"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
 
             //await _publishService.Publish(messageContract, cancellation);
         }

@@ -67,11 +67,6 @@ namespace Auth.Domain.Aggregates
                        throw new AudienceNullDomainException();
         }
 
-        public bool IsValidAudience(string audience)
-        {
-            return Audience == Audience.Create(audience);
-        }
-
         /// <summary>
         /// Changes the scope action.
         /// </summary>

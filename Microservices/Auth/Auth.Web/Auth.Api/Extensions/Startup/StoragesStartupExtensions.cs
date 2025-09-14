@@ -7,9 +7,9 @@ namespace Auth.Api.Extensions.Startup
     {
         public static IServiceCollection AddStorages(this IServiceCollection services, IConfiguration configuration)
         {
-            return services.AddScoped<IAccessKeyStorage, AccessKeyStorage>()
-                           .AddScoped<IRefreshKeyStorage, RefreshKeyStorage>()
-                           .AddScoped<IChannelKeyStorage, ChannelKeyStorage>();
+            return services.AddSingleton<IAccessKeyStorage, AccessKeyStorage>()
+                           .AddSingleton<IRefreshKeyStorage, RefreshKeyStorage>()
+                           .AddSingleton<IChannelKeyStorage, ChannelKeyStorage>();
         }
     }
 }

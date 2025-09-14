@@ -1,6 +1,8 @@
-﻿namespace Auth.Application.Features.ChangeEmailAddress.Commands
+﻿using Auth.Application.DTOs;
+
+namespace Auth.Application.Features.ChangeEmailAddress.Commands
 {
-    public class RequestEmailAddressChangeCommand : ResultTRequest<Guid>
+    public class RequestEmailAddressChangeCommand : ResultTRequest<Otp>
     {
         public RequestEmailAddressChangeCommand(Guid userId,
                                                 string emailAddress)

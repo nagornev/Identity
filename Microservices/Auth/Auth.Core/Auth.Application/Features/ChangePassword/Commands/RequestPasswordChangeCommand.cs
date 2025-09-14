@@ -1,6 +1,8 @@
-﻿namespace Auth.Application.Features.ChangePassword.Commands
+﻿using Auth.Application.DTOs;
+
+namespace Auth.Application.Features.ChangePassword.Commands
 {
-    public class RequestPasswordChangeCommand : ResultTRequest<Guid>
+    public class RequestPasswordChangeCommand : ResultTRequest<Otp>
     {
         public RequestPasswordChangeCommand(Guid userId, string oldPassword, string newPassword)
         {

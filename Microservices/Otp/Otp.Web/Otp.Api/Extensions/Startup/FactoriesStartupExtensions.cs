@@ -13,7 +13,8 @@ namespace Otp.Api.Extensions.Startup
 
         private static IServiceCollection AddApplicationFactories(this IServiceCollection services)
         {
-            return services.AddSingleton<IOneTimePasswordFactory, OneTimePasswordFactory>();
+            return services.AddSingleton<IOneTimePasswordFactory, OneTimePasswordFactory>()
+                           .AddSingleton<IUserFactory, UserFactory>();
         }
     }
 }

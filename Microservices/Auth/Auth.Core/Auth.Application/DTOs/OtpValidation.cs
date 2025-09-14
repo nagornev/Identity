@@ -3,17 +3,17 @@
     public class OtpValidation
     {
         public OtpValidation(bool isValid,
-                             Guid subject,
+                             Guid userId,
                              string payload)
         {
             IsValid = isValid;
-            Subject = subject;
+            UserId = userId;
             Payload = payload;
         }
 
         public bool IsValid { get; }
 
-        public Guid Subject { get; }
+        public Guid UserId { get; }
 
         public string Payload { get; }
     }

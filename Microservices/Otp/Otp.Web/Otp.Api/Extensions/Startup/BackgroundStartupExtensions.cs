@@ -17,7 +17,10 @@ namespace Otp.Api.Extensions.Startup
                 options.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                        .UseSimpleAssemblyNameTypeSerializer()
                        .UseRecommendedSerializerSettings()
-                       .UsePostgreSqlStorage(cfg => cfg.UseNpgsqlConnection(configuration.GetConnectionString(_connectionsStringName)));
+                       .UsePostgreSqlStorage(cfg => cfg.UseNpgsqlConnection(configuration.GetConnectionString(_connectionsStringName)), new PostgreSqlStorageOptions
+                       {
+                           DistributedLockTimeout = TimeSpan.FromMinutes(1)
+                       });
             })
                         .AddHangfireServer()
                         .AddBackgroundProcessors();
@@ -25,7 +28,8 @@ namespace Otp.Api.Extensions.Startup
 
         private static IServiceCollection AddBackgroundProcessors(this IServiceCollection services)
         {
-            return services.AddSingleton<IBackgroundProcessor, DeleteInvalidOneTimePasswordsBackgroundProcessor>()
+            return services
+                           .AddSingleton<IBackgroundProcessor, DeleteInvalidOneTimePasswordsBackgroundProcessor>()
                            .AddSingleton<IBackgroundProcessor, OutboxBackgroundProcessor>()
 
                            .AddHostedService<BackgroundsProcessorsStarter>();

@@ -15,5 +15,13 @@ namespace Auth.Security.Extensions
                            .Select(JsonWebKeyConverter.ConvertFromSecurityKey)
                            .ToArray();
         }
+
+        public static async Task<IReadOnlyCollection<SecurityKey>> GetSecurityKeysAsync(this IKeyStorageReader keyStorage, ISecurityKeysProvider securityKeyProvider, CancellationToken cancellation = default)
+        {
+            IReadOnlyCollection<KeyPair> keyPairs = await keyStorage.GetKeyPairsAsync(cancellation);
+
+            return keyPairs.Select(securityKeyProvider.CreateVerify)
+                           .ToArray();
+        }
     }
 }

@@ -38,21 +38,23 @@ namespace Auth.Application.Services
             _otpTokenPayloadProvider = otpTokenPayloadProvider;
         }
 
-        public async Task<Guid> RequestAsync(Guid userId, string oldPassword, string newPassword, CancellationToken cancellation = default)
+        public async Task<Otp> RequestAsync(Guid userId, string oldPassword, string newPassword, CancellationToken cancellation = default)
         {
             User user = await _userQueryService.GetUserByIdAsync(userId, cancellation);
 
-            if (_passwordValidator.Verify(oldPassword, user.Authentication.PasswordHash.Value, user.Authentication.PasswordSalt))
+            if (!_passwordValidator.Verify(oldPassword, user.Authentication.PasswordHash.Value, user.Authentication.PasswordSalt))
                 throw new UserInvalidPasswordApplicationException(userId);
 
             user.ChangePassword(_passwordHashProvider.Hash(newPassword, user.Authentication.PasswordSalt));
 
+            Otp otp = await _otpClient.CreateAsync(user.Id,
+                                                   OtpTags.ChangePassword,
+                                                   payload: _otpTokenPayloadProvider.Serialize(new ChangePasswordHashOtpTokenPayload(user.Authentication.PendingPasswordHash!.Version)),
+                                                   cancellation: cancellation);
+
             await _unitOfWork.SaveAsync(cancellation);
 
-            return await _otpClient.CreateAsync(user.Id,
-                                                OtpTags.ChangePassword,
-                                                payload: _otpTokenPayloadProvider.Serialize(new ChangePasswordHashOtpTokenPayload(user.Authentication.PendingPasswordHash!.Version)),
-                                                cancellation: cancellation);
+            return otp;
         }
     }
 }

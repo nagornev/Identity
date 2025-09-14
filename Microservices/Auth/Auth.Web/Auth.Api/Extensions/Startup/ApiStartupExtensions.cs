@@ -9,6 +9,7 @@ using Carter;
 using Hangfire;
 using Hangfire.Dashboard;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Auth.Api.Extensions.Startup
@@ -34,7 +35,35 @@ namespace Auth.Api.Extensions.Startup
                     .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssembly).Assembly))
 
                     .AddEndpointsApiExplorer()
-                    .AddSwaggerGen();
+                    .AddSwaggerGen(options =>
+                    {
+                        // Описание схемы безопасности
+                        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                        {
+                            Name = "Authorization",
+                            Type = SecuritySchemeType.ApiKey,
+                            Scheme = "Bearer",
+                            BearerFormat = "JWT",
+                            In = ParameterLocation.Header,
+                            Description = "Введите JWT токен в формате: Bearer {your token}"
+                        });
+
+                        // Требование безопасности
+                        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                        {
+                            {
+                                new OpenApiSecurityScheme
+                                {
+                                    Reference = new OpenApiReference
+                                    {
+                                        Type = ReferenceType.SecurityScheme,
+                                        Id = "Bearer"
+                                    }
+                                },
+                                new string[] {}
+                            }
+                        });
+                    });
 
             return builder.Build();
         }

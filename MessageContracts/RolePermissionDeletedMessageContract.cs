@@ -1,18 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class RolePermissionDeletedMessageContract
+    public record RolePermissionDeletedMessageContract(Guid UserId, Guid RoleId, string Name)
     {
-        public RolePermissionDeletedMessageContract(Guid userId, Guid roleId, string name)
-        {
-            UserId = userId;
-            RoleId = roleId;
-            Name = name;
-        }
-
-        public Guid UserId { get; }
-
-        public Guid RoleId { get; }
-
-        public string Name { get; }
     }
 }

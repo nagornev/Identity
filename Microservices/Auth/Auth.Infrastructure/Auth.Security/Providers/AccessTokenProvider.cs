@@ -57,7 +57,7 @@ namespace Auth.Security.Providers
                 GetSubjectClaim(user),
                 GetSessionClaim(session),
                 GetJtiClaim(session),
-                GetScopesClaim(scopes),
+                GetScopeClaim(scopes),
             ];
         }
 
@@ -76,16 +76,12 @@ namespace Auth.Security.Providers
             return new Claim(JwtRegisteredClaimNames.Jti, session.Version.ToString());
         }
 
-        private Claim GetScopesClaim(IReadOnlyCollection<Scope> scopes)
+        private Claim GetScopeClaim(IReadOnlyCollection<Scope> scopes)
         {
             StringBuilder builder = new StringBuilder();
+            builder.AppendJoin(' ', scopes.Select(x => x.GetName()));
 
-            foreach (Scope scope in scopes)
-            {
-                builder.Append($"{scope.GetName()} ");
-            }
-
-            return new Claim(ClaimNames.Scopes, builder.ToString());
+            return new Claim(ClaimNames.Scope, builder.ToString());
         }
 
         private SigningCredentials CreateCredentials(SecurityKey securityKey, string algorithm)

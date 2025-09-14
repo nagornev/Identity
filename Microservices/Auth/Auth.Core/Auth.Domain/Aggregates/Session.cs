@@ -120,6 +120,10 @@ namespace Auth.Domain.Aggregates
             return ExpiresAt >= timestamp;
         }
 
+        /// <summary>
+        /// Changes the session <paramref name="kid"/>.
+        /// </summary>
+        /// <param name="kid"></param>
         public void ChangeKidIfNeed(Guid kid)
         {
             if (Kid == kid)
@@ -128,6 +132,12 @@ namespace Auth.Domain.Aggregates
             Kid = kid;
         }
 
+        /// <summary>
+        /// Updates the session <paramref name="publicKey"/> and version.
+        /// </summary>
+        /// <param name="publicKey"></param>
+        /// <param name="updatedAt"></param>
+        /// <exception cref="UpdatedAtOutOfRangeDomainException"></exception>
         public void Update(string publicKey, long updatedAt)
         {
             if (UpdatedAt >= updatedAt)
@@ -140,27 +150,55 @@ namespace Auth.Domain.Aggregates
             AddDomainEvent(new SessionUpdatedDomainEvent(Id, Kid, Version, Device.Value, IpAddress.Value));
         }
 
+        /// <summary>
+        /// Closes the session.
+        /// </summary>
+        /// <exception cref="SessionAlreadyClosedDomainException"></exception>
         public void Close()
         {
+            if (Closed)
+                throw new SessionAlreadyClosedDomainException();
+
             Closed = true;
 
             AddDomainEvent(new SessionClosedDomainEvent(Id));
         }
 
+        /// <summary>
+        /// Revokes the session.
+        /// </summary>
+        /// <exception cref="SessionAlreadyRevokedDomainException"></exception>
         public void Revoke()
         {
+            if (Revoked)
+                throw new SessionAlreadyRevokedDomainException();
+
             Revoked = true;
 
             AddDomainEvent(new SessionRevokedDomainEvent(Id));
         }
 
+        /// <summary>
+        /// Activates the session.
+        /// </summary>
+        /// <exception cref="SessionAlreadyActivatedDomainException"></exception>
         public void Activate()
         {
+            if(Activated)
+                throw new SessionAlreadyActivatedDomainException();
+
             Activated = true;
         }
 
+        /// <summary>
+        /// Marks the session for delete.
+        /// </summary>
+        /// <exception cref="SessionAlreadyDeletedDomainException"></exception>
         public void MarkAsDeleted()
         {
+            if (Deleted)
+                throw new SessionAlreadyDeletedDomainException();
+
             Deleted = true;
 
             AddDomainEvent(new SessionDeletedDomainEvent(Id));

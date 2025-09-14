@@ -26,6 +26,7 @@ namespace Otp.Api.Extensions.Startup
                            .AddScoped<IMessageContractProvider, OneTimePasswordCreatedMessageContractProvider>()
                            .AddScoped<IMessageContractProvider, OneTimePasswordDeletedMessageContractProvider>()
                            .AddScoped<IMessageContractProvider, OneTimePasswordUsedMessageContractProvider>()
+                           .AddScoped<IMessageContractProvider, OneTimePasswordResendedMessageContractProvider>()
                            .AddScoped<IMessageContractsProvider, MessageContractsProvider>();
         }
     }

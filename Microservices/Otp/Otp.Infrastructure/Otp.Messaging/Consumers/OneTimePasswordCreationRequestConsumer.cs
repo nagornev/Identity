@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using MessageContracts;
 using Otp.Application.Abstractions.Services;
+using Otp.Application.DTOs;
 
 namespace Otp.Messaging.Consumers
 {
@@ -15,13 +16,15 @@ namespace Otp.Messaging.Consumers
 
         public async Task Consume(ConsumeContext<OneTimePasswordCreationRequest> context)
         {
-            Guid oneTimePasswordId = await _oneTimeCreateService.CreateAsync(
-                     context.Message.Tag,
-                     context.Message.Subject,
-                     context.Message.Payload,
-                     context.CancellationToken);
+            OneTimePasswordCreation oneTimePasswordCreation = await _oneTimeCreateService.CreateAsync(context.Message.UserId,
+                                                                                                      context.Message.Tag,
+                                                                                                      context.Message.Payload,
+                                                                                                      context.CancellationToken);
 
-            await context.RespondAsync(new OneTimePasswordCreationCompleted(oneTimePasswordId));
+            await context.RespondAsync(new OneTimePasswordCreationCompleted(oneTimePasswordCreation.OneTimePasswordId,
+                                                                            oneTimePasswordCreation.Type,
+                                                                            oneTimePasswordCreation.Channel,
+                                                                            oneTimePasswordCreation.ExpiresAt));
         }
     }
 }

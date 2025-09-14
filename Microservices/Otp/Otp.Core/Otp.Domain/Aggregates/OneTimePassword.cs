@@ -11,28 +11,30 @@ namespace Otp.Domain.Aggregates
     {
         private const int _maximumAttempts = 3;
 
-        private OneTimePassword(Guid id, Secret secret, string tag, Guid subject, string payload, long createdAt, long expiresAt)
+        private OneTimePassword(Guid id, Guid userId, Channel channel, Secret secret, string tag,  string payload, long createdAt, long expiresAt)
         {
             Id = id;
+            UserId = userId;
+            Channel = channel;
             Secret = secret;
             Tag = tag;
-            Subject = subject;
             Payload = payload;
             CreatedAt = createdAt;
             ExpiresAt = expiresAt;
         }
 
-        public static OneTimePassword Create(string secret, string tag, Guid subject, long createdAt, long expiresAt, string payload = "")
+        public static OneTimePassword Create(Guid userId, Channel channel, string secret, string tag, long createdAt, long expiresAt, string payload = "")
         {
             Guid id = Guid.NewGuid();
 
             OneTimePassword oneTimePassword = new OneTimePassword(id,
+                                                                  userId,
+                                                                  channel,
 
                                                                   Secret.Create(secret) ??
                                                                   throw new SecretNullDomainException(),
 
                                                                   tag,
-                                                                  subject,
                                                                   payload,
                                                                   createdAt,
                                                                   expiresAt);
@@ -41,12 +43,13 @@ namespace Otp.Domain.Aggregates
 
             return oneTimePassword;
         }
+        public Guid UserId { get; private set; }
+
+        public Channel Channel { get; private set; }
 
         public Secret Secret { get; private set; }
 
         public string Tag { get; private set; }
-
-        public Guid Subject { get; private set; }
 
         public string? Payload { get; private set; }
 
@@ -63,7 +66,7 @@ namespace Otp.Domain.Aggregates
         public string GetValue(int digits = 6)
         {
             byte[] key = Secret.DecodeToBytes();
-            string message = $"{Subject}{Payload}{CreatedAt}";
+            string message = $"{UserId}{Payload}{CreatedAt}";
 
             using var hmac = new HMACSHA256(key);
             byte[] hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(message));
@@ -80,7 +83,7 @@ namespace Otp.Domain.Aggregates
             return otp.ToString(new string('0', digits));
         }
 
-        public bool ValidateAt(string otp, string tag, long timestamp)
+        public bool ValidateAt(string oneTimePasswordValue, string tag, long timestamp)
         {
             if (Attempts >= _maximumAttempts ||
                 timestamp > ExpiresAt ||
@@ -88,7 +91,7 @@ namespace Otp.Domain.Aggregates
                 Used)
                 return false;
 
-            bool result = CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(otp),
+            bool result = CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(oneTimePasswordValue),
                                                                   Encoding.UTF8.GetBytes(GetValue()));
 
             if (!result)
@@ -102,6 +105,17 @@ namespace Otp.Domain.Aggregates
             return result;
         }
 
+        public void Resend(string secret, long timestamp)
+        {
+            if (timestamp > ExpiresAt)
+                throw new OneTimePasswordInvalidDomainException();
+
+            Secret = Secret.Create(secret) ??
+                     throw new SecretNullDomainException();
+
+            AddDomainEvent(new OneTimePasswordResendedDomainEvent(Id));
+        }
+
         public void MarkAsDeleted()
         {
             if (Deleted)
@@ -109,7 +123,7 @@ namespace Otp.Domain.Aggregates
 
             Deleted = true;
 
-            AddDomainEvent(new OneTimePasswordDeletedDomainEvent(Id, Subject, Tag, CreatedAt, Used));
+            AddDomainEvent(new OneTimePasswordDeletedDomainEvent(Id, UserId, Tag, CreatedAt, Used));
         }
 
     }

@@ -2,7 +2,7 @@
 
 namespace Auth.Application.Features.SignIn.Queries
 {
-    public class RequestUserSignInQuery : ResultTRequest<Guid>
+    public class RequestUserSignInQuery : ResultTRequest<Otp>
     {
         public RequestUserSignInQuery(string emailAddress,
                                       string password,

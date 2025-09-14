@@ -30,7 +30,7 @@ namespace Auth.Application.Services
             _otpTokenPayloadProvider = otpTokenPayloadProvider;
         }
 
-        public async Task<Guid> RequestAsync(Guid userId, string emailAddress, CancellationToken cancellation)
+        public async Task<Otp> RequestAsync(Guid userId, string emailAddress, CancellationToken cancellation)
         {
             if (await _userQueryService.IsUserAlreadyExistsAsync(emailAddress, cancellation))
                 throw new UserInvalidEmailAddressApplicationException(emailAddress);
@@ -38,12 +38,14 @@ namespace Auth.Application.Services
             User user = await _userQueryService.GetUserByIdAsync(userId, cancellation);
             user.ChangeEmailAddress(emailAddress);
 
+            Otp otp = await _otpClient.CreateAsync(user.Id,
+                                                   OtpTags.ChangeEmailAddress,
+                                                   payload: _otpTokenPayloadProvider.Serialize(new ChangeEmailAddressOtpTokenPayload      (user.Profile.PendingEmailAddress!.Version)),
+                                                   cancellation: cancellation);
+
             await _unitOfWork.SaveAsync(cancellation);
 
-            return await _otpClient.CreateAsync(user.Id,
-                                                OtpTags.ChangeEmailAddress,
-                                                payload: _otpTokenPayloadProvider.Serialize(new ChangeEmailAddressOtpTokenPayload(user.Profile.PendingEmailAddress!.Version)),
-                                                cancellation: cancellation);
+            return otp;
         }
     }
 }

@@ -57,6 +57,10 @@ namespace Auth.Persistence.Services
                     await _publishEventService.PublishAsync(domainEvent);
                     outboxMessage.MarkAsProccesed();
                 }
+                catch (NotSupportedException)
+                {
+                    outboxMessage.MarkAsProccesed();
+                }
                 catch
                 {
                     //TODO: log error

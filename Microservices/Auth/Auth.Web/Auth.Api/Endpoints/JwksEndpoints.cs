@@ -10,7 +10,7 @@ namespace Auth.Api.Endpoints
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            var group = app.MapGroup("api/jwks")
+            var group = app.MapGroup("api/identity/jwks")
                            .AllowAnonymous();
 
             group.MapGet(string.Empty, GetJwks);

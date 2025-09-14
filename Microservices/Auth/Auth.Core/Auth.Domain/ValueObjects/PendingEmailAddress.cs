@@ -24,7 +24,7 @@ namespace Auth.Domain.ValueObjects
 
         internal PendingEmailAddress Confirm()
         {
-            return new PendingEmailAddress(EmailAddress, true, Version);
+            return new PendingEmailAddress(EmailAddress.Create(EmailAddress.Value), true, Version);
         }
 
         public EmailAddress EmailAddress { get; private set; }

@@ -20,7 +20,7 @@ namespace Auth.Application.Services
 
         public void Validate(long timestamp, int window)
         {
-            if (_windowValidator.Validate(timestamp, _timeProvider.NowUnix(), window))
+            if (!_windowValidator.Validate(timestamp, _timeProvider.NowUnix(), window))
                 throw new WindowInvalidApplicationException();
         }
     }

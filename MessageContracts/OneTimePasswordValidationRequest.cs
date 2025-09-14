@@ -1,20 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class OneTimePasswordValidationRequest
+    public record OneTimePasswordValidationRequest(Guid OneTimePasswordId, string OneTimePasswordValue, string Tag)
     {
-        public OneTimePasswordValidationRequest(Guid oneTimePasswordId,
-                                    string oneTimePasswordValue,
-                                    string tag)
-        {
-            OneTimePasswordId = oneTimePasswordId;
-            OneTimePasswordValue = oneTimePasswordValue;
-            Tag = tag;
-        }
-
-        public Guid OneTimePasswordId { get; }
-
-        public string OneTimePasswordValue { get; }
-
-        public string Tag { get; }
     }
 }

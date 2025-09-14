@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -102,7 +103,8 @@ namespace Auth.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PendingPasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PendingPasswordHashVersion = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordSalt = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -43,9 +43,6 @@ namespace Otp.Persistence.Migrations
                     b.Property<string>("Payload")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("Subject")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Tag")
                         .IsRequired()
                         .HasColumnType("text");
@@ -53,9 +50,25 @@ namespace Otp.Persistence.Migrations
                     b.Property<bool>("Used")
                         .HasColumnType("boolean");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("OneTimePasswords");
+                });
+
+            modelBuilder.Entity("Otp.Domain.Aggregates.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Otp.Persistence.Entities.OutboxMessage", b =>
@@ -97,6 +110,35 @@ namespace Otp.Persistence.Migrations
 
             modelBuilder.Entity("Otp.Domain.Aggregates.OneTimePassword", b =>
                 {
+                    b.HasOne("Otp.Domain.Aggregates.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("Otp.Domain.ValueObjects.Channel", "Channel", b1 =>
+                        {
+                            b1.Property<Guid>("OneTimePasswordId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("Type")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("Type");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("Channel");
+
+                            b1.HasKey("OneTimePasswordId");
+
+                            b1.ToTable("OneTimePasswords");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OneTimePasswordId");
+                        });
+
                     b.OwnsOne("Otp.Domain.ValueObjects.Secret", "Secret", b1 =>
                         {
                             b1.Property<Guid>("OneTimePasswordId")
@@ -115,7 +157,34 @@ namespace Otp.Persistence.Migrations
                                 .HasForeignKey("OneTimePasswordId");
                         });
 
+                    b.Navigation("Channel")
+                        .IsRequired();
+
                     b.Navigation("Secret")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Otp.Domain.Aggregates.User", b =>
+                {
+                    b.OwnsOne("Otp.Domain.ValueObjects.EmailAddress", "EmailAddress", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("EmailAddress");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("Users");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
+                    b.Navigation("EmailAddress")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

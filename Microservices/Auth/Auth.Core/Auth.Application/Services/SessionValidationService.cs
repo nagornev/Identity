@@ -17,13 +17,13 @@ namespace Auth.Application.Services
 
         public void Validate(Session session)
         {
-            if (_sessionValidator.Validate(session))
+            if (!_sessionValidator.Validate(session))
                 throw new SessionInvalidApplicationException(session.Id);
         }
 
         public void ValidateWithoutActive(Session session)
         {
-            if (_sessionValidator.ValidateWithoutActive(session))
+            if (!_sessionValidator.ValidateWithoutActive(session))
                 throw new SessionInvalidApplicationException(session.Id);
         }
 

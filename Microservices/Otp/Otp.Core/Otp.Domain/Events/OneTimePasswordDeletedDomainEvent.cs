@@ -4,11 +4,11 @@ namespace Otp.Domain.Events
 {
     public class OneTimePasswordDeletedDomainEvent : DomainEvent
     {
-        public OneTimePasswordDeletedDomainEvent(Guid oneTimePasswordId, Guid subject, string tag, long createdAt, bool used)
-            : base(subject)
+        public OneTimePasswordDeletedDomainEvent(Guid oneTimePasswordId, Guid userId, string tag, long createdAt, bool used)
+            : base(userId)
         {
             OneTimePasswordId = oneTimePasswordId;
-            Subject = subject;
+            UserId = userId;
             Tag = tag;
             CreatedAt = createdAt;
             Used = used;
@@ -16,7 +16,7 @@ namespace Otp.Domain.Events
 
         public Guid OneTimePasswordId { get; }
 
-        public Guid Subject { get; }
+        public Guid UserId { get; }
 
         public string Tag { get; }
 

@@ -21,7 +21,10 @@ namespace Otp.Application.Services
         {
             OneTimePassword oneTimePassword = await _oneTimePasswordQueryService.GetOneTimePasswordByIdAsync(oneTimePasswordId, cancellation);
 
-            await _notificationClient.OneTimePasswordNotificationAsync(oneTimePassword.Subject, oneTimePassword.GetValue());
+            await _notificationClient.OneTimePasswordNotificationAsync(oneTimePassword.UserId,
+                                                                       oneTimePassword.GetValue(),
+                                                                       oneTimePassword.Channel.Type,
+                                                                       oneTimePassword.Channel.Value);
         }
     }
 }

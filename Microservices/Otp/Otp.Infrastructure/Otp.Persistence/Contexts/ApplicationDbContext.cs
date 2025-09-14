@@ -13,12 +13,15 @@ namespace Otp.Persistence.Contexts
 
         }
 
+        public DbSet<User> Users { get; private set; }
+
         public DbSet<OneTimePassword> OneTimePasswords { get; private set; }
 
         public DbSet<OutboxMessage> Outbox { get; private set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new OneTimePasswordConfiguration());
         }
     }

@@ -19,11 +19,17 @@ namespace Auth.Application.Services
         private readonly IUserValidator _userValidator;
 
         private readonly IPasswordValidator _passwordValidator;
+
         private readonly IRefreshKeyStorage _refreshKeyStorage;
+
         private readonly ISessionFactory _sessionFactory;
+
         private readonly IRepositoryWriter<Session> _sessionRepository;
+
         private readonly IOtpTokenPayloadProvider _otpPayloadMapper;
+
         private readonly IOtpClient _otpClient;
+
         private readonly IUnitOfWork _unitOfWork;
 
         public SignInRequestService(IUserQueryService userQueryService,
@@ -47,7 +53,7 @@ namespace Auth.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Guid> RequestAsync(string emailAddress,
+        public async Task<Otp> RequestAsync(string emailAddress,
                                              string password,
                                              string audience,
                                              string publicKey,
@@ -67,14 +73,14 @@ namespace Auth.Application.Services
             Session session = _sessionFactory.Create(user.Id, refreshPrimaryKey.Kid, publicKey, audience, requestContext.Device, requestContext.IpAddress);
             await _sessionRepository.AddAsync(session, cancellation);
 
-            Guid otpId = await _otpClient.CreateAsync(user.Id,
-                                                      OtpTags.SignIn,
-                                                      payload: _otpPayloadMapper.Serialize(new SignInOtpTokenPayload(session.Id)),
-                                                      cancellation: cancellation);
+            Otp otp = await _otpClient.CreateAsync(user.Id,
+                                                   OtpTags.SignIn,
+                                                   payload: _otpPayloadMapper.Serialize(new SignInOtpTokenPayload(session.Id)),
+                                                   cancellation: cancellation);
 
             await _unitOfWork.SaveAsync(cancellation);
 
-            return otpId;
+            return otp;
         }
     }
 }

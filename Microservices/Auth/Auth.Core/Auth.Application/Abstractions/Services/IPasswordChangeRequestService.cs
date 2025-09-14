@@ -1,7 +1,9 @@
-﻿namespace Auth.Application.Abstractions.Services
+﻿using Auth.Application.DTOs;
+
+namespace Auth.Application.Abstractions.Services
 {
     public interface IPasswordChangeRequestService
     {
-        Task<Guid> RequestAsync(Guid userId, string oldPassword, string newPassword, CancellationToken cancellation = default);
+        Task<Otp> RequestAsync(Guid userId, string oldPassword, string newPassword, CancellationToken cancellation = default);
     }
 }

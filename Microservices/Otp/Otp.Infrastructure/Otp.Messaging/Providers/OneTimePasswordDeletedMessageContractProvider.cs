@@ -7,7 +7,7 @@ namespace Otp.Messaging.Providers
     {
         public override Task<dynamic> Create(OneTimePasswordDeletedDomainEvent domainEvent)
         {
-            return Task.FromResult<dynamic>(new OneTimePasswordDeletedMessageContract(domainEvent.AggregateId, domainEvent.Subject, domainEvent.Tag, domainEvent.CreatedAt, domainEvent.Used));
+            return Task.FromResult<dynamic>(new OneTimePasswordDeletedMessageContract(domainEvent.AggregateId, domainEvent.UserId, domainEvent.Tag, domainEvent.CreatedAt, domainEvent.Used));
         }
     }
 }

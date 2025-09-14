@@ -41,9 +41,9 @@ namespace Auth.Application.Services
             _sessionValidationService.ValidateWithoutActive(session);
         }
 
-        public void ValidateFingerprint(Guid otpId, string otp, long timestamp, string signature, Session session)
+        public void ValidateFingerprint(Guid otpId, string otp, string newPublicKey, long timestamp, string signature, Session session)
         {
-            _fingerprintValidationService.Validate(new FingerprintValidationParameters(_fingerprintMessageProvider.GetMessage(otpId, otp, timestamp),
+            _fingerprintValidationService.Validate(new FingerprintValidationParameters(_fingerprintMessageProvider.GetMessage(otpId, otp, newPublicKey, timestamp),
                                                                                        signature),
                                                    session.PublicKey);
         }

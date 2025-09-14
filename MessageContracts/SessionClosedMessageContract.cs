@@ -1,12 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class SessionClosedMessageContract
+    public record SessionClosedMessageContract(Guid SessionId)
     {
-        public SessionClosedMessageContract(Guid sessionId)
-        {
-            SessionId = sessionId;
-        }
-
-        public Guid SessionId { get; }
     }
 }

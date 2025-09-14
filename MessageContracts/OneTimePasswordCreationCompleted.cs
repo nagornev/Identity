@@ -1,12 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class OneTimePasswordCreationCompleted
+    public record OneTimePasswordCreationCompleted(Guid OneTimePasswordId, string Type, string Channel, long ExpiresAt)
     {
-        public OneTimePasswordCreationCompleted(Guid oneTimePassordId)
-        {
-            OneTimePasswordId = oneTimePassordId;
-        }
-
-        public Guid OneTimePasswordId { get; }
     }
 }

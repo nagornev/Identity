@@ -32,7 +32,7 @@ namespace Otp.Application.Services
             await _unitOfWork.SaveAsync(cancellation);
 
             return isValid ?
-                    new OneTimePasswordValidation(true, oneTimePassword.Subject, oneTimePassword.Payload) :
+                    new OneTimePasswordValidation(true, oneTimePassword.UserId, oneTimePassword.Payload) :
                     new OneTimePasswordValidation(false, Guid.NewGuid());
         }
     }

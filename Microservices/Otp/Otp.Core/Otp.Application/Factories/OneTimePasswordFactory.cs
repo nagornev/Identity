@@ -3,6 +3,7 @@ using Otp.Application.Abstractions.Factories;
 using Otp.Application.Abstractions.Providers;
 using Otp.Application.Options;
 using Otp.Domain.Aggregates;
+using Otp.Domain.ValueObjects;
 
 namespace Otp.Application.Factories
 {
@@ -23,13 +24,14 @@ namespace Otp.Application.Factories
             _oneTimePasswordOptions = oneTimePasswordOptions.Value;
         }
 
-        public OneTimePassword Create(string tag, Guid subject, string? payload = "")
+        public OneTimePassword Create(Guid userId, Channel channel, string tag, string? payload = "")
         {
             long createdAt = _timeProvider.NowUnix();
 
-            return OneTimePassword.Create(_secretProvider.Create(),
+            return OneTimePassword.Create(userId,
+                                          channel,        
+                                          _secretProvider.Create(),
                                           tag,
-                                          subject,
                                           createdAt,
                                           createdAt + _oneTimePasswordOptions.Lifetime,
                                           payload);

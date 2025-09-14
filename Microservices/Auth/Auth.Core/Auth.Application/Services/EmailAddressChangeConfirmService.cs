@@ -34,7 +34,7 @@ namespace Auth.Application.Services
             OtpContent otpContent = await _otpValidationService.ValidateAsync(otpId, otp, OtpTags.ChangeEmailAddress, cancellation);
             ChangeEmailAddressOtpTokenPayload changeEmailAddressOtpTokenPayload = _otpTokenPayloadProvider.Deserialize<ChangeEmailAddressOtpTokenPayload>(otpContent.Payload);
 
-            User user = await _userQueryService.GetUserByIdAsync(otpContent.Subject, cancellation);
+            User user = await _userQueryService.GetUserByIdAsync(otpContent.UserId, cancellation);
 
             if (user.Profile.PendingEmailAddress?.Version != changeEmailAddressOtpTokenPayload.Version)
                 throw new PendingEmailAddressVersionInvalidApplicationException(user.Id);

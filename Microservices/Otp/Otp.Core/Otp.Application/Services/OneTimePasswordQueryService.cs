@@ -23,11 +23,11 @@ namespace Otp.Application.Services
                    throw new OneTimePasswordNotFoundApplicationException(id);
         }
 
-        public IAsyncEnumerable<OneTimePassword> GetExpiredOneTimePasswordsAsyncEnumerable(long timestamp)
+        public async Task<IReadOnlyCollection<OneTimePassword>> GetExpiredOneTimePasswordsAsync(long timestamp)
         {
             OneTimePasswordByExpiredBeforeSpecification specification = new OneTimePasswordByExpiredBeforeSpecification(timestamp);
 
-            return _oneTimePasswordRepository.AsyncStream(specification);
+            return await _oneTimePasswordRepository.FindAsync(specification);
         }
     }
 }

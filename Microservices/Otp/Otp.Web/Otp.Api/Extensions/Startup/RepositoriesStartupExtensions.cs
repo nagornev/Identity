@@ -13,6 +13,7 @@ namespace Otp.Api.Extensions.Startup
         public static IServiceCollection AddRepositories(this IServiceCollection services, IConfiguration configuration)
         {
             return services.AddContext(configuration)
+                           .AddUserRepository()
                            .AddOneTimePasswordRepository()
                            .AddOutboxRepository()
                            .AddScoped<IUnitOfWork, UnitOfWork>();
@@ -22,6 +23,14 @@ namespace Otp.Api.Extensions.Startup
         private static IServiceCollection AddContext(this IServiceCollection services, IConfiguration configuration)
         {
             return services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(configuration.GetConnectionString(nameof(ApplicationDbContext))));
+        }
+
+        private static IServiceCollection AddUserRepository(this IServiceCollection services)
+        {
+            return services.AddScoped<IRepository<User>, UserReporitory>()
+                           .Decorate<IRepository<User>, RepositoryExceptionDecorator<User>>()
+                           .AddScoped<IRepositoryReader<User>>(s => s.GetRequiredService<IRepository<User>>())
+                           .AddScoped<IRepositoryWriter<User>>(s => s.GetRequiredService<IRepository<User>>());
         }
 
         private static IServiceCollection AddOneTimePasswordRepository(this IServiceCollection services)

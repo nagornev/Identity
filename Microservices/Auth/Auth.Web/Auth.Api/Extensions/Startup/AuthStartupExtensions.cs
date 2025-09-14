@@ -1,5 +1,9 @@
-﻿using Auth.Application.Options;
+﻿using Auth.Api.Services;
+using Auth.Application.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Protocols;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using ScopeAuthorizationRequirement;
 
@@ -12,32 +16,38 @@ namespace Auth.Api.Extensions.Startup
             ApplicationOptions applicationOptions = configuration.GetSection(nameof(ApplicationOptions))
                                                                  .Get<ApplicationOptions>()!;
 
+            return services.AddAuthentication(applicationOptions)
+                           .AddAuthorization(applicationOptions);
+        }
+
+        private static IServiceCollection AddAuthentication(this IServiceCollection services, ApplicationOptions applicationOptions)
+        {
+                            
             return services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                           .AddJwtBearer(options =>
-                           {
-                               options.MetadataAddress = "https://localhost:5000/jwks";
-
-                               options.TokenValidationParameters = new TokenValidationParameters
-                               {
-                                   ValidateIssuer = true,
-                                   ValidIssuer = applicationOptions.Issuer,
-
-                                   ValidateAudience = true,
-                                   ValidAudience = applicationOptions.Issuer,
-
-                                   ValidateLifetime = true,
-                                   ValidateIssuerSigningKey = true
-                               };
-                           })
+                           .AddJwtBearer()
                            .Services
-                           .AddAuthorization(options =>
-                           {
-                               options.AddPolicy("read:profile", policy =>
-                                policy.RequireScope("read:profile"));
+                           //configuration manager for getting JWK collection
+                           .AddSingleton<IConfigurationManager<OpenIdConnectConfiguration>, JwksConfigurationManager>()
+                           //configuration token validation parameters
+                           .AddSingleton<IPostConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
+        }
 
-                               options.AddPolicy("edit:profile", policy =>
-                                policy.RequireScope("edit:profile"));
-                           });
+        private static IServiceCollection AddAuthorization(this IServiceCollection services, ApplicationOptions applicationOptions)
+        {
+            return services.AddAuthorization(options =>
+            {
+                foreach (ApplicationOptions.Scope scope in applicationOptions.Roles.Basic.Scopes)
+                {
+                    options.AddPolicy(scope.Name, policy =>
+                            policy.RequireScope(scope.Name));
+                }
+
+                foreach (ApplicationOptions.Scope scope in applicationOptions.Roles.Owner.Scopes)
+                {
+                    options.AddPolicy(scope.Name, policy =>
+                            policy.RequireScope(scope.Name));
+                }
+            });
         }
     }
 }

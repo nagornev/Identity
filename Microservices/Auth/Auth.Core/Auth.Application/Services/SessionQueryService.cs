@@ -15,18 +15,18 @@ namespace Auth.Application.Services
             _sessionRepository = sessionRepository;
         }
 
-        public IAsyncEnumerable<Session> FindInvalidSessionsAsyncStream(long timestamp, int unactiveWindow = 560000)
+        public async Task<IReadOnlyCollection<Session>> FindInvalidSessionsAsync(long timestamp, int unactiveWindow = 560000, CancellationToken cancellation = default)
         {
             SessionByInvalidParametersSpecification specification = new SessionByInvalidParametersSpecification(timestamp, unactiveWindow);
 
-            return _sessionRepository.AsyncStream(specification);
+            return await _sessionRepository.FindAsync(specification, cancellation);
         }
 
-        public IAsyncEnumerable<Session> FindSessionsByUserIdAsyncStream(Guid userId)
+        public async Task<IReadOnlyCollection<Session>> FindSessionsByUserIdAsync(Guid userId, CancellationToken cancellation = default)
         {
             SessionByUserIdSpecification specification = new SessionByUserIdSpecification(userId);
 
-            return _sessionRepository.AsyncStream(specification);
+            return await _sessionRepository.FindAsync(specification, cancellation);
         }
 
         public async Task<Session> GetSessionByIdAsync(Guid sessionId, CancellationToken cancellation = default)

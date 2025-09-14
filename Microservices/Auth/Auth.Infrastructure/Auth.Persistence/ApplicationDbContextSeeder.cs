@@ -11,11 +11,60 @@ namespace Auth.Persistence
         {
             await context.Database.MigrateAsync();
 
-            if (!context.Roles.Any(x => x.Name == options.BasicRoleName))
+            await AddRoleAndScopesAsync(context, options.Roles.Basic, options.Issuer);
+            await AddRoleAndScopesAsync(context, options.Roles.Owner, options.Issuer);
+
+            await context.SaveChangesAsync();
+        }
+
+        private static async Task AddRoleAndScopesAsync(ApplicationDbContext context, ApplicationOptions.Role role, string issuer)
+        {
+            Role? dbRole = await context.Roles.Include(x=>x.Entitlements)
+                                              .FirstOrDefaultAsync(x => x.Name == role.Name);
+
+            if (dbRole == null)
             {
-                Role basicRole = Role.Create(options.BasicRoleName);
-                await context.Roles.AddAsync(basicRole);
-                await context.SaveChangesAsync();
+                dbRole = Role.Create(role.Name);
+                await context.Roles.AddAsync(dbRole);
+
+                foreach (ApplicationOptions.Scope scope in role.Scopes)
+                {
+                    Scope? dbScope = await context.Scopes.FirstOrDefaultAsync(x => x.Audience.Value == issuer &&
+                                                                                    x.Action.Value == scope.Action &&
+                                                                                    x.Resource.Value == scope.Resource);
+
+
+                    if (dbScope == null)
+                    {
+                        dbScope = Scope.Create(issuer, scope.Action, scope.Resource, scope.Description);
+                        await context.Scopes.AddAsync(dbScope);
+                        dbRole.AssignEntitlement(dbScope.Id);
+                    }
+                    else
+                    {
+                        dbRole.AssignEntitlement(dbScope.Id);
+                    }
+                }
+            }
+            else
+            {
+                foreach (ApplicationOptions.Scope scope in role.Scopes)
+                {
+                    Scope? dbScope = await context.Scopes.FirstOrDefaultAsync(x => x.Audience.Value == issuer &&
+                                                                                    x.Action.Value == scope.Action &&
+                                                                                    x.Resource.Value == scope.Resource);
+
+                    if (dbScope == null)
+                    {
+                        dbScope = Scope.Create(issuer, scope.Action, scope.Resource, scope.Description);
+                        await context.Scopes.AddAsync(dbScope);
+                        dbRole.AssignEntitlement(dbScope.Id);
+                    }
+                    else if (!dbRole.HasEntitlement(x => x.ScopeId == dbScope.Id))
+                    {
+                        dbRole.AssignEntitlement(dbScope.Id);
+                    }
+                }
             }
         }
     }

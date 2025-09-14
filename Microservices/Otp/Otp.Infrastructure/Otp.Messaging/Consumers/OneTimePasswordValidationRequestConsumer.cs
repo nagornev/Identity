@@ -22,7 +22,7 @@ namespace Otp.Messaging.Consumers
                                                                                                                         context.CancellationToken);
 
             await context.RespondAsync(new OneTimePasswordValidationCompleted(oneTimePasswordValidation.IsValid,
-                                                                              oneTimePasswordValidation.Subject,
+                                                                              oneTimePasswordValidation.UserId,
                                                                               oneTimePasswordValidation.Payload));
         }
     }

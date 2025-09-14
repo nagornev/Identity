@@ -8,12 +8,7 @@ namespace Otp.Api.Endpoints
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("test", async (IOneTimeCreateService createService) =>
-            {
-                Guid oneTimePassword = await createService.CreateAsync("test", Guid.NewGuid());
-
-                return Results.Ok(oneTimePassword);
-            });
+            
         }
     }
 }

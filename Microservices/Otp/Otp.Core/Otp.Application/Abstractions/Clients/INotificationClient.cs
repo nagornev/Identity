@@ -2,6 +2,6 @@
 {
     public interface INotificationClient
     {
-        Task OneTimePasswordNotificationAsync(Guid subject, string oneTimePasswordValue, CancellationToken cancellation = default);
+        Task OneTimePasswordNotificationAsync(Guid userId, string oneTimePasswordValue, string type, string channel, CancellationToken cancellation = default);
     }
 }

@@ -7,12 +7,12 @@ namespace Auth.Application.Abstractions.Clients
         /// <summary>
         /// Creates OTP record for registrated user in the server and returns OTP ID.
         /// </summary>
-        /// <param name="subject"></param>
+        /// <param name="userId"></param>
         /// <param name="tag"></param>
         /// <param name="payload"></param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        Task<Guid> CreateAsync(Guid subject, string tag, string payload = "", CancellationToken cancellation = default);
+        Task<Otp> CreateAsync(Guid userId, string tag, string payload = "", CancellationToken cancellation = default);
 
         /// <summary>
         /// Validates OTP from user.

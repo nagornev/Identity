@@ -34,7 +34,7 @@ namespace Auth.Backgrounds.Processors
             return Task.CompletedTask;
         }
 
-        [AutomaticRetry(Attempts = int.MaxValue)]
+        [AutomaticRetry(Attempts = 20, OnAttemptsExceeded = AttemptsExceededAction.Fail)]
         public async Task ExecuteAsync(CancellationToken cancellation = default)
         {
             using (var scope = _serviceProvider.CreateScope())

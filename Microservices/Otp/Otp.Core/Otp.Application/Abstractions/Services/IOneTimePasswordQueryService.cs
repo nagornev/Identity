@@ -6,6 +6,6 @@ namespace Otp.Application.Abstractions.Services
     {
         Task<OneTimePassword> GetOneTimePasswordByIdAsync(Guid id, CancellationToken cancellation = default);
 
-        IAsyncEnumerable<OneTimePassword> GetExpiredOneTimePasswordsAsyncEnumerable(long timestamp);
+        Task<IReadOnlyCollection<OneTimePassword>> GetExpiredOneTimePasswordsAsync(long timestamp);
     }
 }

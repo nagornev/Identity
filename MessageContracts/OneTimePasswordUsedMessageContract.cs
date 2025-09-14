@@ -1,12 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public class OneTimePasswordUsedMessageContract
+    public record OneTimePasswordUsedMessageContract(Guid OneTimePasswordId)
     {
-        public OneTimePasswordUsedMessageContract(Guid oneTimePasswordId)
-        {
-            OneTimePasswordId = oneTimePasswordId;
-        }
-
-        public Guid OneTimePasswordId { get; }
     }
 }
