@@ -1,20 +1,20 @@
-﻿namespace Auth.Application.Features.Refresh
+﻿using Auth.Application.DTOs;
+
+namespace Auth.Application.Features.Refresh
 {
-    public class RefreshCommand : ResultTRequest<DTOs.TokenPair>
+    public class RefreshCommand : ResultTRequest<TokenPair>
     {
         public RefreshCommand(string refreshToken,
                               string newPublicKey,
                               long timestamp,
                               string signature,
-                              string device,
-                              string ipAddress)
+                              RequestContext requestContext)
         {
             RefreshToken = refreshToken;
             NewPublicKey = newPublicKey;
             Timestamp = timestamp;
             Signature = signature;
-            Device = device;
-            IpAddress = ipAddress;
+            RequestContext = requestContext;
         }
 
         public string RefreshToken { get; }
@@ -25,8 +25,6 @@
 
         public string Signature { get; }
 
-        public string Device { get; }
-
-        public string IpAddress { get; }
+        public RequestContext RequestContext { get; }
     }
 }

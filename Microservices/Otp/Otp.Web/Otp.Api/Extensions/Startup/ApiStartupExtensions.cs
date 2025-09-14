@@ -21,6 +21,7 @@ namespace Otp.Api.Extensions.Startup
                     .AddFactories(configuration)
                     .AddClients(configuration)
                     .AddBackgrounds(configuration)
+                    .AddValidators(configuration)
                     .AddCarter()
                     .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssembly).Assembly))
 

@@ -31,6 +31,7 @@ namespace Auth.Api.Extensions.Startup
                     .AddStorages(configuration)
                     .AddClients(configuration)
                     .AddBackgrounds(configuration)
+                    .AddConfigures(configuration)
                     .AddCarter()
                     .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssembly).Assembly))
 
@@ -83,7 +84,6 @@ namespace Auth.Api.Extensions.Startup
             {
                 Authorization = Array.Empty<IDashboardAuthorizationFilter>()
             });
-            //app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapCarter();

@@ -2,6 +2,7 @@
 using MediatR;
 using OperationResults;
 using Otp.Api.Contracts;
+using Otp.Api.Extensions;
 using Otp.Application.Features.Resend;
 
 namespace Otp.Api.Endpoints
@@ -12,7 +13,8 @@ namespace Otp.Api.Endpoints
         {
             var group = app.MapGroup("api/otp");
 
-            group.MapPost("resend", Resend);
+            group.MapPost("resend", Resend)
+                 .WithValidation<ResendContract>();
         }
 
 

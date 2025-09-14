@@ -3,6 +3,8 @@ using Auth.Application.Abstractions.Validators.Tokens;
 using Auth.Application.Validators;
 using Auth.Security.Abstractions.Validators;
 using Auth.Security.Validators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 namespace Auth.Api.Extensions.Startup
 {
@@ -11,7 +13,8 @@ namespace Auth.Api.Extensions.Startup
         public static IServiceCollection AddValidators(this IServiceCollection services, IConfiguration configuration)
         {
             return services.AddApplicationValidators()
-                           .AddInfrastructureValidators();
+                           .AddInfrastructureValidators()
+                           .AddContractValidators();
         }
 
         private static IServiceCollection AddApplicationValidators(this IServiceCollection services)
@@ -32,5 +35,11 @@ namespace Auth.Api.Extensions.Startup
                            .AddSingleton<IJwtSignatureValidator, JwtSignatureValidator>()
                            .AddSingleton<IEd25519SignatureValidator, Ed25519SignatureValidator>();
         }
+
+        public static IServiceCollection AddContractValidators(this IServiceCollection services)
+        {
+            return services.AddFluentValidationAutoValidation(options => options.DisableDataAnnotationsValidation = true)
+                           .AddValidatorsFromAssemblyContaining<Program>();
+        }  
     }
 }

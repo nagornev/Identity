@@ -48,7 +48,7 @@ namespace Auth.Api.Endpoints
 
             string signature = Base64UrlConverter.ToBase64Url(edSignatureCreator.GenerateSignature());
 
-            return Results.Ok(new RefreshCommand(contract.RefreshToken, contract.NewPublicKey, timestamp, signature, string.Empty, string.Empty));
+            return Results.Ok(new RefreshCommand(contract.RefreshToken, contract.NewPublicKey, timestamp, signature, new Application.DTOs.RequestContext(string.Empty, string.Empty)));
 
         }
 
