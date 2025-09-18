@@ -1,6 +1,6 @@
 ﻿namespace MessageContracts
 {
-    public record ChannelNotificationMessageContract(Guid UserId, string Channel, string Token)
+    public record ChannelNotificationMessageContract(Guid UserId, string Url, ChannelTypes ChannelType, string ChannelValue)
     {
     }
 }

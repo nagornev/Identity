@@ -1,5 +1,4 @@
 ﻿using DDD.Events;
-using MessageContracts;
 
 namespace Otp.Messaging.Abstractions.Providers
 {

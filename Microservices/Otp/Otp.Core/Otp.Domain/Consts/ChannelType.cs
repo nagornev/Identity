@@ -1,9 +1,9 @@
 ﻿namespace Otp.Domain.Consts
 {
-    public static class ChannelTypes
+    public static class ChannelType
     {
         public const string Email = "email";
 
-        public const string Phone = "sms";
+        public const string Sms = "sms";
     }
 }

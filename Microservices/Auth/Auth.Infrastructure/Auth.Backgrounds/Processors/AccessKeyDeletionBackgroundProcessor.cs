@@ -2,11 +2,6 @@
 using Auth.Application.Options;
 using Auth.Backgrounds.Abstractions.Processors;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Auth.Backgrounds.Processors
 {
@@ -14,7 +9,7 @@ namespace Auth.Backgrounds.Processors
     {
         private const string _job = "delete-access-keys";
 
-        public AccessKeyDeletionBackgroundProcessor(IServiceProvider serviceProvider, IOptions<AccessKeyOptions> keyOptions) 
+        public AccessKeyDeletionBackgroundProcessor(IServiceProvider serviceProvider, IOptions<AccessKeyOptions> keyOptions)
             : base(_job, serviceProvider, keyOptions)
         {
         }

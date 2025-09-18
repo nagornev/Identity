@@ -1,14 +1,8 @@
 ﻿using DDD.Repositories;
-using DDD.Specifications;
 using Otp.Application.Abstractions.Services;
 using Otp.Application.Exceptions.Applications.Users;
 using Otp.Domain.Aggregates;
 using Otp.Domain.Specifications;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Otp.Application.Services
 {

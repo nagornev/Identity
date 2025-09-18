@@ -2,6 +2,8 @@
 {
     public interface INotificationClient
     {
-        Task ChannelNotificationAsync(Guid userId, string channel, string token, CancellationToken cancellation = default);
+        Task ActivateNotificationAsync(Guid userId, string channelValue, string url, CancellationToken cancellation = default);
+
+        Task EmailChannelNotificationAsync(Guid userId, string channelValue, string url, CancellationToken cancellation = default);
     }
 }

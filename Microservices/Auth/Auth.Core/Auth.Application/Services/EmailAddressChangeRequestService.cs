@@ -40,7 +40,7 @@ namespace Auth.Application.Services
 
             Otp otp = await _otpClient.CreateAsync(user.Id,
                                                    OtpTags.ChangeEmailAddress,
-                                                   payload: _otpTokenPayloadProvider.Serialize(new ChangeEmailAddressOtpTokenPayload      (user.Profile.PendingEmailAddress!.Version)),
+                                                   payload: _otpTokenPayloadProvider.Serialize(new ChangeEmailAddressOtpTokenPayload(user.Profile.PendingEmailAddress!.Version)),
                                                    cancellation: cancellation);
 
             await _unitOfWork.SaveAsync(cancellation);

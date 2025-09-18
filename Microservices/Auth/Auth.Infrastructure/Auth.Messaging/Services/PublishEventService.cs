@@ -7,7 +7,7 @@ namespace Auth.Messaging.Services
 {
     public class PublishEventService : IPublishEventService
     {
-        private readonly IMessageContractsProvider _messageContractProvider;
+        private readonly IMessageContractsProvider _messageContractsProvider;
 
         private readonly IPublishEndpoint _publishService;
 
@@ -15,13 +15,13 @@ namespace Auth.Messaging.Services
                                    IPublishEndpoint publishService)
         {
             _publishService = publishService;
-            _messageContractProvider = messageContractProvider;
+            _messageContractsProvider = messageContractProvider;
         }
 
         public async Task PublishAsync<T>(T domainEvent, CancellationToken cancellation = default)
             where T : class, IDomainEvent
         {
-            dynamic messageContract = await _messageContractProvider.Create(domainEvent);
+            dynamic messageContract = await _messageContractsProvider.CreateAsync(domainEvent);
 
             await _publishService.Publish(messageContract, cancellation);
         }

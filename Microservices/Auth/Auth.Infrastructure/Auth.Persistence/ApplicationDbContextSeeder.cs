@@ -19,7 +19,7 @@ namespace Auth.Persistence
 
         private static async Task AddRoleAndScopesAsync(ApplicationDbContext context, ApplicationOptions.Role role, string issuer)
         {
-            Role? dbRole = await context.Roles.Include(x=>x.Entitlements)
+            Role? dbRole = await context.Roles.Include(x => x.Entitlements)
                                               .FirstOrDefaultAsync(x => x.Name == role.Name);
 
             if (dbRole == null)

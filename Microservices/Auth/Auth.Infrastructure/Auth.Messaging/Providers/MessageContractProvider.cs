@@ -1,6 +1,5 @@
 ﻿using Auth.Messaging.Abstractions.Providers;
 using DDD.Events;
-using MessageContracts;
 
 namespace Auth.Messaging.Providers
 {

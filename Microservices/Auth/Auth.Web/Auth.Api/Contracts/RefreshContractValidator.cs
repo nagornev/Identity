@@ -1,6 +1,5 @@
 ﻿using Auth.Application.Abstractions.Providers;
 using Auth.Application.Converters;
-using Auth.Domain.ValueObjects;
 using FluentValidation;
 
 namespace Auth.Api.Contracts
@@ -17,7 +16,7 @@ namespace Auth.Api.Contracts
                                         .WithMessage("The refresh token can`t be null.");
             RuleFor(x => x.RefreshToken).NotEmpty()
                                         .WithMessage("The refresh token can`t be empty.");
-            RuleFor(x => x.RefreshToken).Matches(@"(^[A-Za-z0-9-_]*\.[A-Za-z0-9-_]*\.[A-Za-z0-9-_]*$)")
+            RuleFor(x => x.RefreshToken).Matches(@"^(?:[A-Za-z0-9_-]{2,}=*)\.(?:[A-Za-z0-9_-]{2,}=*)\.(?:[A-Za-z0-9_-]{1,}=*)$")
                                         .WithMessage("The refresh token has invalid format.");
 
             RuleFor(x => x.NewPublicKey).NotNull()

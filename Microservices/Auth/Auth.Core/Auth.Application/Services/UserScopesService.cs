@@ -1,6 +1,5 @@
 ﻿using Auth.Application.Abstractions.Providers;
 using Auth.Application.Abstractions.Services;
-using Auth.Application.Exceptions.Applications.Scopes;
 using Auth.Domain.Aggregates;
 using Auth.Domain.ValueObjects;
 using System.Data;

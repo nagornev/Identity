@@ -17,7 +17,7 @@ namespace Auth.Api.Contracts
             {
                 RuleFor(x => x.NewPersonName).Must(name => !string.IsNullOrEmpty(name) && !string.IsNullOrWhiteSpace(name))
                                              .WithMessage("The file name can`t be null or empty.")
-                                             .Must(name => name.Length < PersonName.MaximumLength && name.Length >= PersonName.MinimumLength) 
+                                             .Must(name => name.Length < PersonName.MaximumLength && name.Length >= PersonName.MinimumLength)
                                              .WithMessage($"The file lenght can`t be less than {PersonName.MinimumLength} and more than {PersonName.MaximumLength} bytes.");
             });
         }

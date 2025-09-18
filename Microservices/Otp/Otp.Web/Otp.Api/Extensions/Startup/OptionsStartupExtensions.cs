@@ -17,7 +17,9 @@ namespace Otp.Api.Extensions.Startup
             return services.AddSingleton(Options.Create(configuration.GetSection(nameof(OneTimePasswordOptions))
                                                                      .Get<OneTimePasswordOptions>()!))
                            .AddSingleton(Options.Create(configuration.GetSection(nameof(SecretOptions))
-                                                                     .Get<SecretOptions>()!));
+                                                                     .Get<SecretOptions>()!))
+                           .AddSingleton(Options.Create(configuration.GetSection(nameof(ApplicationOptions))
+                                                                     .Get<ApplicationOptions>()!));
         }
 
         private static IServiceCollection AddInfrastructureOptions(this IServiceCollection services, IConfiguration configuration)

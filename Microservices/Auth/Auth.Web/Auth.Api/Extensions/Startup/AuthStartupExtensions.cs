@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.IdentityModel.Tokens;
 using ScopeAuthorizationRequirement;
 
 namespace Auth.Api.Extensions.Startup
@@ -22,7 +21,7 @@ namespace Auth.Api.Extensions.Startup
 
         private static IServiceCollection AddAuthentication(this IServiceCollection services, ApplicationOptions applicationOptions)
         {
-                            
+
             return services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                            .AddJwtBearer()
                            .Services

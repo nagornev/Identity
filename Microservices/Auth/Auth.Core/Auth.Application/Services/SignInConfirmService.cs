@@ -3,10 +3,8 @@ using Auth.Application.Abstractions.Providers.Tokens;
 using Auth.Application.Abstractions.Services;
 using Auth.Application.Abstractions.Storages;
 using Auth.Application.DTOs;
-using Auth.Application.Options;
 using Auth.Domain.Aggregates;
 using DDD.Repositories;
-using Microsoft.Extensions.Options;
 
 namespace Auth.Application.Services
 {
@@ -65,7 +63,7 @@ namespace Auth.Application.Services
             Session session = await _sessionQueryService.GetSessionByIdAsync(signInOtpTokenPayload.SessionId);
 
             _signInValidationService.ValidateSession(session);
-          
+
             KeyPair accessPrimaryKey = await _accessKeysStorage.GetPrimaryAsync(cancellation);
             KeyPair refreshPrimaryKey = await _refreshKeysStorage.GetPrimaryAsync(cancellation);
 

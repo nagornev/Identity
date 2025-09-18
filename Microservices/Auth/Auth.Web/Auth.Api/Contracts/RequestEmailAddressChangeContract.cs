@@ -1,6 +1,4 @@
-﻿using VaultSharp.V1.AuthMethods.Token;
-
-namespace Auth.Api.Contracts
+﻿namespace Auth.Api.Contracts
 {
     public class RequestEmailAddressChangeContract
     {

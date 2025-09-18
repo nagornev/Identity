@@ -184,7 +184,7 @@ namespace Auth.Domain.Aggregates
         /// <exception cref="SessionAlreadyActivatedDomainException"></exception>
         public void Activate()
         {
-            if(Activated)
+            if (Activated)
                 throw new SessionAlreadyActivatedDomainException();
 
             Activated = true;

@@ -27,12 +27,12 @@ namespace Otp.Domain.ValueObjects
 
         internal static Channel CreateEmailAddressChannel(string email)
         {
-            return Create(ChannelTypes.Email, email);
+            return Create(ChannelType.Email, email);
         }
 
         internal static Channel CreatePhoneChannel(string phone)
         {
-            return Create(ChannelTypes.Phone, phone);
+            return Create(ChannelType.Sms, phone);
         }
 
         public string Type { get; private set; }
@@ -43,8 +43,8 @@ namespace Otp.Domain.ValueObjects
         {
             return Type switch
             {
-                ChannelTypes.Email => MaskEmail(Value),
-                ChannelTypes.Phone => MaskPhone(Value),
+                ChannelType.Email => MaskEmail(Value),
+                ChannelType.Sms => MaskPhone(Value),
                 _ => "***"
             };
         }

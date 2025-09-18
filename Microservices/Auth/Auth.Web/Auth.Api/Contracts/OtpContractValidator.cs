@@ -15,7 +15,7 @@ namespace Auth.Api.Contracts
 
             RuleFor(x => x.Otp).NotNull()
                                .WithMessage("The one time password can`t be null.");
-            RuleFor(x => x.Otp).NotEmpty() 
+            RuleFor(x => x.Otp).NotEmpty()
                                .WithMessage("The one time password can`t be empty.");
 
             When(x => x.Otp != null, () =>

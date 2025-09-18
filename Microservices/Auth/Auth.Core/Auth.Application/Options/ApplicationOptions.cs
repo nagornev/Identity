@@ -1,7 +1,4 @@
-﻿using Auth.Domain.Aggregates;
-using System.Drawing;
-
-namespace Auth.Application.Options
+﻿namespace Auth.Application.Options
 {
     public class ApplicationOptions
     {

@@ -40,6 +40,6 @@ namespace Auth.Api.Extensions.Startup
         {
             return services.AddFluentValidationAutoValidation(options => options.DisableDataAnnotationsValidation = true)
                            .AddValidatorsFromAssemblyContaining<Program>();
-        }  
+        }
     }
 }

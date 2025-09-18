@@ -25,7 +25,7 @@ namespace Auth.Application.Services
 
             IReadOnlyCollection<KeyPair> keyPairs = await _keyStorage.GetKeyPairsAsync(cancellation);
 
-            foreach(KeyPair keyPair in keyPairs)
+            foreach (KeyPair keyPair in keyPairs)
             {
                 if (timestamp > keyPair.ExpiresAt)
                 {

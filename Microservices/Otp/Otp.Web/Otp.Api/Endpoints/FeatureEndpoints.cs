@@ -24,7 +24,7 @@ namespace Otp.Api.Endpoints
 
             return resendResult.IsSuccess ?
                     Results.Ok(resendResult) :
-                    Results.BadRequest(resendResult);    
+                    Results.BadRequest(resendResult);
         }
     }
 }

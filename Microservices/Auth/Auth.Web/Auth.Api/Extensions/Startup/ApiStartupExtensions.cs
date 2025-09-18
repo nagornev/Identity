@@ -1,4 +1,5 @@
-﻿using Auth.Application;
+﻿using Auth.Api.Services;
+using Auth.Application;
 using Auth.Application.Abstractions.Factories.Keys;
 using Auth.Application.Abstractions.Storages;
 using Auth.Application.Options;
@@ -80,12 +81,9 @@ namespace Auth.Api.Extensions.Startup
             }
 
             app.UseHttpsRedirection();
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions()
-            {
-                Authorization = Array.Empty<IDashboardAuthorizationFilter>()
-            });
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseHangfireDashboard("/api/identity/hangfire");
             app.MapCarter();
 
             await app.RunAsync();

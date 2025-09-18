@@ -1,6 +1,5 @@
 ﻿using DDD.Primitives;
 using Otp.Domain.Exceptions.Domains.OneTimePasswords;
-using System.Buffers.Text;
 
 namespace Otp.Domain.ValueObjects
 {

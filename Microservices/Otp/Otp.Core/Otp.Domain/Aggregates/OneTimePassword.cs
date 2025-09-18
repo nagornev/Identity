@@ -11,7 +11,7 @@ namespace Otp.Domain.Aggregates
     {
         private const int _maximumAttempts = 3;
 
-        private OneTimePassword(Guid id, Guid userId, Channel channel, Secret secret, string tag,  string payload, long createdAt, long expiresAt)
+        private OneTimePassword(Guid id, Guid userId, Channel channel, Secret secret, string tag, string payload, long createdAt, long expiresAt)
         {
             Id = id;
             UserId = userId;

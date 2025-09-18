@@ -2,14 +2,8 @@
 using Auth.Application.Options;
 using Auth.Backgrounds.Abstractions.Processors;
 using Hangfire;
-using Hangfire.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Auth.Backgrounds.Processors
 {
@@ -24,7 +18,7 @@ namespace Auth.Backgrounds.Processors
         private readonly TKeyOptionsType _keyOptions;
 
         public KeyDeletionBackgroundProcessor(string jobName,
-                                              IServiceProvider serviceProvider, 
+                                              IServiceProvider serviceProvider,
                                               IOptions<TKeyOptionsType> keyOptions)
         {
             _job = jobName;

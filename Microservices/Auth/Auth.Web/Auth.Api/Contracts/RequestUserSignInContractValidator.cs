@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Auth.Api.Contracts
 {
-    public class RequestUserSignInContractValidator:AbstractValidator<RequestUserSignInContract>
+    public class RequestUserSignInContractValidator : AbstractValidator<RequestUserSignInContract>
     {
         private const int _publicKeyLength = 32;
 

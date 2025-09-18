@@ -22,7 +22,7 @@ namespace Auth.Api.Services
 
         public void PostConfigure(string? name, JwtBearerOptions options)
         {
-            if(name!= null && name == JwtBearerDefaults.AuthenticationScheme)
+            if (name != null && name == JwtBearerDefaults.AuthenticationScheme)
             {
                 options.ConfigurationManager = _configurationManager;
                 options.MapInboundClaims = false;

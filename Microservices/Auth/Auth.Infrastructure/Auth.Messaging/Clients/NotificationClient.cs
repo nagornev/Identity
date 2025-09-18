@@ -1,24 +1,36 @@
 ﻿using Auth.Application.Abstractions.Clients;
 using MassTransit;
-using Microsoft.Extensions.Logging;
+using MessageContracts;
 
 namespace Auth.Messaging.Clients
 {
     public class NotificationClient : INotificationClient
     {
         private readonly IPublishEndpoint _publishService;
-        private readonly ILogger<NotificationClient> _logger;
 
-        public NotificationClient(IPublishEndpoint publishService, ILogger<NotificationClient> logger)
+        public NotificationClient(IPublishEndpoint publishService)
         {
             _publishService = publishService;
-            _logger = logger;
         }
 
-        public async Task ChannelNotificationAsync(Guid userId, string channel, string token, CancellationToken cancellation = default)
+        public async Task ActivateNotificationAsync(Guid userId, string channelValue, string url, CancellationToken cancellation = default)
         {
-            _logger.LogInformation(token);
-            //await _publishService.Publish(new ChannelNotificationMessageContract(userId, channel, token));
+            //_logger.LogInformation("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
+            //                       $"Activate notification for {channelValue}\n" +
+            //                       $"Token: {url}\n" +
+            //                       $"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+
+            await _publishService.Publish(new ActivateNotificationMessageContract(userId, url, ChannelTypes.Email, channelValue), cancellation);
+        }
+
+        public async Task EmailChannelNotificationAsync(Guid userId, string channelValue, string url, CancellationToken cancellation = default)
+        {
+            //_logger.LogInformation("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
+            //                       $"Channel notification for {channelValue}\n" +
+            //                       $"Token: {url}\n" +
+            //                       $"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+
+            await _publishService.Publish(new ChannelNotificationMessageContract(userId, url, ChannelTypes.Email, channelValue), cancellation);
         }
     }
 }

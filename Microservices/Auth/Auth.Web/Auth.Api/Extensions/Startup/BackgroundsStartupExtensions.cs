@@ -25,7 +25,8 @@ namespace Auth.Api.Extensions.Startup
 
         private static IServiceCollection AddBackgroundProcessors(this IServiceCollection services)
         {
-            return services.AddSingleton<IBackgroundProcessor, AccessKeysRotationBackgroundProcessor>()
+            return services
+                           .AddSingleton<IBackgroundProcessor, AccessKeysRotationBackgroundProcessor>()
                            .AddSingleton<IBackgroundProcessor, RefreshKeyRotationBackgroundProcessor>()
                            .AddSingleton<IBackgroundProcessor, ChannelKeyRotationBackgroundProcessor>()
                            .AddSingleton<IBackgroundProcessor, AccessKeyDeletionBackgroundProcessor>()

@@ -1,6 +1,7 @@
 ﻿using Carter;
 using Hangfire;
 using Hangfire.Dashboard;
+using Microsoft.OpenApi.Models;
 using Otp.Application;
 using Otp.Persistence;
 using Otp.Persistence.Contexts;
@@ -15,6 +16,7 @@ namespace Otp.Api.Extensions.Startup
             var configuration = builder.Configuration;
 
             services.AddOptions(configuration)
+                    .AddAuth(configuration)
                     .AddRepositories(configuration)
                     .AddServices(configuration)
                     .AddProviders(configuration)
@@ -42,11 +44,9 @@ namespace Otp.Api.Extensions.Startup
             }
 
             app.UseHttpsRedirection();
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions()
-            {
-                Authorization = Array.Empty<IDashboardAuthorizationFilter>()
-            });
-            //app.UseCors();
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseHangfireDashboard("/api/otp/hangfire");
             app.MapCarter();
 
             await app.RunAsync();

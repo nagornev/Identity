@@ -22,7 +22,7 @@ namespace Otp.Api.Extensions.Startup
             return services.AddMassTransit(options =>
             {
                 options.SetKebabCaseEndpointNameFormatter();
-  
+
                 options.AddConsumer<OneTimePasswordCreatedConsumer>();
                 options.AddConsumer<OneTimePasswordUsedConsumer>();
                 options.AddConsumer<OneTimePasswordCreationRequestConsumer>();
@@ -39,8 +39,43 @@ namespace Otp.Api.Extensions.Startup
                         h.Password(messageBrokerOptions.Password);
                     });
 
-                    cfg.ConfigureEndpoints(context);
+                    cfg.ReceiveEndpoint("otp-one-time-password-created-queue", e =>
+                    {
+                        e.ConfigureConsumer<OneTimePasswordCreatedConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint("otp-one-time-password-used-queue", e =>
+                    {
+                        e.ConfigureConsumer<OneTimePasswordUsedConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint("otp-one-time-password-creation-request-queue", e =>
+                    {
+                        e.ConfigureConsumer<OneTimePasswordCreationRequestConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint("otp-one-time-password-validation-request-queue", e =>
+                    {
+                        e.ConfigureConsumer<OneTimePasswordValidationRequestConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint("otp-email-address-changed-queue", e =>
+                    {
+                        e.ConfigureConsumer<EmailAddressChangedConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint("otp-user-activated-queue", e =>
+                    {
+                        e.ConfigureConsumer<UserActivatedConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint("otp-one-time-password-resended-queue", e =>
+                    {
+                        e.ConfigureConsumer<OneTimePasswordResendedConsumer>(context);
+                    });
                 });
+
+
             });
         }
     }

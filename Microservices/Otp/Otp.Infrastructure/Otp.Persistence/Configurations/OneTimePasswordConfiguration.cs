@@ -22,11 +22,11 @@ namespace Otp.Persistence.Configurations
             builder.OwnsOne(otp => otp.Channel, pc =>
             {
                 pc.Property(c => c.Type)
-                  .HasColumnName(nameof(Channel.Type))
+                  .HasColumnName(nameof(Channel) + nameof(Channel.Type))
                   .IsRequired();
 
                 pc.Property(c => c.Value)
-                  .HasColumnName(nameof(Channel))
+                  .HasColumnName(nameof(Channel) + nameof(Channel.Value))
                   .IsRequired();
             });
         }

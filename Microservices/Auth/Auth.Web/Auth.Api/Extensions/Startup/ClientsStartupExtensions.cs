@@ -40,7 +40,20 @@ namespace Auth.Api.Extensions.Startup
                         h.Password(messageBrokerOptions.Password);
                     });
 
-                    cfg.ConfigureEndpoints(context);
+                    cfg.ReceiveEndpoint("auth-email-address-change-confirmed-queue", e =>
+                    {
+                        e.ConfigureConsumer<EmailAddressChangeConfirmedMessageConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint("auth-password-hash-changed-queue", e =>
+                    {
+                        e.ConfigureConsumer<PasswordHashChangedMessageConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint("auth-user-created-queue", e =>
+                    {
+                        e.ConfigureConsumer<UserCreatedMessageConsumer>(context);
+                    });
                 });
             });
         }

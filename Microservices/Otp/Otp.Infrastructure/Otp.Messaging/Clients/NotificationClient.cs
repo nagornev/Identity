@@ -1,7 +1,7 @@
 ﻿using MassTransit;
 using MessageContracts;
-using Microsoft.Extensions.Logging;
 using Otp.Application.Abstractions.Clients;
+using Otp.Messaging.Abstractions.Providers;
 
 namespace Otp.Messaging.Clients
 {
@@ -9,25 +9,23 @@ namespace Otp.Messaging.Clients
     {
         private readonly IPublishEndpoint _publishService;
 
-        private readonly ILogger<NotificationClient> _logger;
+        private readonly IChannelTypesProvider _channelTypesProvider;
 
         public NotificationClient(IPublishEndpoint publishService,
-                                  ILogger<NotificationClient> logger)
+                                  IChannelTypesProvider channelTypesProvider)
         {
             _publishService = publishService;
-            _logger = logger;
+            _channelTypesProvider = channelTypesProvider;
         }
 
         public async Task OneTimePasswordNotificationAsync(Guid userId, string oneTimePasswordValue, string type, string channel, CancellationToken cancellation = default)
         {
-            OneTimePasswordNotificationMessageContract messageContract = new OneTimePasswordNotificationMessageContract(userId, oneTimePasswordValue, type, channel);
+            OneTimePasswordNotificationMessageContract messageContract = new OneTimePasswordNotificationMessageContract(userId,
+                                                                                                                        oneTimePasswordValue,
+                                                                                                                        _channelTypesProvider.Get(type),
+                                                                                                                        channel);
 
-            _logger.LogInformation($"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"+
-                                   $"Code - {oneTimePasswordValue}.\n" +
-                                   $"Type - {type}, channel - {channel}.\n" +
-                                   $"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-
-            //await _publishService.Publish(messageContract, cancellation);
+            await _publishService.Publish(messageContract, cancellation);
         }
     }
 }

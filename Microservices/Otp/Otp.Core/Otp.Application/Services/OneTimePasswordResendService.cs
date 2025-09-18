@@ -1,7 +1,6 @@
 ﻿using DDD.Repositories;
 using Otp.Application.Abstractions.Providers;
 using Otp.Application.Abstractions.Services;
-using Otp.Application.Providers;
 using Otp.Domain.Aggregates;
 
 namespace Otp.Application.Services

@@ -124,12 +124,12 @@ namespace Otp.Persistence.Migrations
                             b1.Property<string>("Type")
                                 .IsRequired()
                                 .HasColumnType("text")
-                                .HasColumnName("Type");
+                                .HasColumnName("ChannelType");
 
                             b1.Property<string>("Value")
                                 .IsRequired()
                                 .HasColumnType("text")
-                                .HasColumnName("Channel");
+                                .HasColumnName("ChannelValue");
 
                             b1.HasKey("OneTimePasswordId");
 

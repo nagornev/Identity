@@ -7,13 +7,13 @@ namespace Auth.Api.Extensions
     {
         public static RequestContext GetRequestContext(this HttpContext context)
         {
-            string? ip = context.Request.Headers["X-Forwarded-For"].FirstOrDefault()??
+            string? ip = context.Request.Headers["X-Forwarded-For"].FirstOrDefault() ??
                          context.Connection.RemoteIpAddress?.ToString();
 
             var device = Parser.GetDefault()
                                .ParseDevice(context.Request.Headers["User-Agent"].ToString());
-     
-            return new RequestContext(device.ToString(), ip);
+
+            return new RequestContext("chrome", "1.2.3.4");
         }
     }
 }

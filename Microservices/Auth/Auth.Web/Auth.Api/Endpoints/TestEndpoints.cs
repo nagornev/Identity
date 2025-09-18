@@ -1,13 +1,10 @@
-﻿using Auth.Application.Abstractions.Providers;
+﻿using Auth.Api.Extensions;
+using Auth.Application.Abstractions.Providers;
 using Auth.Application.Converters;
 using Auth.Application.Features.Refresh;
-using Auth.Application.Features.SignIn.Queries;
 using Carter;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Signers;
-using Org.BouncyCastle.Math.EC.Rfc8032;
 using System.Security.Claims;
 using System.Text;
 
@@ -20,18 +17,18 @@ namespace Auth.Api.Endpoints
             var group = app.MapGroup("test");
 
             group.MapGet("auth", TestAuth)
-                 .RequireAuthorization("read:profile");
+                 .RequireAuthorization("edit:profile");
 
             group.MapPost("sign/refresh", SignRefresh);
         }
 
         private static async Task<IResult> TestAuth(ClaimsPrincipal claimsPrincipal)
         {
-            return Results.Ok(claimsPrincipal.Claims.Select(x=> x.Value));
+            return Results.Ok(claimsPrincipal.Claims.Select(x => x.Value));
         }
 
 
-        private static async Task<IResult> SignRefresh(SignRefreshContract contract, IFingerprintMessageProvider fingerprintMessageProvider, ITimeProvider timeProvider)
+        private static async Task<IResult> SignRefresh(SignRefreshContract contract, HttpContext context, IFingerprintMessageProvider fingerprintMessageProvider, ITimeProvider timeProvider)
         {
             long timestamp = timeProvider.NowUnix();
 
@@ -48,7 +45,7 @@ namespace Auth.Api.Endpoints
 
             string signature = Base64UrlConverter.ToBase64Url(edSignatureCreator.GenerateSignature());
 
-            return Results.Ok(new RefreshCommand(contract.RefreshToken, contract.NewPublicKey, timestamp, signature, new Application.DTOs.RequestContext(string.Empty, string.Empty)));
+            return Results.Ok(new RefreshCommand(contract.RefreshToken, contract.NewPublicKey, timestamp, signature, null));
 
         }
 

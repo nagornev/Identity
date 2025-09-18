@@ -29,7 +29,7 @@ namespace Auth.Application.Services
             KeyPair channelPrimaryKey = await _channelKeyStorage.GetPrimaryAsync(cancellation);
             string channelToken = _channelTokenProvider.Create(new ChannelTokenCreationParameters(userId, ChannelTags.Email, emailAddress), channelPrimaryKey);
 
-            await notificationClient.ChannelNotificationAsync(userId, emailAddress, channelToken);
+            await notificationClient.ActivateNotificationAsync(userId, emailAddress, channelToken);
         }
     }
 }

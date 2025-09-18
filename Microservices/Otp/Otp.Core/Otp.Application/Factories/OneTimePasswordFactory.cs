@@ -29,7 +29,7 @@ namespace Otp.Application.Factories
             long createdAt = _timeProvider.NowUnix();
 
             return OneTimePassword.Create(userId,
-                                          channel,        
+                                          channel,
                                           _secretProvider.Create(),
                                           tag,
                                           createdAt,

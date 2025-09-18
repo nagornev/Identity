@@ -25,6 +25,25 @@ namespace Auth.Security.Storages
             _keyStorageOptions = keyStorageOptions.Value;
         }
 
+        public override async Task<IReadOnlyCollection<KeyPair>> GetKeyPairsAsync(CancellationToken cancellation = default)
+        {
+            return await GetKeyPairsAsync($"{_keyStorageOptions.BasePath}");
+        }
+
+        public override async Task<KeyPair> GetKeyPairAsync(Guid kid, CancellationToken cancellation = default)
+        {
+            KeyPair primaryKey = await GetPrimaryAsync(cancellation);
+
+            return primaryKey.Kid == kid ?
+                    primaryKey :
+                    await GetKeyPairAsync($"{_keyStorageOptions.BasePath}/{kid}");
+        }
+
+        public override async Task<KeyPair> GetPrimaryAsync(CancellationToken cancellation = default)
+        {
+            return await GetKeyPairAsync($"{_keyStorageOptions.BasePath}/{_keyStorageOptions.PrimaryKey}");
+        }
+
         public override async Task SetPrimaryAsync(KeyPair keyPair, CancellationToken cancellation = default)
         {
             KeyPair previewPrimaryKey = await GetPrimaryAsync(cancellation);
@@ -41,26 +60,14 @@ namespace Auth.Security.Storages
 
         public override async Task DeleteKeyPairAsync(Guid kid, CancellationToken cancellation = default)
         {
-            await _vaultClient.V1.Secrets.KeyValue.V2.DeleteSecretAsync(path: $"{_keyStorageOptions.BasePath}/{kid}");
-        }
-
-        public override async Task<KeyPair> GetKeyPairAsync(Guid kid, CancellationToken cancellation = default)
-        {
-            KeyPair primaryKey = await GetPrimaryAsync(cancellation);
-
-            return primaryKey.Kid == kid ?
-                    primaryKey :
-                    await GetKeyPairAsync($"{_keyStorageOptions.BasePath}/{kid}");
-        }
-
-        public override async Task<IReadOnlyCollection<KeyPair>> GetKeyPairsAsync(CancellationToken cancellation = default)
-        {
-            return await GetKeyPairsAsync($"{_keyStorageOptions.BasePath}");
-        }
-
-        public override async Task<KeyPair> GetPrimaryAsync(CancellationToken cancellation = default)
-        {
-            return await GetKeyPairAsync($"{_keyStorageOptions.BasePath}/{_keyStorageOptions.PrimaryKey}");
+            try
+            {
+                await _vaultClient.V1.Secrets.KeyValue.V2.DeleteSecretAsync(path: $"{_keyStorageOptions.BasePath}/{kid}");
+            }
+            catch (VaultApiException exception) when (exception.StatusCode == (int)HttpStatusCode.NotFound)
+            {
+                return;
+            }
         }
 
         private async Task<KeyPair?> GetKeyPairAsync(string path, CancellationToken cancellation = default)
@@ -80,7 +87,6 @@ namespace Auth.Security.Storages
         {
             try
             {
-
                 var paths = await _vaultClient.V1.Secrets.KeyValue.V2.ReadSecretPathsAsync(path, mountPoint: _keyStorageOptions.MountPoint);
 
                 var keyPairs = await Task.WhenAll(paths.Data.Keys

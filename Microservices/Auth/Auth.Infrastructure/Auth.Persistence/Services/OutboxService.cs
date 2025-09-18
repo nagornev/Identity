@@ -4,6 +4,7 @@ using Auth.Persistence.Abstractions.Repositories;
 using Auth.Persistence.Entities;
 using DDD.Events;
 using DDD.Repositories;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Auth.Persistence.Services
@@ -25,15 +26,19 @@ namespace Auth.Persistence.Services
 
         private readonly IUnitOfWork _unitOfWork;
 
+        private readonly ILogger<OutboxService> _logger;
+
         public OutboxService(IOutboxRepository outboxRepository,
                              IPublishEventService publishEventService,
                              ITimeProvider timeProvider,
-                             IUnitOfWork unitOfWork)
+                             IUnitOfWork unitOfWork,
+                             ILogger<OutboxService> logger)
         {
             _outboxRepository = outboxRepository;
             _publishEventService = publishEventService;
             _timeProvider = timeProvider;
             _unitOfWork = unitOfWork;
+            _logger = logger;
         }
 
         public async Task HandleAsync(CancellationToken cancellation = default)
@@ -57,13 +62,15 @@ namespace Auth.Persistence.Services
                     await _publishEventService.PublishAsync(domainEvent);
                     outboxMessage.MarkAsProccesed();
                 }
+#if DEBUG
                 catch (NotSupportedException)
                 {
                     outboxMessage.MarkAsProccesed();
                 }
-                catch
+#endif
+                catch (Exception exception)
                 {
-                    //TODO: log error
+                    _logger?.LogError(exception, exception.Message);
                 }
             })));
 

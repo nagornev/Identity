@@ -1,11 +1,6 @@
 ﻿using DDD.Primitives;
 using Otp.Domain.Exceptions.Domains.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Otp.Domain.ValueObjects
 {

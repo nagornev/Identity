@@ -27,7 +27,7 @@ namespace Otp.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<OneTimePasswordCreation> CreateAsync(Guid userId, string tag,  string? payload = "", CancellationToken cancellation = default)
+        public async Task<OneTimePasswordCreation> CreateAsync(Guid userId, string tag, string? payload = "", CancellationToken cancellation = default)
         {
             User user = await _userQueryService.GetUserByIdAsync(userId);
             OneTimePassword oneTimePassword = _oneTimePasswordFactory.Create(userId, user.GetPrimaryChannel(), tag, payload);

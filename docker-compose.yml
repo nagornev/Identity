@@ -70,6 +70,20 @@ services:
       - ./Data/OtpScheduler:/var/lib/postgresql/data
     networks:
       - application
+      
+  notification_scheduler:
+    container_name: notification_scheduler
+    image: postgres:16
+    environment:
+      POSTGRES_DB: Scheduler
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: HHHHhhhh1111
+    ports:
+      - "5006:5432"
+    volumes:
+      - ./Data/NotificationScheduler:/var/lib/postgresql/data
+    networks:
+      - application
   
   rabbitmq:
     container_name: rabbitmq

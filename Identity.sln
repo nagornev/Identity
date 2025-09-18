@@ -53,6 +53,26 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Otp.Backgrounds", "Microser
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Otp.Api", "Microservices\Otp\Otp.Web\Otp.Api\Otp.Api.csproj", "{E228ACA2-3EAA-468D-BDC8-2ABBF41A8CFC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notification", "Notification", "{8B34D899-F579-42C3-9DC0-AACA18E725C0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notification.Core", "Notification.Core", "{8971C523-FC79-4FC9-A9FA-70DE8A31E144}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notification.Infrastructure", "Notification.Infrastructure", "{3C8BDDF7-52ED-48E8-92C2-B0557AD00DE3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notification.Web", "Notification.Web", "{216654AA-1844-4A44-8BB0-B738B056CC61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Domain", "Microservices\Notification\Notification.Core\Notification.Domain\Notification.Domain.csproj", "{17A9E4E2-AC29-48CB-BC85-08F657C16525}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Application", "Microservices\Notification\Notification.Core\Notification.Application\Notification.Application.csproj", "{0D5A215B-8D41-4E9F-B87D-2665DEE0CFAB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Persistence", "Microservices\Notification\Notification.Infrastructure\Notification.Persistence\Notification.Persistence.csproj", "{1FA55B7F-9B06-4602-B00B-16ACE955F9D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Messaging", "Microservices\Notification\Notification.Infrastructure\Notification.Messaging\Notification.Messaging.csproj", "{1BC73F7B-6367-4D33-9869-8C5F5BB1BF23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Backgrounds", "Microservices\Notification\Notification.Infrastructure\Notification.Backgrounds\Notification.Backgrounds.csproj", "{A3257243-3D09-44A5-9907-5C5DF87AA349}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Api", "Microservices\Notification\Notification.Web\Notification.Api\Notification.Api.csproj", "{303AD3DC-CEF1-4678-9BB2-FE9371D58495}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +143,30 @@ Global
 		{E228ACA2-3EAA-468D-BDC8-2ABBF41A8CFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E228ACA2-3EAA-468D-BDC8-2ABBF41A8CFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E228ACA2-3EAA-468D-BDC8-2ABBF41A8CFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17A9E4E2-AC29-48CB-BC85-08F657C16525}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17A9E4E2-AC29-48CB-BC85-08F657C16525}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17A9E4E2-AC29-48CB-BC85-08F657C16525}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17A9E4E2-AC29-48CB-BC85-08F657C16525}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D5A215B-8D41-4E9F-B87D-2665DEE0CFAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D5A215B-8D41-4E9F-B87D-2665DEE0CFAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D5A215B-8D41-4E9F-B87D-2665DEE0CFAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D5A215B-8D41-4E9F-B87D-2665DEE0CFAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FA55B7F-9B06-4602-B00B-16ACE955F9D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FA55B7F-9B06-4602-B00B-16ACE955F9D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FA55B7F-9B06-4602-B00B-16ACE955F9D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FA55B7F-9B06-4602-B00B-16ACE955F9D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BC73F7B-6367-4D33-9869-8C5F5BB1BF23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BC73F7B-6367-4D33-9869-8C5F5BB1BF23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BC73F7B-6367-4D33-9869-8C5F5BB1BF23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BC73F7B-6367-4D33-9869-8C5F5BB1BF23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3257243-3D09-44A5-9907-5C5DF87AA349}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3257243-3D09-44A5-9907-5C5DF87AA349}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3257243-3D09-44A5-9907-5C5DF87AA349}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3257243-3D09-44A5-9907-5C5DF87AA349}.Release|Any CPU.Build.0 = Release|Any CPU
+		{303AD3DC-CEF1-4678-9BB2-FE9371D58495}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{303AD3DC-CEF1-4678-9BB2-FE9371D58495}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{303AD3DC-CEF1-4678-9BB2-FE9371D58495}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{303AD3DC-CEF1-4678-9BB2-FE9371D58495}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -149,6 +193,16 @@ Global
 		{F3A6F14D-7417-47D8-9255-DEF27E8D78E5} = {84D9C1D4-0723-489B-95B4-83179E8435F6}
 		{46F40F0D-C2FA-4BA9-BF6E-7E23B4877257} = {84D9C1D4-0723-489B-95B4-83179E8435F6}
 		{E228ACA2-3EAA-468D-BDC8-2ABBF41A8CFC} = {F7B548C1-8C9F-4F09-BA7B-204FF65F24A9}
+		{8B34D899-F579-42C3-9DC0-AACA18E725C0} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
+		{8971C523-FC79-4FC9-A9FA-70DE8A31E144} = {8B34D899-F579-42C3-9DC0-AACA18E725C0}
+		{3C8BDDF7-52ED-48E8-92C2-B0557AD00DE3} = {8B34D899-F579-42C3-9DC0-AACA18E725C0}
+		{216654AA-1844-4A44-8BB0-B738B056CC61} = {8B34D899-F579-42C3-9DC0-AACA18E725C0}
+		{17A9E4E2-AC29-48CB-BC85-08F657C16525} = {8971C523-FC79-4FC9-A9FA-70DE8A31E144}
+		{0D5A215B-8D41-4E9F-B87D-2665DEE0CFAB} = {8971C523-FC79-4FC9-A9FA-70DE8A31E144}
+		{1FA55B7F-9B06-4602-B00B-16ACE955F9D6} = {3C8BDDF7-52ED-48E8-92C2-B0557AD00DE3}
+		{1BC73F7B-6367-4D33-9869-8C5F5BB1BF23} = {3C8BDDF7-52ED-48E8-92C2-B0557AD00DE3}
+		{A3257243-3D09-44A5-9907-5C5DF87AA349} = {3C8BDDF7-52ED-48E8-92C2-B0557AD00DE3}
+		{303AD3DC-CEF1-4678-9BB2-FE9371D58495} = {216654AA-1844-4A44-8BB0-B738B056CC61}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9A2248D4-C310-4B42-9DD7-B8039C38C2B9}

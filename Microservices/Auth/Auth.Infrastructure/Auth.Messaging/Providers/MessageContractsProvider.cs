@@ -1,6 +1,5 @@
 ﻿using Auth.Messaging.Abstractions.Providers;
 using DDD.Events;
-using MessageContracts;
 
 namespace Auth.Messaging.Providers
 {
@@ -13,7 +12,7 @@ namespace Auth.Messaging.Providers
             _messageContractProviders = messageContractProviders.ToDictionary(x => x.GetHandableType(), x => x);
         }
 
-        public async Task<dynamic> Create(IDomainEvent domainEvent)
+        public async Task<dynamic> CreateAsync(IDomainEvent domainEvent)
         {
             return _messageContractProviders.TryGetValue(domainEvent.GetType(), out var messageContractProvider) ?
                    await messageContractProvider.Create(domainEvent) :

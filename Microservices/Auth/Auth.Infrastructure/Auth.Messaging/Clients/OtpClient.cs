@@ -37,7 +37,7 @@ namespace Auth.Messaging.Clients
                     _ => throw new MessagingInvalidOperationInfrastructureException("Unexpected response from OTP service.")
                 };
             }
-            catch(RequestFaultException exception) when(exception.Fault is Fault<OneTimePasswordCreationRequest> fault)
+            catch (RequestFaultException exception) when (exception.Fault is Fault<OneTimePasswordCreationRequest> fault)
             {
                 throw new MessagingInvalidOperationInfrastructureException(GetExceptionMessage(fault));
             }
@@ -66,7 +66,7 @@ namespace Auth.Messaging.Clients
                     _ => throw new MessagingInvalidOperationInfrastructureException("Unexpected response from OTP service.")
                 };
             }
-            catch(RequestFaultException exception) when(exception.Fault is Fault<OneTimePasswordValidationRequest> fault)
+            catch (RequestFaultException exception) when (exception.Fault is Fault<OneTimePasswordValidationRequest> fault)
             {
                 throw new MessagingInvalidOperationInfrastructureException(GetExceptionMessage(fault));
             }

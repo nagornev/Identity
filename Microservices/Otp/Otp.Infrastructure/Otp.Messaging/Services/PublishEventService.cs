@@ -1,4 +1,5 @@
-﻿using MassTransit;
+﻿using DDD.Events;
+using MassTransit;
 using Otp.Application.Abstractions.Services;
 using Otp.Messaging.Abstractions.Providers;
 
@@ -17,9 +18,10 @@ namespace Otp.Messaging.Services
             _messageContractsProvider = messageContractsProvider;
         }
 
-        async Task IPublishEventService.PublishAsync<T>(T domainEvent, CancellationToken cancellation)
+        public async Task PublishAsync<T>(T domainEvent, CancellationToken cancellation = default)
+             where T : class, IDomainEvent
         {
-            dynamic messageContract = await _messageContractsProvider.CreateAsync(domainEvent, cancellation);
+            dynamic messageContract = await _messageContractsProvider.CreateAsync(domainEvent);
 
             await _publishService.Publish(messageContract, cancellation);
         }

@@ -30,7 +30,7 @@ namespace Otp.Domain.Aggregates
 
         public void ChangeEmailAddress(string email)
         {
-            EmailAddress = EmailAddress.Create(email)??
+            EmailAddress = EmailAddress.Create(email) ??
                            throw new EmailAddressNullDomainException();
         }
     }
