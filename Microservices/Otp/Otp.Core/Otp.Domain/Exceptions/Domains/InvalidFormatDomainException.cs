@@ -1,9 +1,11 @@
-﻿namespace Otp.Domain.Exceptions.Domains
+﻿using OperationResults;
+
+namespace Otp.Domain.Exceptions.Domains
 {
     public class InvalidFormatDomainException : DomainException
     {
         public InvalidFormatDomainException(string message)
-            : base(DomainErrorTypes.InvalidFomat, message)
+            : base(ResultErrorTypes.InvalidFomat, message)
         {
         }
     }

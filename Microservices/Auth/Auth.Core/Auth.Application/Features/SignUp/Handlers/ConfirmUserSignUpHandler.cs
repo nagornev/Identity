@@ -7,7 +7,9 @@ namespace Auth.Application.Features.SignUp.Handlers
     {
         private readonly ISignUpConfirmService _signUpConfirmService;
 
-        public ConfirmUserSignUpHandler(ISignUpConfirmService signUpConfirmService)
+        public ConfirmUserSignUpHandler(ISignUpConfirmService signUpConfirmService,
+                                        ILogService logService)
+            : base(logService)
         {
             _signUpConfirmService = signUpConfirmService;
         }

@@ -8,7 +8,9 @@ namespace Auth.Application.Features.SignIn.Handlers
     {
         private readonly ISignInRequestService _signInRequestService;
 
-        public RequestUserSignInHandler(ISignInRequestService signInRequestService)
+        public RequestUserSignInHandler(ISignInRequestService signInRequestService,
+                                        ILogService logService)
+            : base(logService)
         {
             _signInRequestService = signInRequestService;
         }

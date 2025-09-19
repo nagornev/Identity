@@ -1,9 +1,11 @@
-﻿namespace Notification.Domain.Exceptions.Domains
+﻿using OperationResults;
+
+namespace Notification.Domain.Exceptions.Domains
 {
     public class AlreadyDomainException : DomainException
     {
         public AlreadyDomainException(string message)
-            : base(DomainErrorTypes.Already, message)
+            : base(ResultErrorTypes.Already, message)
         {
         }
     }

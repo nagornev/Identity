@@ -28,6 +28,7 @@ namespace Auth.Api.Extensions.Startup
                 options.AddConsumer<EmailAddressChangeConfirmedMessageConsumer>();
                 options.AddConsumer<PasswordHashChangedMessageConsumer>();
                 options.AddConsumer<UserCreatedMessageConsumer>();
+                options.AddConsumer<LogConsumer>();
 
                 options.AddRequestClient<OneTimePasswordCreationRequest>();
                 options.AddRequestClient<OneTimePasswordValidationRequest>();
@@ -53,6 +54,11 @@ namespace Auth.Api.Extensions.Startup
                     cfg.ReceiveEndpoint("auth-user-created-queue", e =>
                     {
                         e.ConfigureConsumer<UserCreatedMessageConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint("auth-log-queue", e =>
+                    {
+                        e.ConfigureConsumer<LogConsumer>(context);
                     });
                 });
             });

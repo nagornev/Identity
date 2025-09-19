@@ -1,9 +1,11 @@
-﻿namespace Notification.Application.Exceptions.Infrastructures
+﻿using OperationResults;
+
+namespace Notification.Application.Exceptions.Infrastructures
 {
     public class UnavailableInfrastructureException : InfrastructureException
     {
         public UnavailableInfrastructureException(string message, Exception? inner = default)
-            : base(InfrastructuireErrorTypes.Unavailable, message, inner)
+            : base(ResultErrorTypes.Unavailable, message, inner)
         {
         }
     }

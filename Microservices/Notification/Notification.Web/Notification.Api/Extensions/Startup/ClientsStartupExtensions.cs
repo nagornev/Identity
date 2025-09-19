@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using MessageContracts;
 using Notification.Application.Abstractions.Senders;
 using Notification.Application.Senders;
 using Notification.Messaging.Consumers;
@@ -31,6 +32,7 @@ namespace Notification.Api.Extensions.Startup
                 options.AddConsumer<PendingNotificationMessageCreatedConsumer>();
                 options.AddConsumer<EmailAddressChangedConsumer>();
                 options.AddConsumer<UserActivatedConsumer>();
+                options.AddConsumer<LogConsumer>();
 
                 options.UsingRabbitMq((context, cfg) =>
                 {
@@ -74,9 +76,12 @@ namespace Notification.Api.Extensions.Startup
                     {
                         e.ConfigureConsumer<EmailAddressChangedConsumer>(context);
                     });
+
+                    cfg.ReceiveEndpoint("notification-log-queue", e =>
+                    {
+                        e.ConfigureConsumer<LogConsumer>(context);
+                    });
                 });
-
-
             });
         }
 

@@ -4,6 +4,7 @@ using Hangfire.Dashboard;
 using Notification.Application;
 using Notification.Persistence;
 using Notification.Persistence.Contexts;
+using Serilog;
 
 namespace Notification.Api.Extensions.Startup
 {
@@ -23,11 +24,14 @@ namespace Notification.Api.Extensions.Startup
                     .AddClients(configuration)
                     .AddBackgrounds(configuration)
                     .AddValidators(configuration)
+                    .AddLogger(configuration)
                     .AddCarter()
                     .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssembly).Assembly))
 
                     .AddEndpointsApiExplorer()
                     .AddSwaggerGen();
+
+            builder.Host.UseSerilog(); 
 
             return builder.Build();
         }

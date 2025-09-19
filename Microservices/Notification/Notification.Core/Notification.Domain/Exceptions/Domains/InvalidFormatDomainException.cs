@@ -1,9 +1,11 @@
-﻿namespace Notification.Domain.Exceptions.Domains
+﻿using OperationResults;
+
+namespace Notification.Domain.Exceptions.Domains
 {
     public class InvalidFormatDomainException : DomainException
     {
         public InvalidFormatDomainException(string message)
-            : base(DomainErrorTypes.InvalidFomat, message)
+            : base(ResultErrorTypes.InvalidFomat, message)
         {
         }
     }

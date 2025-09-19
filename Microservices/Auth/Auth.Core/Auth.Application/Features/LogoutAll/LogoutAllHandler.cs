@@ -6,7 +6,9 @@ namespace Auth.Application.Features.LogoutAll
     {
         private readonly ILogoutService _logoutService;
 
-        public LogoutAllHandler(ILogoutService logoutService)
+        public LogoutAllHandler(ILogoutService logoutService, 
+                                ILogService logService) 
+            : base(logService)
         {
             _logoutService = logoutService;
         }

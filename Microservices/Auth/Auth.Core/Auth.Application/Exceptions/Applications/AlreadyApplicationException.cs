@@ -1,9 +1,11 @@
-﻿namespace Auth.Application.Exceptions.Applications
+﻿using OperationResults;
+
+namespace Auth.Application.Exceptions.Applications
 {
     public abstract class AlreadyApplicationException : ApplicationException
     {
         public AlreadyApplicationException(string message)
-            : base(ApplicationErrorTypes.Already, message)
+            : base(ResultErrorTypes.Already, message)
         {
         }
     }

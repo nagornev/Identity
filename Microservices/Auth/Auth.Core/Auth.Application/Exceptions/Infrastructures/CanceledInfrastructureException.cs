@@ -1,9 +1,11 @@
-﻿namespace Auth.Application.Exceptions.Infrastructures
+﻿using OperationResults;
+
+namespace Auth.Application.Exceptions.Infrastructures
 {
     public class CanceledInfrastructureException : InfrastructureException
     {
         public CanceledInfrastructureException(string message, Exception? inner = null)
-            : base(InfrastructuireErrorTypes.Canceled, message, inner)
+            : base(ResultErrorTypes.Canceled, message, inner)
         {
         }
     }

@@ -7,7 +7,9 @@ namespace Auth.Application.Features.ChangeEmailAddress.Handlers
     {
         private readonly IEmailAddressUpdateService _emailAddressUpdateService;
 
-        public EmailAddressUpdateHandler(IEmailAddressUpdateService emailAddressUpdateService)
+        public EmailAddressUpdateHandler(IEmailAddressUpdateService emailAddressUpdateService,
+                                         ILogService logService)
+            : base(logService)
         {
             _emailAddressUpdateService = emailAddressUpdateService;
         }

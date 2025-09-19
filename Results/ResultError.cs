@@ -13,6 +13,11 @@ namespace OperationResults
             Message = message;
         }
 
+        public static ResultError Create(int type, string message)
+        {
+            return new ResultError(type, message);
+        }
+
         [JsonPropertyName("type")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public int Type { get; }

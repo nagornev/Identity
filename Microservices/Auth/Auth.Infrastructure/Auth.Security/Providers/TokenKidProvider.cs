@@ -12,7 +12,7 @@ namespace Auth.Security.Providers
             _jwtClaimsProvider = jwtClaimsProvider;
         }
 
-        public Guid Get(string token)
+        public Guid? Get(string token)
         {
             return _jwtClaimsProvider.GetKid(token);
         }

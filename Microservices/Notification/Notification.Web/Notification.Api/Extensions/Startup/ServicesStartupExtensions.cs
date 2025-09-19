@@ -1,4 +1,5 @@
-﻿using Notification.Application.Abstractions.Services;
+﻿using MassTransit;
+using Notification.Application.Abstractions.Services;
 using Notification.Application.Services;
 using Notification.Messaging.Services;
 
@@ -29,7 +30,8 @@ namespace Notification.Api.Extensions.Startup
                            .AddScoped<IOneTimePasswordNotificationMessageCreateService, OneTimePasswordNotificationMessageCreateService>()
                            .AddScoped<IPendingNotificationMessageCreateService, PendingNotificationMessageCreateService>()
                            .AddScoped<IPendingNotificationMessageQueryService, PendingNotificationMessageQueryService>()
-                           .AddScoped<IPendingNotificationMessageSendService, PendingNotificationMessageSendService>();
+                           .AddScoped<IPendingNotificationMessageSendService, PendingNotificationMessageSendService>()
+                           .AddSingleton<ILogService, LogService>();
         }
 
         private static IServiceCollection AddInfrastructureServices(this IServiceCollection services)

@@ -1,8 +1,10 @@
-﻿using Auth.Api.Extensions;
-using Auth.Application.Abstractions.Providers;
+﻿using Auth.Application.Abstractions.Providers;
+using Auth.Application.Abstractions.Services;
 using Auth.Application.Converters;
 using Auth.Application.Features.Refresh;
 using Carter;
+using Hangfire.PostgreSql.Utils;
+using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Signers;
 using System.Security.Claims;
@@ -20,6 +22,23 @@ namespace Auth.Api.Endpoints
                  .RequireAuthorization("edit:profile");
 
             group.MapPost("sign/refresh", SignRefresh);
+
+            group.MapGet("test/log", TestLog);
+        }
+
+        private static async Task<IResult> TestLog(ILogService logService,CancellationToken cancellation = default)
+        {
+            try
+            {
+                throw new NotSupportedException("Test not supporter exception.");
+            }
+            catch(Exception ex)
+            {
+                await logService.LogError(ex);
+
+            }
+
+            return Results.Ok();
         }
 
         private static async Task<IResult> TestAuth(ClaimsPrincipal claimsPrincipal)

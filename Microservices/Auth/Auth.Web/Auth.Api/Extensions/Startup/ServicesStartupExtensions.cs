@@ -53,7 +53,9 @@ namespace Auth.Api.Extensions.Startup
                            .AddScoped<IAccessKeyDeletionService, AccessKeyDeletionService>()
                            .AddScoped<IRefreshKeyDeletionService, RefreshKeyDeletionService>()
                            .AddScoped<IChannelKeyDeletionService, ChannelKeyDeletionService>()
-                           .AddScoped<IWindowValidationService, WindowValidationService>();
+                           .AddScoped<IWindowValidationService, WindowValidationService>()
+                           .AddSingleton<ITokenKidService, TokenKidService>()
+                           .AddSingleton<ILogService, LogService>();
         }
 
         private static IServiceCollection AddInfrastructureServices(this IServiceCollection services)

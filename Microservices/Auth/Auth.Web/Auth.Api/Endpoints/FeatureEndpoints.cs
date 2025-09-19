@@ -1,4 +1,5 @@
-﻿using Auth.Api.Contracts;
+﻿using Auth.Api.Abstractions.Providers;
+using Auth.Api.Contracts;
 using Auth.Api.Extensions;
 using Auth.Application.DTOs;
 using Auth.Application.Features.ChangeEmailAddress.Commands;
@@ -10,6 +11,7 @@ using Auth.Application.Features.SignUp.Commands;
 using Carter;
 using MediatR;
 using OperationResults;
+using System.ComponentModel.Design;
 
 namespace Auth.Api.Endpoints
 {
@@ -59,11 +61,11 @@ namespace Auth.Api.Endpoints
                  .WithValidation<PersonNameChangeContract>()
                  .RequireAuthorization("edit:profile");
             #endregion
-
         }
 
         private static async Task<IResult> SignUp(RequestUserSignUpContract contract,
                                                   IMediator mediator,
+                                                  IResultProvider resultProvider,
                                                   CancellationToken cancellation = default)
         {
             Result signUpResult = await mediator.Send(new RequestUserSignUpCommand(contract.EmailAddress,
@@ -71,25 +73,23 @@ namespace Auth.Api.Endpoints
                                                                                    contract.Password),
                                                       cancellation);
 
-            return signUpResult.IsSuccess ?
-                    Results.Ok(signUpResult) :
-                    Results.BadRequest(signUpResult);
+            return resultProvider.GetResult(signUpResult);
         }
 
         private static async Task<IResult> Activate(string token,
                                                     IMediator mediator,
+                                                    IResultProvider resultProvider,
                                                     CancellationToken cancellation = default)
         {
             Result activateResult = await mediator.Send(new ConfirmUserSignUpCommand(token), cancellation);
 
-            return activateResult.IsSuccess ?
-                    Results.Ok(activateResult) :
-                    Results.BadRequest(activateResult);
+            return resultProvider.GetResult(activateResult);
         }
 
         private static async Task<IResult> SignIn(RequestUserSignInContract contract,
                                                   HttpContext httpContext,
                                                   IMediator mediator,
+                                                  IResultProvider resultProvider,
                                                   CancellationToken cancellation = default)
         {
             Result<Otp> signInResult = await mediator.Send(new RequestUserSignInQuery(contract.EmailAddress,
@@ -99,27 +99,25 @@ namespace Auth.Api.Endpoints
                                                                                       httpContext.GetRequestContext()),
                                                            cancellation);
 
-            return signInResult.IsSuccess ?
-                    Results.Ok(signInResult) :
-                    Results.BadRequest(signInResult);
+            return resultProvider.GetResult(signInResult);
         }
 
         private static async Task<IResult> Confirm(OtpContract contract,
                                                    IMediator mediator,
+                                                   IResultProvider resultProvider,
                                                    CancellationToken cancellation = default)
         {
             Result<TokenPair> confirmSignInResult = await mediator.Send(new ConfirmUserSignInQuery(contract.OtpId,
                                                                                                    contract.Otp),
                                                                         cancellation);
 
-            return confirmSignInResult.IsSuccess ?
-                    Results.Ok(confirmSignInResult) :
-                    Results.BadRequest(confirmSignInResult);
+            return resultProvider.GetResult(confirmSignInResult);
         }
 
         private static async Task<IResult> RefreshTokenPair(RefreshContract contract,
                                                             HttpContext httpContext,
                                                             IMediator mediator,
+                                                            IResultProvider resultProvider,
                                                             CancellationToken cancellation = default)
         {
             Result<TokenPair> refreshResult = await mediator.Send(new RefreshCommand(contract.RefreshToken,
@@ -129,52 +127,48 @@ namespace Auth.Api.Endpoints
                                                                                      httpContext.GetRequestContext()),
                                                                   cancellation);
 
-            return refreshResult.IsSuccess ?
-                    Results.Ok(refreshResult) :
-                    Results.BadRequest(refreshResult);
+            return resultProvider.GetResult(refreshResult);
         }
 
         private static async Task<IResult> ChangeEmailRequest(RequestEmailAddressChangeContract contract,
                                                               HttpContext context,
                                                               IMediator mediator,
+                                                              IResultProvider resultProvider,
                                                               CancellationToken cancellation = default)
         {
             Result<Otp> changeEmailRequestResult = await mediator.Send(new RequestEmailAddressChangeCommand(context.User.GetUserId(),
                                                                                                             contract.NewEmailAddress),
                                                                        cancellation);
 
-            return changeEmailRequestResult.IsSuccess ?
-                    Results.Ok(changeEmailRequestResult) :
-                    Results.BadRequest(changeEmailRequestResult);
+            return resultProvider.GetResult(changeEmailRequestResult);
         }
 
         private static async Task<IResult> ChangeEmailConfirm(OtpContract contract,
                                                               IMediator mediator,
+                                                              IResultProvider resultProvider,
                                                               CancellationToken cancellation = default)
         {
             Result changeEmailConfirmResult = await mediator.Send(new ConfirmEmailAddressChangeCommand(contract.OtpId,
                                                                                                        contract.Otp),
                                                                   cancellation);
 
-            return changeEmailConfirmResult.IsSuccess ?
-                    Results.Ok(changeEmailConfirmResult) :
-                    Results.BadRequest(changeEmailConfirmResult);
+            return resultProvider.GetResult(changeEmailConfirmResult);
         }
 
         private static async Task<IResult> ChangeEmailUpdate(string token,
                                                              IMediator mediator,
+                                                             IResultProvider resultProvider,
                                                              CancellationToken cancellation = default)
         {
             Result changeEmailUpdateResult = await mediator.Send(new EmailAddressUpdateCommand(token), cancellation);
 
-            return changeEmailUpdateResult.IsSuccess ?
-                    Results.Ok(changeEmailUpdateResult) :
-                    Results.BadRequest(changeEmailUpdateResult);
+            return resultProvider.GetResult(changeEmailUpdateResult);
         }
 
         private static async Task<IResult> ChangePasswordRequest(RequestPasswordChangeContract contract,
                                                                  HttpContext context,
                                                                  IMediator mediator,
+                                                                 IResultProvider resultProvider,
                                                                  CancellationToken cancellation = default)
         {
             Result<Otp> changePasswordRequestResult = await mediator.Send(new RequestPasswordChangeCommand(context.User.GetUserId(),
@@ -182,36 +176,32 @@ namespace Auth.Api.Endpoints
                                                                                                            contract.NewPassword),
                                                                           cancellation);
 
-            return changePasswordRequestResult.IsSuccess ?
-                    Results.Ok(changePasswordRequestResult) :
-                    Results.BadRequest(changePasswordRequestResult);
+            return resultProvider.GetResult(changePasswordRequestResult);
         }
 
         private static async Task<IResult> ChangePasswordConfirm(OtpContract contract,
                                                                  IMediator mediator,
+                                                                 IResultProvider resultProvider,
                                                                  CancellationToken cancellation = default)
         {
             Result changePasswordConfirmResult = await mediator.Send(new ConfirmPasswordChangeCommand(contract.OtpId,
                                                                                                       contract.Otp),
                                                                      cancellation);
 
-            return changePasswordConfirmResult.IsSuccess ?
-                    Results.Ok(changePasswordConfirmResult) :
-                    Results.BadRequest(changePasswordConfirmResult);
+            return resultProvider.GetResult(changePasswordConfirmResult);
         }
 
         private static async Task<IResult> ChangePersonName(PersonNameChangeContract contract,
                                                             HttpContext context,
                                                             IMediator mediator,
+                                                            IResultProvider resultProvider,
                                                             CancellationToken cancellation = default)
         {
             Result changePersonNameResult = await mediator.Send(new PersonNameChangeCommand(context.User.GetUserId(),
                                                                                             contract.NewPersonName),
                                                                 cancellation);
 
-            return changePersonNameResult.IsSuccess ?
-                    Results.Ok(changePersonNameResult) :
-                    Results.BadRequest(changePersonNameResult);
+            return resultProvider.GetResult(changePersonNameResult);
         }
     }
 }

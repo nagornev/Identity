@@ -1,10 +1,13 @@
-﻿using Auth.Application.Abstractions.Providers;
+﻿using Auth.Api.Abstractions.Providers;
+using Auth.Api.Providers;
+using Auth.Application.Abstractions.Providers;
 using Auth.Application.Abstractions.Providers.Tokens;
 using Auth.Application.Providers;
 using Auth.Messaging.Abstractions.Providers;
 using Auth.Messaging.Providers;
 using Auth.Security.Abstractions.Providers;
 using Auth.Security.Providers;
+using OperationResults;
 
 namespace Auth.Api.Extensions.Startup
 {
@@ -13,7 +16,8 @@ namespace Auth.Api.Extensions.Startup
         public static IServiceCollection AddProviders(this IServiceCollection services, IConfiguration configuration)
         {
             return services.AddApplicationProviders()
-                           .AddInfrastructureProviders();
+                           .AddInfrastructureProviders()
+                           .AddWebProviders();
         }
 
         private static IServiceCollection AddApplicationProviders(this IServiceCollection services)
@@ -54,6 +58,31 @@ namespace Auth.Api.Extensions.Startup
                            .AddScoped<IMessageContractProvider, UserCreatedMessageContractProvider>()
                            .AddScoped<IMessageContractProvider, UserDeletedMessageContractProvider>()
                            .AddScoped<IMessageContractsProvider, MessageContractsProvider>();
+        }
+
+        private static IServiceCollection AddWebProviders(this IServiceCollection services)
+        {
+            return services.AddSingleton<IResultProvider>(new ResultProviderBuilder()
+                                                           .UseSuccess((options) => options
+                                                               .UseNocontentFactory(result => Results.Ok(result)))
+                                                           .UseFailed((options) => options
+                                                               .UseFactory(result => result.Error.Type switch
+                                                               {
+                                                                   ResultErrorTypes.Null => Results.BadRequest(result),
+                                                                   ResultErrorTypes.Empty => Results.BadRequest(result),
+                                                                   ResultErrorTypes.NotFound => Results.NotFound(result),
+                                                                   ResultErrorTypes.Canceled => Results.NoContent(),
+                                                                   ResultErrorTypes.Invalid => Results.BadRequest(result),
+                                                                   ResultErrorTypes.InvalidFomat => Results.BadRequest(result),
+                                                                   ResultErrorTypes.Already => Results.BadRequest(result),
+                                                                   ResultErrorTypes.NotSupported => Results.BadRequest(result),
+                                                                   ResultErrorTypes.OutOfRange => Results.BadRequest(result),
+                                                                   ResultErrorTypes.Unconfirmed => Results.BadRequest(result),
+                                                                   ResultErrorTypes.Unavailable => Results.StatusCode(500),
+
+                                                                   _ => Results.BadRequest(result),
+                                                               }))
+                                                           .Build());
         }
     }
 }

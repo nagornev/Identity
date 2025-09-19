@@ -2,6 +2,6 @@
 {
     public interface ITokenKidProvider
     {
-        Guid Get(string token);
+        Guid? Get(string token);
     }
 }

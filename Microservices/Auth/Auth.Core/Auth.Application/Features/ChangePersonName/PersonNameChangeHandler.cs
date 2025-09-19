@@ -6,7 +6,9 @@ namespace Auth.Application.Features.ChangePersonName
     {
         private readonly IPersonNameService _personNameService;
 
-        public PersonNameChangeHandler(IPersonNameService personNameService)
+        public PersonNameChangeHandler(IPersonNameService personNameService, 
+                                       ILogService logService) 
+            : base(logService)
         {
             _personNameService = personNameService;
         }

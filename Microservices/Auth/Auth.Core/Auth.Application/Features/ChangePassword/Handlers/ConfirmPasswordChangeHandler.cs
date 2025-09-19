@@ -7,7 +7,9 @@ namespace Auth.Application.Features.ChangePassword.Handlers
     {
         private readonly IPasswordChangeConfirmService _passwordChangeConfirmService;
 
-        public ConfirmPasswordChangeHandler(IPasswordChangeConfirmService passwordChangeConfirmService)
+        public ConfirmPasswordChangeHandler(IPasswordChangeConfirmService passwordChangeConfirmService,
+                                            ILogService logService)
+            : base(logService)
         {
             _passwordChangeConfirmService = passwordChangeConfirmService;
         }

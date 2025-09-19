@@ -8,7 +8,9 @@ namespace Auth.Application.Features.ChangePassword.Handlers
     {
         private readonly IPasswordChangeRequestService _passwordChangeRequestService;
 
-        public RequestPasswordChangeHandler(IPasswordChangeRequestService passwordChangeRequestService)
+        public RequestPasswordChangeHandler(IPasswordChangeRequestService passwordChangeRequestService,
+                                            ILogService logService)
+            : base(logService)
         {
             _passwordChangeRequestService = passwordChangeRequestService;
         }

@@ -8,7 +8,9 @@ namespace Auth.Application.Features.ChangeEmailAddress.Handlers
     {
         private readonly IEmailAddressChangeRequestService _emailAddressChangeRequestService;
 
-        public RequestEmailAddressChangeHandler(IEmailAddressChangeRequestService emailAddressChangeRequestService)
+        public RequestEmailAddressChangeHandler(IEmailAddressChangeRequestService emailAddressChangeRequestService,
+                                                ILogService logService)
+            : base(logService)
         {
             _emailAddressChangeRequestService = emailAddressChangeRequestService;
         }

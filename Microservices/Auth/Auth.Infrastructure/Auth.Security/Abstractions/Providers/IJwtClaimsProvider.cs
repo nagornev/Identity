@@ -4,8 +4,8 @@ namespace Auth.Security.Abstractions.Providers
 {
     public interface IJwtClaimsProvider
     {
-        Guid GetKid(string token);
+        Guid? GetKid(string token);
 
-        JwtPayload GetPayload(string token);
+        JwtPayload? GetPayload(string token);
     }
 }

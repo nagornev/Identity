@@ -1,9 +1,11 @@
-﻿namespace Otp.Domain.Exceptions.Domains
+﻿using OperationResults;
+
+namespace Otp.Domain.Exceptions.Domains
 {
     public abstract class NullDomainException : DomainException
     {
         public NullDomainException(string message)
-            : base(DomainErrorTypes.Null, message)
+            : base(ResultErrorTypes.Null, message)
         {
         }
     }

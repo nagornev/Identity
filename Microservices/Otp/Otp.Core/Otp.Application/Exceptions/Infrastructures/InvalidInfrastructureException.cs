@@ -1,9 +1,11 @@
-﻿namespace Otp.Application.Exceptions.Infrastructures
+﻿using OperationResults;
+
+namespace Otp.Application.Exceptions.Infrastructures
 {
     public class InvalidInfrastructureException : InfrastructureException
     {
         public InvalidInfrastructureException(string message, Exception? inner = null)
-            : base(InfrastructuireErrorTypes.Invalid, message, inner)
+            : base(ResultErrorTypes.Invalid, message, inner)
         {
         }
     }

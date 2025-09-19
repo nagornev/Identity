@@ -1,5 +1,6 @@
 ﻿using Auth.Application.Abstractions.Providers;
 using Auth.Application.Abstractions.Services;
+using Auth.Application.Exceptions.Applications.Scopes;
 using Auth.Domain.Aggregates;
 using Auth.Domain.ValueObjects;
 using System.Data;
@@ -42,11 +43,9 @@ namespace Auth.Application.Services
             IReadOnlyCollection<Scope> audienceUserScopes = scopes.Where(x => x.Audience == audience)
                                                                   .ToArray();
 
-            return audienceUserScopes;
-
-            //return audienceUserScopes.Count > 0 ?
-            //       audienceUserScopes :
-            //       throw new ScopesNotFoundApplicationException(audience.Value);
+            return audienceUserScopes.Count > 0 ?
+                   audienceUserScopes :
+                   throw new ScopesNotFoundApplicationException(audience.Value);
         }
     }
 }

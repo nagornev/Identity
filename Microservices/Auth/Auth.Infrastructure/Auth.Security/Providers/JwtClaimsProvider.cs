@@ -5,24 +5,36 @@ namespace Auth.Security.Providers
 {
     public class JwtClaimsProvider : IJwtClaimsProvider
     {
-        public Guid GetKid(string token)
+        public Guid? GetKid(string token)
         {
-            JwtSecurityToken jwt = GetJwt(token);
+            JwtSecurityToken? jwt = GetJwt(token);
 
-            return Guid.Parse(jwt.Header.Kid);
+            return jwt!= null?
+                    Guid.Parse(jwt.Header.Kid):
+                    null;
         }
 
-        public JwtPayload GetPayload(string token)
+        public JwtPayload? GetPayload(string token)
         {
-            JwtSecurityToken jwt = GetJwt(token);
+            JwtSecurityToken? jwt = GetJwt(token);
 
-            return jwt.Payload;
+            return jwt != null?
+                     jwt.Payload:
+                     null;
         }
 
-        private JwtSecurityToken GetJwt(string token)
+        private JwtSecurityToken? GetJwt(string token)
         {
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-            return handler.ReadJwtToken(token);
+
+            try
+            {
+                return handler.ReadJwtToken(token);
+            }
+            catch(ArgumentException)
+            {
+                return null;
+            }
         }
     }
 }

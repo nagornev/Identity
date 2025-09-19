@@ -10,7 +10,7 @@ namespace Auth.Api.Services
         public async Task<bool> AuthorizeAsync([NotNull] DashboardContext context)
         {
             var httpContext = context.GetHttpContext();
-            var result = await  httpContext.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
+            var result = await httpContext.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
             return result.Succeeded;
         }
     }

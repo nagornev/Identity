@@ -1,9 +1,11 @@
-﻿namespace Auth.Domain.Exceptions.Domains
+﻿using OperationResults;
+
+namespace Auth.Domain.Exceptions.Domains
 {
     public class OutOfRangeDomainException : DomainException
     {
         public OutOfRangeDomainException(string message)
-            : base(DomainErrorTypes.OutOfRange, message)
+            : base(ResultErrorTypes.OutOfRange, message)
         {
         }
     }

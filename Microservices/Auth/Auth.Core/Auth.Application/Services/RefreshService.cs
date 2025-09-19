@@ -20,7 +20,7 @@ namespace Auth.Application.Services
 
         private readonly IUserScopesService _userScopesService;
 
-        private readonly ITokenKidProvider _tokenKidProvider;
+        private readonly ITokenKidService _tokenKidService;
 
         private readonly IAccessTokenProvider _accessTokenProvider;
 
@@ -40,7 +40,7 @@ namespace Auth.Application.Services
                               ISessionQueryService sessionQueryService,
                               IUserQueryService userQueryService,
                               IUserScopesService userScopesService,
-                              ITokenKidProvider tokenKidProvider,
+                              ITokenKidService tokenKidService,
                               IAccessTokenProvider accessTokenProvider,
                               IRefreshTokenProvider refreshTokenProvider,
                               ITimeProvider timeProvider,
@@ -53,7 +53,7 @@ namespace Auth.Application.Services
             _sessionQueryService = sessionQueryService;
             _userQueryService = userQueryService;
             _userScopesService = userScopesService;
-            _tokenKidProvider = tokenKidProvider;
+            _tokenKidService = tokenKidService;
             _accessTokenProvider = accessTokenProvider;
             _refreshTokenProvider = refreshTokenProvider;
             _timeProvider = timeProvider;
@@ -71,7 +71,7 @@ namespace Auth.Application.Services
         {
             _refreshValidationService.ValidateWindow(timestamp, _options.Window);
 
-            Guid refreshTokenKid = _tokenKidProvider.Get(refreshToken);
+            Guid refreshTokenKid = _tokenKidService.GetTokenKid(refreshToken);
             KeyPair refreshValidationKey = await _refreshKeyStorage.GetKeyPairAsync(refreshTokenKid, cancellation);
             RefreshTokenPayload refreshTokenPayload = _refreshValidationService.ValidateToken(refreshToken, refreshValidationKey);
 

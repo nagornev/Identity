@@ -30,6 +30,7 @@ namespace Otp.Api.Extensions.Startup
                 options.AddConsumer<EmailAddressChangedConsumer>();
                 options.AddConsumer<UserActivatedConsumer>();
                 options.AddConsumer<OneTimePasswordResendedConsumer>();
+                options.AddConsumer<LogConsumer>();
 
                 options.UsingRabbitMq((context, cfg) =>
                 {
@@ -72,6 +73,11 @@ namespace Otp.Api.Extensions.Startup
                     cfg.ReceiveEndpoint("otp-one-time-password-resended-queue", e =>
                     {
                         e.ConfigureConsumer<OneTimePasswordResendedConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint("otp-log-queue", e =>
+                    {
+                        e.ConfigureConsumer<LogConsumer>(context);
                     });
                 });
 

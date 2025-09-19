@@ -1,5 +1,4 @@
-﻿using Auth.Api.Services;
-using Auth.Application;
+﻿using Auth.Application;
 using Auth.Application.Abstractions.Factories.Keys;
 using Auth.Application.Abstractions.Storages;
 using Auth.Application.Options;
@@ -8,9 +7,9 @@ using Auth.Persistence.Contexts;
 using Auth.Security;
 using Carter;
 using Hangfire;
-using Hangfire.Dashboard;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Auth.Api.Extensions.Startup
@@ -33,13 +32,13 @@ namespace Auth.Api.Extensions.Startup
                     .AddClients(configuration)
                     .AddBackgrounds(configuration)
                     .AddConfigures(configuration)
+                    .AddLogger(configuration)
                     .AddCarter()
                     .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssembly).Assembly))
 
                     .AddEndpointsApiExplorer()
                     .AddSwaggerGen(options =>
                     {
-                        // Описание схемы безопасности
                         options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                         {
                             Name = "Authorization",
@@ -50,7 +49,6 @@ namespace Auth.Api.Extensions.Startup
                             Description = "Введите JWT токен в формате: Bearer {your token}"
                         });
 
-                        // Требование безопасности
                         options.AddSecurityRequirement(new OpenApiSecurityRequirement
                         {
                             {
@@ -66,6 +64,8 @@ namespace Auth.Api.Extensions.Startup
                             }
                         });
                     });
+
+            builder.Host.UseSerilog();
 
             return builder.Build();
         }

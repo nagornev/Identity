@@ -8,7 +8,9 @@ namespace Auth.Application.Features.SignIn.Handlers
     {
         private readonly ISignInConfirmService _signInConfrmService;
 
-        public ConfirmUserSignInHandler(ISignInConfirmService signInConfrimService)
+        public ConfirmUserSignInHandler(ISignInConfirmService signInConfrimService, 
+                                        ILogService logService)
+            : base(logService)
         {
             _signInConfrmService = signInConfrimService;
         }

@@ -7,7 +7,9 @@ namespace Auth.Application.Features.Refresh
     {
         private readonly IRefreshService _refreshService;
 
-        public RefreshHandler(IRefreshService refreshService)
+        public RefreshHandler(IRefreshService refreshService, 
+                              ILogService logService) 
+            : base(logService)
         {
             _refreshService = refreshService;
         }

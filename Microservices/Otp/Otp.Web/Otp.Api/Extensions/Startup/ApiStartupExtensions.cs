@@ -2,9 +2,11 @@
 using Hangfire;
 using Hangfire.Dashboard;
 using Microsoft.OpenApi.Models;
+using Notification.Api.Extensions.Startup;
 using Otp.Application;
 using Otp.Persistence;
 using Otp.Persistence.Contexts;
+using Serilog;
 
 namespace Otp.Api.Extensions.Startup
 {
@@ -24,11 +26,14 @@ namespace Otp.Api.Extensions.Startup
                     .AddClients(configuration)
                     .AddBackgrounds(configuration)
                     .AddValidators(configuration)
+                    .AddLogger(configuration)
                     .AddCarter()
                     .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssembly).Assembly))
 
                     .AddEndpointsApiExplorer()
                     .AddSwaggerGen();
+
+            builder.Host.UseSerilog();
 
             return builder.Build();
         }

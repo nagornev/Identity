@@ -1,4 +1,5 @@
-﻿using Auth.Application.Exceptions.Infrastructures;
+﻿using Auth.Application.Abstractions.Services;
+using Auth.Application.Exceptions.Infrastructures;
 using Auth.Domain.Exceptions.Domains;
 using MediatR;
 using OperationResults;
@@ -9,6 +10,13 @@ namespace Auth.Application.Features
     public abstract class ResultTRequestHandler<TRequestType, T> : IRequestHandler<TRequestType, Result<T>>
         where TRequestType : ResultTRequest<T>
     {
+        private readonly ILogService _logService;
+
+        protected ResultTRequestHandler(ILogService logService)
+        {
+            _logService = logService;
+        }
+
         public async Task<Result<T>> Handle(TRequestType request, CancellationToken cancellationToken)
         {
             try
@@ -28,6 +36,12 @@ namespace Auth.Application.Features
             catch (InfrastructureException infastructureException)
             {
                 return infastructureException.GetResult<T>();
+            }
+            catch(Exception exception)
+            {
+                await _logService.LogError(exception, cancellationToken);
+
+                return Result<T>.Failure(ResultError.Create(ResultErrorTypes.Unavailable, exception.Message));
             }
         }
 

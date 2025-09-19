@@ -10,7 +10,7 @@ namespace Auth.Application.Services
 {
     public class EmailAddressUpdateService : IEmailAddressUpdateService
     {
-        private readonly ITokenKidProvider _tokenKidProvider;
+        private readonly ITokenKidService _tokenKidService;
 
         private readonly IChannelKeyStorage _channelKeyStorage;
 
@@ -21,13 +21,13 @@ namespace Auth.Application.Services
         private readonly IUnitOfWork _unitOfWork;
 
 
-        public EmailAddressUpdateService(ITokenKidProvider tokenKidProvider,
+        public EmailAddressUpdateService(ITokenKidService tokenKidService,
                                          IChannelKeyStorage channelKeyStorage,
                                          IChannelTokenValidationService channelTokenValidationService,
                                          IUserQueryService userQueryService,
                                          IUnitOfWork unitOfWork)
         {
-            _tokenKidProvider = tokenKidProvider;
+            _tokenKidService = tokenKidService;
             _channelKeyStorage = channelKeyStorage;
             _channelTokenValidationService = channelTokenValidationService;
             _userQueryService = userQueryService;
@@ -36,7 +36,7 @@ namespace Auth.Application.Services
 
         public async Task UpdateAsync(string channelToken, CancellationToken cancellation = default)
         {
-            Guid channelTokenKid = _tokenKidProvider.Get(channelToken);
+            Guid channelTokenKid = _tokenKidService.GetTokenKid(channelToken);
             KeyPair channelValidationKey = await _channelKeyStorage.GetKeyPairAsync(channelTokenKid, cancellation);
 
             ChannelTokenPayload channelTokenPayload = _channelTokenValidationService.Validate(channelToken, channelValidationKey, ChannelTags.Email);

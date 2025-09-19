@@ -1,9 +1,11 @@
-﻿namespace Notification.Domain.Exceptions.Domains
+﻿using OperationResults;
+
+namespace Notification.Domain.Exceptions.Domains
 {
     public class EmptyDomainException : DomainException
     {
         public EmptyDomainException(string message)
-            : base(DomainErrorTypes.Empty, message)
+            : base(ResultErrorTypes.Empty, message)
         {
         }
     }

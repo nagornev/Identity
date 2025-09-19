@@ -1,7 +1,5 @@
-﻿using Auth.Api.Services;
-using Carter;
+﻿using Carter;
 using Hangfire;
-using Hangfire.Dashboard;
 
 namespace Auth.Api.Endpoints
 {

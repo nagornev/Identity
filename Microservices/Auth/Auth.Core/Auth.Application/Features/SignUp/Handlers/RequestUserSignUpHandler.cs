@@ -7,7 +7,9 @@ namespace Auth.Application.Features.SignUp.Handlers
     {
         private readonly ISignUpRequestService _signUpRequestService;
 
-        public RequestUserSignUpHandler(ISignUpRequestService signUpRequestService)
+        public RequestUserSignUpHandler(ISignUpRequestService signUpRequestService,
+                                        ILogService logService)
+            : base(logService)
         {
             _signUpRequestService = signUpRequestService;
         }

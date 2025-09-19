@@ -24,7 +24,8 @@ namespace Otp.Api.Extensions.Startup
                            .AddScoped<IUserQueryService, UserQueryService>()
                            .AddScoped<IEmailAddressChangedEventService, EmailAddressChangedEventService>()
                            .AddScoped<IUserActivatedEventService, UserActivatedEventService>()
-                           .AddScoped<IOneTimePasswordResendService, OneTimePasswordResendService>();
+                           .AddScoped<IOneTimePasswordResendService, OneTimePasswordResendService>()
+                           .AddSingleton<ILogService, LogService>();
         }
 
         private static IServiceCollection AddInfrastructureServices(this IServiceCollection services)

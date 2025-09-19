@@ -7,7 +7,9 @@ namespace Auth.Application.Features.ChangeEmailAddress.Handlers
     {
         private readonly IEmailAddressChangeConfirmService _emalAddressChangeConfirmService;
 
-        public ConfirmEmailAddressChangeHandler(IEmailAddressChangeConfirmService emalAddressConfirmService)
+        public ConfirmEmailAddressChangeHandler(IEmailAddressChangeConfirmService emalAddressConfirmService,
+                                                ILogService logService)
+            : base(logService)
         {
             _emalAddressChangeConfirmService = emalAddressConfirmService;
         }

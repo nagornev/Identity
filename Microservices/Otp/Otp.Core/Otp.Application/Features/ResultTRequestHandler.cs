@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using OperationResults;
+using Otp.Application.Abstractions.Services;
 using Otp.Application.Exceptions.Infrastructures;
 using Otp.Domain.Exceptions.Domains;
 using ApplicationException = Otp.Application.Exceptions.Applications.ApplicationException;
@@ -9,6 +10,13 @@ namespace Otp.Application.Features
     public abstract class ResultTRequestHandler<TRequestType, T> : IRequestHandler<TRequestType, Result<T>>
         where TRequestType : ResultTRequest<T>
     {
+        private readonly ILogService _logService;
+
+        protected ResultTRequestHandler(ILogService logService)
+        {
+            _logService = logService;
+        }
+
         public async Task<Result<T>> Handle(TRequestType request, CancellationToken cancellationToken)
         {
             try
@@ -28,6 +36,12 @@ namespace Otp.Application.Features
             catch (InfrastructureException infastructureException)
             {
                 return infastructureException.GetResult<T>();
+            }
+            catch (Exception exception)
+            {
+                await _logService.LogError(exception, cancellationToken);
+
+                return Result<T>.Failure(ResultError.Create(ResultErrorTypes.Unavailable, exception.Message));
             }
         }
 

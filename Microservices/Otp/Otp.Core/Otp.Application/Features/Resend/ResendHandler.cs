@@ -6,7 +6,9 @@ namespace Otp.Application.Features.Resend
     {
         private readonly IOneTimePasswordResendService _oneTimePasswordResendService;
 
-        public ResendHandler(IOneTimePasswordResendService oneTimePasswordResendService)
+        public ResendHandler(IOneTimePasswordResendService oneTimePasswordResendService,
+                             ILogService logService)
+            : base(logService)
         {
             _oneTimePasswordResendService = oneTimePasswordResendService;
         }
