@@ -1,0 +1,212 @@
+version: "3.9"
+
+services:
+  auth_service:
+    container_name: auth_service
+    restart: always
+    build: 
+      context: .
+      dockerfile: ./Microservices/Auth/Auth.Web/Auth.Api/Dockerfile
+    ports:
+      - 7000:8080
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+    depends_on:
+      - auth_database
+      - auth_scheduler
+      - logs_database
+      - vault
+      - rabbitmq
+    networks:
+      - application
+      
+  otp_service:
+    container_name: otp_service
+    restart: always
+    build: 
+      context: .
+      dockerfile: ./Microservices/Otp/Otp.Web/Otp.Api/Dockerfile
+    ports:
+      - 7001:8080
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+    depends_on:
+      - otp_database
+      - otp_scheduler
+      - logs_database
+      - vault
+      - rabbitmq
+    networks:
+      - application
+
+  notification_service:
+    container_name: notification_service
+    restart: always
+    build: 
+      context: .
+      dockerfile: ./Microservices/Notification/Notification.Web/Notification.Api/Dockerfile
+    ports:
+      - 7002:8080
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+    depends_on:
+      - notification_database
+      - notification_scheduler
+      - logs_database
+      - vault
+      - rabbitmq
+    networks:
+      - application
+
+  auth_database:
+    container_name: auth_database
+    image: mcr.microsoft.com/mssql/server:latest
+    restart: always
+    ports:
+      - 5001:1433
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "HHHHhhhh1111"
+    networks:
+      - application
+
+  otp_database:
+    container_name: otp_database
+    image: postgres:16
+    environment:
+      POSTGRES_DB: Otp
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: HHHHhhhh1111
+    ports:
+      - "5002:5432"
+    networks:
+      - application
+      
+  notification_database:
+    container_name: notification_database
+    image: postgres:16
+    environment:
+      POSTGRES_DB: Notification
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: HHHHhhhh1111
+    ports:
+      - "5003:5432"
+    networks:
+      - application
+
+  auth_scheduler:
+    container_name: auth_scheduler
+    image: postgres:16
+    environment:
+      POSTGRES_DB: Scheduler
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: HHHHhhhh1111
+    ports:
+      - "5004:5432"
+    networks:
+      - application
+
+  otp_scheduler:
+    container_name: otp_scheduler
+    image: postgres:16
+    environment:
+      POSTGRES_DB: Scheduler
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: HHHHhhhh1111
+    ports:
+      - "5005:5432"
+    networks:
+      - application
+      
+  notification_scheduler:
+    container_name: notification_scheduler
+    image: postgres:16
+    environment:
+      POSTGRES_DB: Scheduler
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: HHHHhhhh1111
+    ports:
+      - "5006:5432"
+    networks:
+      - application
+  
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:4-management
+    hostname: rabbitmq
+    restart: always
+    ports:
+      - 15672:15672
+      - 5672:5672
+    environment:
+      - RABBITMQ_DEFAULT_USER=mquser
+      - RABBITMQ_DEFAULT_PASS=HHHHhhhh1111
+    networks:
+      - application
+ 
+  vault:
+    image: hashicorp/vault:1.20.1
+    container_name: vault
+    ports:
+      - "8200:8200"
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: myroot
+      VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8200"
+    cap_add:
+      - IPC_LOCK
+    networks:
+      - application
+
+  logs_database:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: logs_database
+    environment:
+      - node.name=es-node
+      - cluster.name=es-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - xpack.security.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    networks:
+      - application
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://logs_database:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - logs_database
+
+  adminer:
+    container_name: adminer
+    image: adminer
+    restart: always
+    ports:
+        - 5000:8080
+    networks:
+        - application
+   
+networks:
+  application:
+    driver: bridge
