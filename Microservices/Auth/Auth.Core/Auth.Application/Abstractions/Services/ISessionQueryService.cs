@@ -8,6 +8,8 @@ namespace Auth.Application.Abstractions.Services
 
         Task<IReadOnlyCollection<Session>> FindSessionsByUserIdAsync(Guid userId, CancellationToken cancellation = default);
 
+        Task<IReadOnlyCollection<Session>> FindValidSessionsByUserIdAsync(Guid userId, long timestamp, CancellationToken cancellation = default);
+
         Task<Session> GetSessionByIdAsync(Guid sessionId, CancellationToken cancellation = default);
     }
 }

@@ -29,6 +29,14 @@ namespace Auth.Application.Services
             return await _sessionRepository.FindAsync(specification, cancellation);
         }
 
+        public async Task<IReadOnlyCollection<Session>> FindValidSessionsByUserIdAsync(Guid userId, long timestamp, CancellationToken cancellation = default)
+        {
+            SessionByUserIdSpecification sessionByUserIdSpecification = new SessionByUserIdSpecification(userId);
+            SessionByValidParametersSpecification sessionByValidParametersSpecification = new SessionByValidParametersSpecification(timestamp);
+
+            return await _sessionRepository.FindAsync(sessionByUserIdSpecification.And(sessionByValidParametersSpecification), cancellation);
+        }
+
         public async Task<Session> GetSessionByIdAsync(Guid sessionId, CancellationToken cancellation = default)
         {
             SessionByIdSpecification specification = new SessionByIdSpecification(sessionId);
